@@ -1,0 +1,61 @@
+<!-- Performance Optimization -->
+
+<!-- Critical CSS Inlined -->
+<style>
+/* Critical Above-the-Fold Styles */
+.gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.tool-card { transition: all 0.3s ease; border: 1px solid #e2e8f0; }
+.loading-spinner { 
+    border: 2px solid #f3f4f6; 
+    border-top: 2px solid #3b82f6; 
+    border-radius: 50%; 
+    width: 20px; 
+    height: 20px; 
+    animation: spin 1s linear infinite; 
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
+
+<!-- Lazy Loading Script -->
+<script>
+// Intersection Observer for lazy loading
+if ('IntersectionObserver' in window) {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const lazyImages = document.querySelectorAll('img[data-src]');
+        lazyImages.forEach(img => imageObserver.observe(img));
+    });
+}
+
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/static/sw.js')
+            .then(registration => console.log('SW registered'))
+            .catch(registrationError => console.log('SW registration failed'));
+    });
+}
+
+// Preload critical resources
+const preloadLink = document.createElement('link');
+preloadLink.href = 'https://cdn.tailwindcss.com';
+preloadLink.rel = 'preload';
+preloadLink.as = 'style';
+document.head.appendChild(preloadLink);
+</script>
+
+<!-- Resource Hints -->
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+{% block performance_scripts %}{% endblock %}

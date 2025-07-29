@@ -1,0 +1,3 @@
+"""
+Application blueprints package.
+"""

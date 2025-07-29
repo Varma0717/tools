@@ -1,0 +1,1 @@
+<h2>All Orders</h2><table><thead><tr><th>User</th><th>Product</th><th>Amount</th><th>Status</th></tr></thead><tbody> {% for order in orders %} <tr><td>{{ order.user.username }}</td><td>{{ order.product }}</td><td>${{ order.amount }}</td><td>{{ order.status }}</td></tr> {% else %} <tr><td colspan="4">No orders yet.</td></tr> {% endfor %} </tbody></table>

@@ -1,0 +1,560 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Meta Tag Analyzer - Free SEO Meta Tags Checker & Optimizer
+{% endblock %}
+
+{% block meta_description %}
+  Analyze and optimize your website meta tags for better SEO. Check title tags, meta descriptions, Open Graph tags, and Twitter Cards for improved search rankings.
+{% endblock %}
+
+{% block content %}
+  <div class="min-h-screen bg-gray-50">
+    <!-- Tool Hero Section -->
+    <section class="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white py-20">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-12">
+          <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="tag" class="w-10 h-10 text-white"></i>
+          </div>
+          <div class="flex items-center justify-center mb-4">
+            <img src="{{ url_for('static', filename='favicon.png') }}" alt="Super SEO Toolkit" class="w-8 h-8 rounded-lg mr-3" />
+            <h1 class="text-3xl md:text-5xl font-bold">Meta Tag Analyzer</h1>
+          </div>
+          <p class="text-xl text-purple-100 mb-8 max-w-3xl mx-auto leading-relaxed">Analyze and optimize your website's meta tags for better SEO performance and search rankings</p>
+
+          <!-- Meta Tag Analyzer Form -->
+          <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 max-w-2xl mx-auto">
+            <form id="metaAnalyzerForm" class="space-y-4">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+              <div class="relative">
+                <input type="url" name="url" id="urlInput" placeholder="Enter website URL (e.g., https://example.com)" class="w-full px-4 py-4 bg-white text-gray-900 rounded-lg border-2 border-transparent focus:border-yellow-500 focus:outline-none text-lg" required />
+                <div class="absolute inset-y-0 right-0 flex items-center pr-4">
+                  <i data-lucide="globe" class="w-5 h-5 text-gray-400"></i>
+                </div>
+              </div>
+              <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-yellow-900 px-8 py-4 rounded-lg font-bold text-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                <span class="analyze-text">
+                  <i data-lucide="search" class="w-5 h-5 inline mr-2"></i>
+                  Analyze Meta Tags
+                </span>
+                <span class="analyze-loader hidden">
+                  <i data-lucide="loader-2" class="w-5 h-5 inline mr-2 animate-spin"></i>
+                  Analyzing...
+                </span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="resultsSection" class="py-16 hidden">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <!-- Results Header -->
+          <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6">
+            <h2 class="text-2xl font-bold mb-2">Meta Tag Analysis Results</h2>
+            <p class="text-purple-100">Complete analysis of your website's meta tags</p>
+          </div>
+
+          <!-- Results Tabs -->
+          <div class="border-b border-gray-200">
+            <nav class="flex space-x-8 px-6" aria-label="Tabs">
+              <button class="tab-btn border-b-2 border-purple-500 text-purple-600 py-4 px-1 font-medium text-sm" data-tab="overview">Overview</button>
+              <button class="tab-btn border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 font-medium text-sm" data-tab="social">Social Media</button>
+              <button class="tab-btn border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 font-medium text-sm" data-tab="technical">Technical</button>
+              <button class="tab-btn border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 font-medium text-sm" data-tab="all">All Tags</button>
+            </nav>
+          </div>
+
+          <!-- Tab Contents -->
+          <div class="p-6">
+            <!-- Overview Tab -->
+            <div id="overviewTab" class="tab-content">
+              <div class="grid md:grid-cols-2 gap-6">
+                <!-- Primary Meta Tags -->
+                <div class="space-y-4">
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4">Primary Meta Tags</h3>
+
+                  <!-- Title Tag -->
+                  <div class="p-4 border border-gray-200 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                      <strong class="text-gray-900">Title Tag</strong>
+                      <span id="titleStatus" class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs font-medium">--</span>
+                    </div>
+                    <p id="titleText" class="text-gray-700 mb-2">--</p>
+                    <div class="text-sm text-gray-500">
+                      Length: <span id="titleLength">0</span> characters
+                      <span class="ml-2 text-xs">(Recommended: 50-60)</span>
+                    </div>
+                  </div>
+
+                  <!-- Meta Description -->
+                  <div class="p-4 border border-gray-200 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                      <strong class="text-gray-900">Meta Description</strong>
+                      <span id="descStatus" class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs font-medium">--</span>
+                    </div>
+                    <p id="descText" class="text-gray-700 mb-2">--</p>
+                    <div class="text-sm text-gray-500">
+                      Length: <span id="descLength">0</span> characters
+                      <span class="ml-2 text-xs">(Recommended: 150-160)</span>
+                    </div>
+                  </div>
+
+                  <!-- Meta Keywords -->
+                  <div class="p-4 border border-gray-200 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                      <strong class="text-gray-900">Meta Keywords</strong>
+                      <span id="keywordsStatus" class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs font-medium">--</span>
+                    </div>
+                    <p id="keywordsText" class="text-gray-700 text-sm">--</p>
+                  </div>
+                </div>
+
+                <!-- SEO Meta Tags -->
+                <div class="space-y-4">
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4">SEO Meta Tags</h3>
+
+                  <!-- Canonical URL -->
+                  <div class="p-4 border border-gray-200 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                      <strong class="text-gray-900">Canonical URL</strong>
+                      <span id="canonicalStatus" class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs font-medium">--</span>
+                    </div>
+                    <p id="canonicalText" class="text-gray-700 text-sm break-all">--</p>
+                  </div>
+
+                  <!-- Robots Meta -->
+                  <div class="p-4 border border-gray-200 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                      <strong class="text-gray-900">Robots Meta</strong>
+                      <span id="robotsStatus" class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs font-medium">--</span>
+                    </div>
+                    <p id="robotsText" class="text-gray-700 text-sm">--</p>
+                  </div>
+
+                  <!-- Website Analysis -->
+                  <div class="p-4 border border-gray-200 rounded-lg">
+                    <strong class="text-gray-900 block mb-2">Website Information</strong>
+                    <div class="space-y-1 text-sm text-gray-600">
+                      <div>
+                        URL: <span id="analyzedUrl" class="text-gray-900">--</span>
+                      </div>
+                      <div>
+                        Status: <span id="statusCode" class="text-gray-900">--</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Social Media Tab -->
+            <div id="socialTab" class="tab-content hidden">
+              <div class="grid md:grid-cols-2 gap-6">
+                <!-- Open Graph Tags -->
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4">Open Graph Tags (Facebook)</h3>
+                  <div id="openGraphTags" class="space-y-3">
+                    <!-- Dynamic content -->
+                  </div>
+                </div>
+
+                <!-- Twitter Card Tags -->
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4">Twitter Card Tags</h3>
+                  <div id="twitterTags" class="space-y-3">
+                    <!-- Dynamic content -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Technical Tab -->
+            <div id="technicalTab" class="tab-content hidden">
+              <div class="space-y-6">
+                <h3 class="text-lg font-semibold text-gray-900">Technical Analysis</h3>
+                <div id="technicalAnalysis" class="grid md:grid-cols-2 gap-4">
+                  <!-- Dynamic technical analysis -->
+                </div>
+              </div>
+            </div>
+
+            <!-- All Tags Tab -->
+            <div id="allTab" class="tab-content hidden">
+              <div class="space-y-6">
+                <h3 class="text-lg font-semibold text-gray-900">All Meta Tags Found</h3>
+                <div id="allMetaTags" class="space-y-3">
+                  <!-- Dynamic content -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-16 bg-white">
+      <div class="max-w-4xl mx-auto px-6">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+          <p class="text-xl text-gray-600">Simple 3-step process to optimize your meta tags</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Enter Your URL</h3>
+            <p class="text-gray-600">Simply paste your website URL into our analyzer tool</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Get Analysis</h3>
+            <p class="text-gray-600">Our system scans and analyzes all meta tags on your website</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Implement Fixes</h3>
+            <p class="text-gray-600">Apply our recommendations to improve your SEO rankings</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-16">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Key Features</h2>
+          <p class="text-xl text-gray-600">Comprehensive meta tag analysis and optimization</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="zap" class="w-8 h-8 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Instant Analysis</h3>
+            <p class="text-gray-600">Get comprehensive meta tag analysis in seconds with our advanced scanning technology</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="target" class="w-8 h-8 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Social Media Tags</h3>
+            <p class="text-gray-600">Analyze Open Graph and Twitter Card tags for optimal social media sharing</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="shield-check" class="w-8 h-8 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">SEO Best Practices</h3>
+            <p class="text-gray-600">Ensure your meta tags follow current SEO best practices and search engine guidelines</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+// HTML escape function to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+
+// Tab functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTab = btn.dataset.tab;
+            
+            // Remove active from all tabs
+            tabBtns.forEach(b => {
+                b.classList.remove('border-purple-500', 'text-purple-600');
+                b.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            // Add active to clicked tab
+            btn.classList.add('border-purple-500', 'text-purple-600');
+            btn.classList.remove('border-transparent', 'text-gray-500');
+            
+            // Hide all tab contents
+            tabContents.forEach(content => content.classList.add('hidden'));
+            
+            // Show target tab content
+            document.getElementById(targetTab + 'Tab').classList.remove('hidden');
+        });
+    });
+});
+
+// Meta Tag Analyzer Form Handler
+document.getElementById('metaAnalyzerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const url = document.getElementById('urlInput').value.trim();
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const analyzeText = submitBtn.querySelector('.analyze-text');
+    const analyzeLoader = submitBtn.querySelector('.analyze-loader');
+    const resultsSection = document.getElementById('resultsSection');
+    
+    if (!url) {
+        alert('Please enter a valid URL');
+        return;
+    }
+    
+    // Show loading state
+    analyzeText.classList.add('hidden');
+    analyzeLoader.classList.remove('hidden');
+    submitBtn.disabled = true;
+    
+    // Hide previous results
+    resultsSection.classList.add('hidden');
+    
+    // Make AJAX request
+    fetch(window.location.pathname + '/ajax', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.getElementById('csrf_token').value
+        },
+        body: JSON.stringify({
+            url: url
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            displayResults(data.results);
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            alert('Error: ' + (data.error || 'Analysis failed'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Network error occurred. Please try again.');
+    })
+    .finally(() => {
+        analyzeText.classList.remove('hidden');
+        analyzeLoader.classList.add('hidden');
+        submitBtn.disabled = false;
+    });
+});
+
+function displayResults(data) {
+    // Update Overview Tab
+    updateOverviewTab(data);
+    
+    // Update Social Media Tab
+    updateSocialTab(data);
+    
+    // Update Technical Tab
+    updateTechnicalTab(data);
+    
+    // Update All Tags Tab
+    updateAllTagsTab(data);
+}
+
+function updateOverviewTab(data) {
+    // Title Tag
+    const title = data.title || 'No title found';
+    const titleLength = title.length;
+    document.getElementById('titleText').textContent = title;
+    document.getElementById('titleLength').textContent = titleLength;
+    document.getElementById('titleStatus').textContent = getTitleStatus(titleLength);
+    document.getElementById('titleStatus').className = getTitleStatusClass(titleLength);
+    
+    // Meta Description
+    const description = data.description || 'No meta description found';
+    const descLength = description.length;
+    document.getElementById('descText').textContent = description;
+    document.getElementById('descLength').textContent = descLength;
+    document.getElementById('descStatus').textContent = getDescStatus(descLength);
+    document.getElementById('descStatus').className = getDescStatusClass(descLength);
+    
+    // Meta Keywords
+    const keywords = data.keywords || 'No meta keywords found';
+    document.getElementById('keywordsText').textContent = keywords;
+    document.getElementById('keywordsStatus').textContent = data.keywords ? 'Present' : 'Missing';
+    document.getElementById('keywordsStatus').className = data.keywords ? 
+        'px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs font-medium' :
+        'px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs font-medium';
+    
+    // Canonical URL
+    const canonical = data.canonical || 'No canonical URL found';
+    document.getElementById('canonicalText').textContent = canonical;
+    document.getElementById('canonicalStatus').textContent = data.canonical ? 'Present' : 'Missing';
+    document.getElementById('canonicalStatus').className = data.canonical ? 
+        'px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium' :
+        'px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-medium';
+    
+    // Robots Meta
+    const robots = data.robots || 'No robots meta found';
+    document.getElementById('robotsText').textContent = robots;
+    document.getElementById('robotsStatus').textContent = data.robots ? 'Present' : 'Missing';
+    document.getElementById('robotsStatus').className = data.robots ? 
+        'px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium' :
+        'px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs font-medium';
+    
+    // Website Info
+    document.getElementById('analyzedUrl').textContent = data.url || '--';
+    document.getElementById('statusCode').textContent = data.status_code || '--';
+}
+
+function updateSocialTab(data) {
+    const openGraphContainer = document.getElementById('openGraphTags');
+    const twitterContainer = document.getElementById('twitterTags');
+    
+    // Clear existing content
+    openGraphContainer.innerHTML = '';
+    twitterContainer.innerHTML = '';
+    
+    // Open Graph Tags
+    const ogTags = data.open_graph || {};
+    if (Object.keys(ogTags).length > 0) {
+        Object.entries(ogTags).forEach(([property, content]) => {
+            const div = document.createElement('div');
+            div.className = 'p-3 border border-gray-200 rounded-lg bg-gray-50';
+            div.innerHTML = `
+                <div class="font-medium text-gray-900 text-sm">${escapeHtml(property)}</div>
+                <div class="text-gray-700 text-sm mt-1 break-words">${escapeHtml(content)}</div>
+            `;
+            openGraphContainer.appendChild(div);
+        });
+    } else {
+        openGraphContainer.innerHTML = '<p class="text-gray-500 italic">No Open Graph tags found</p>';
+    }
+    
+    // Twitter Card Tags
+    const twitterTags = data.twitter || {};
+    if (Object.keys(twitterTags).length > 0) {
+        Object.entries(twitterTags).forEach(([name, content]) => {
+            const div = document.createElement('div');
+            div.className = 'p-3 border border-gray-200 rounded-lg bg-gray-50';
+            div.innerHTML = `
+                <div class="font-medium text-gray-900 text-sm">${escapeHtml(name)}</div>
+                <div class="text-gray-700 text-sm mt-1 break-words">${escapeHtml(content)}</div>
+            `;
+            twitterContainer.appendChild(div);
+        });
+    } else {
+        twitterContainer.innerHTML = '<p class="text-gray-500 italic">No Twitter Card tags found</p>';
+    }
+}
+
+function updateTechnicalTab(data) {
+    const technicalContainer = document.getElementById('technicalAnalysis');
+    technicalContainer.innerHTML = '';
+    
+    // Technical analysis data
+    const technicalData = [
+        { label: 'Title Tag Length', value: (data.title || '').length + ' characters', status: getTitleStatus((data.title || '').length) },
+        { label: 'Meta Description Length', value: (data.description || '').length + ' characters', status: getDescStatus((data.description || '').length) },
+        { label: 'Canonical URL', value: data.canonical ? 'Present' : 'Missing', status: data.canonical ? 'Good' : 'Warning' },
+        { label: 'Robots Meta', value: data.robots ? 'Present' : 'Missing', status: data.robots ? 'Good' : 'Info' },
+        { label: 'Open Graph Tags', value: Object.keys(data.open_graph || {}).length + ' tags', status: Object.keys(data.open_graph || {}).length > 0 ? 'Good' : 'Info' },
+        { label: 'Twitter Card Tags', value: Object.keys(data.twitter || {}).length + ' tags', status: Object.keys(data.twitter || {}).length > 0 ? 'Good' : 'Info' }
+    ];
+    
+    technicalData.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'p-4 border border-gray-200 rounded-lg';
+        div.innerHTML = `
+            <div class="flex items-center justify-between mb-2">
+                <strong class="text-gray-900">${escapeHtml(item.label)}</strong>
+                <span class="${escapeHtml(getStatusClass(item.status))}">${escapeHtml(item.status)}</span>
+            </div>
+            <p class="text-gray-700">${escapeHtml(item.value)}</p>
+        `;
+        technicalContainer.appendChild(div);
+    });
+}
+
+function updateAllTagsTab(data) {
+    const allTagsContainer = document.getElementById('allMetaTags');
+    allTagsContainer.innerHTML = '';
+    
+    const allMeta = data.all_meta || [];
+    if (allMeta.length > 0) {
+        allMeta.forEach(meta => {
+            const div = document.createElement('div');
+            div.className = 'p-4 border border-gray-200 rounded-lg bg-gray-50';
+            div.innerHTML = `
+                <div class="flex items-start justify-between mb-2">
+                    <div class="font-medium text-gray-900">${escapeHtml(meta.type)}: ${escapeHtml(meta.attribute)}</div>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">${escapeHtml(meta.type)}</span>
+                </div>
+                <div class="text-gray-700 text-sm break-words">${escapeHtml(meta.content)}</div>
+            `;
+            allTagsContainer.appendChild(div);
+        });
+    } else {
+        allTagsContainer.innerHTML = '<p class="text-gray-500 italic">No meta tags found</p>';
+    }
+}
+
+// Helper Functions
+function getTitleStatus(length) {
+    if (length >= 50 && length <= 60) return 'Optimal';
+    if (length >= 30 && length <= 70) return 'Good';
+    if (length > 0) return 'Warning';
+    return 'Missing';
+}
+
+function getTitleStatusClass(length) {
+    const baseClass = 'px-2 py-1 rounded text-xs font-medium';
+    if (length >= 50 && length <= 60) return `${baseClass} bg-green-100 text-green-800`;
+    if (length >= 30 && length <= 70) return `${baseClass} bg-blue-100 text-blue-800`;
+    if (length > 0) return `${baseClass} bg-yellow-100 text-yellow-800`;
+    return `${baseClass} bg-red-100 text-red-800`;
+}
+
+function getDescStatus(length) {
+    if (length >= 150 && length <= 160) return 'Optimal';
+    if (length >= 120 && length <= 180) return 'Good';
+    if (length > 0) return 'Warning';
+    return 'Missing';
+}
+
+function getDescStatusClass(length) {
+    const baseClass = 'px-2 py-1 rounded text-xs font-medium';
+    if (length >= 150 && length <= 160) return `${baseClass} bg-green-100 text-green-800`;
+    if (length >= 120 && length <= 180) return `${baseClass} bg-blue-100 text-blue-800`;
+    if (length > 0) return `${baseClass} bg-yellow-100 text-yellow-800`;
+    return `${baseClass} bg-red-100 text-red-800`;
+}
+
+function getStatusClass(status) {
+    const baseClass = 'px-2 py-1 rounded text-xs font-medium';
+    switch (status.toLowerCase()) {
+        case 'optimal':
+        case 'good': return `${baseClass} bg-green-100 text-green-800`;
+        case 'warning': return `${baseClass} bg-yellow-100 text-yellow-800`;
+        case 'info': return `${baseClass} bg-blue-100 text-blue-800`;
+        default: return `${baseClass} bg-gray-100 text-gray-800`;
+    }
+}
+
+// Initialize Lucide icons
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,527 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Schema Generator - Create Rich Snippets & Structured Data | Super SEO Toolkit
+{% endblock %}
+
+{% block meta_description %}
+  Generate, validate, and optimize Schema.org markup for better search visibility. Create rich snippets, FAQ schema, product markup, and more with our advanced Schema Generator.
+{% endblock %}
+
+{% block content %}
+  <div class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white py-20">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-6">
+          <i data-lucide="code" class="w-8 h-8 text-white"></i>
+        </div>
+
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">
+          Schema Markup
+          <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Generator</span>
+        </h1>
+
+        <p class="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">Create, validate, and optimize Schema.org structured data to enhance your search visibility with rich snippets and enhanced SERP features.</p>
+
+        <div class="flex flex-wrap justify-center gap-6 text-sm mb-8">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="zap" class="w-4 h-4 text-yellow-400"></i>
+            <span>Multiple Schema Types</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
+            <span>Google Validation</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i data-lucide="download" class="w-4 h-4 text-blue-400"></i>
+            <span>Export Ready</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Tool Section -->
+    <section class="py-20">
+      <div class="max-w-6xl mx-auto px-6">
+        <!-- Schema Type Selection -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+            <i data-lucide="layers" class="w-6 h-6 text-purple-600 mr-3"></i>
+            Select Schema Type
+          </h2>
+
+          <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <button onclick="selectSchemaType('Article')" class="schema-type-btn p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 text-left">
+              <div class="font-semibold text-gray-900">Article</div>
+              <div class="text-sm text-gray-600">News, blog posts, articles</div>
+            </button>
+            <button onclick="selectSchemaType('Product')" class="schema-type-btn p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 text-left">
+              <div class="font-semibold text-gray-900">Product</div>
+              <div class="text-sm text-gray-600">E-commerce products</div>
+            </button>
+            <button onclick="selectSchemaType('LocalBusiness')" class="schema-type-btn p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 text-left">
+              <div class="font-semibold text-gray-900">Local Business</div>
+              <div class="text-sm text-gray-600">Local companies, stores</div>
+            </button>
+            <button onclick="selectSchemaType('FAQ')" class="schema-type-btn p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 text-left">
+              <div class="font-semibold text-gray-900">FAQ</div>
+              <div class="text-sm text-gray-600">Frequently asked questions</div>
+            </button>
+            <button onclick="selectSchemaType('Event')" class="schema-type-btn p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 text-left">
+              <div class="font-semibold text-gray-900">Event</div>
+              <div class="text-sm text-gray-600">Concerts, conferences</div>
+            </button>
+            <button onclick="selectSchemaType('Recipe')" class="schema-type-btn p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 text-left">
+              <div class="font-semibold text-gray-900">Recipe</div>
+              <div class="text-sm text-gray-600">Cooking recipes</div>
+            </button>
+            <button onclick="selectSchemaType('Review')" class="schema-type-btn p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 text-left">
+              <div class="font-semibold text-gray-900">Review</div>
+              <div class="text-sm text-gray-600">Product/service reviews</div>
+            </button>
+            <button onclick="selectSchemaType('Organization')" class="schema-type-btn p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 text-left">
+              <div class="font-semibold text-gray-900">Organization</div>
+              <div class="text-sm text-gray-600">Company information</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+          <!-- Schema Generator Form -->
+          <div class="bg-white rounded-2xl shadow-xl p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+              <i data-lucide="edit" class="w-5 h-5 text-purple-600 mr-3"></i>
+              Schema Generator
+            </h3>
+
+            <form id="schemaForm" class="space-y-6">
+              <div id="schemaFields" class="space-y-4">
+                <div class="text-center py-8 text-gray-500">
+                  <i data-lucide="arrow-up" class="w-8 h-8 mx-auto mb-2"></i>
+                  <p>Select a schema type above to start generating markup</p>
+                </div>
+              </div>
+
+              <button type="submit" id="generateBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <i data-lucide="code" class="w-5 h-5 inline mr-2"></i>
+                Generate Schema Markup
+              </button>
+            </form>
+          </div>
+
+          <!-- Generated Schema Output -->
+          <div class="bg-white rounded-2xl shadow-xl p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+              <i data-lucide="file-code" class="w-5 h-5 text-green-600 mr-3"></i>
+              Generated Schema
+            </h3>
+
+            <div id="schemaOutput" class="space-y-4">
+              <div class="bg-gray-50 rounded-xl p-6 text-center text-gray-500">
+                <i data-lucide="code-2" class="w-8 h-8 mx-auto mb-2"></i>
+                <p>Generated schema markup will appear here</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schema Validation -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mt-8">
+          <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+            <i data-lucide="shield-check" class="w-5 h-5 text-blue-600 mr-3"></i>
+            Schema Validation
+          </h3>
+
+          <div class="space-y-4">
+            <textarea id="validationInput" placeholder="Paste your existing schema markup here to validate..." class="w-full h-32 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
+
+            <button onclick="validateSchema()" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-200">
+              <i data-lucide="check-circle" class="w-5 h-5 inline mr-2"></i>
+              Validate Schema
+            </button>
+
+            <div id="validationResults" class="hidden">
+              <div class="mt-4 p-4 rounded-xl" id="validationStatus">
+                <!-- Validation results will appear here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-white">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Schema Generator Features</h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">Comprehensive structured data tools for better search visibility</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="layers" class="w-6 h-6 text-purple-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Multiple Schema Types</h3>
+            <p class="text-gray-600">Support for 20+ schema types including Article, Product, FAQ, Event, Recipe, and more.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Google Validation</h3>
+            <p class="text-gray-600">Built-in validation ensures your schema markup meets Google's guidelines.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="download" class="w-6 h-6 text-blue-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Export Ready</h3>
+            <p class="text-gray-600">Copy-ready JSON-LD format that's easy to implement on your website.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50" style="display: none;">
+    <div class="bg-white rounded-xl p-6 flex items-center space-x-4">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+      <span class="text-gray-900 font-medium">Generating schema...</span>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons()
+    
+    let selectedSchemaType = null
+    
+    function selectSchemaType(type) {
+      selectedSchemaType = type
+    
+      // Update UI
+      document.querySelectorAll('.schema-type-btn').forEach((btn) => {
+        btn.classList.remove('border-purple-500', 'bg-purple-50')
+        btn.classList.add('border-gray-200')
+      })
+    
+      event.target.closest('.schema-type-btn').classList.remove('border-gray-200')
+      event.target.closest('.schema-type-btn').classList.add('border-purple-500', 'bg-purple-50')
+    
+      // Enable generate button
+      document.getElementById('generateBtn').disabled = false
+    
+      // Load schema fields
+      loadSchemaFields(type)
+    }
+    
+    function loadSchemaFields(type) {
+      const fieldsContainer = document.getElementById('schemaFields')
+      let fieldsHTML = ''
+    
+      switch (type) {
+        case 'Article':
+          fieldsHTML = `
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Headline*</label>
+                            <input type="text" name="headline" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Article headline">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Author*</label>
+                            <input type="text" name="author" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Author name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Date Published*</label>
+                            <input type="date" name="datePublished" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea name="description" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none" placeholder="Article description"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                            <input type="url" name="image" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="https://example.com/image.jpg">
+                        </div>
+                    `
+          break
+        case 'Product':
+          fieldsHTML = `
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Product Name*</label>
+                            <input type="text" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Product name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Brand*</label>
+                            <input type="text" name="brand" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Brand name">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Price*</label>
+                                <input type="number" name="price" step="0.01" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="99.99">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Currency*</label>
+                                <select name="currency" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <option value="USD">USD</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea name="description" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none" placeholder="Product description"></textarea>
+                        </div>
+                    `
+          break
+        case 'FAQ':
+          fieldsHTML = `
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">FAQ Title</label>
+                            <input type="text" name="title" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Frequently Asked Questions">
+                        </div>
+                        <div id="faqItems">
+                            <div class="faq-item border border-gray-200 rounded-xl p-4">
+                                <div class="grid gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Question*</label>
+                                        <input type="text" name="question[]" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="What is...?">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Answer*</label>
+                                        <textarea name="answer[]" required rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none" placeholder="The answer is..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addFAQItem()" class="text-purple-600 hover:text-purple-700 font-medium flex items-center">
+                            <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+                            Add Another FAQ
+                        </button>
+                    `
+          break
+        default:
+          fieldsHTML = `
+                        <div class="text-center py-8 text-gray-500">
+                            <i data-lucide="construction" class="w-8 h-8 mx-auto mb-2"></i>
+                            <p>Schema fields for ${type} coming soon!</p>
+                        </div>
+                    `
+      }
+    
+      fieldsContainer.innerHTML = fieldsHTML
+      lucide.createIcons()
+    }
+    
+    function addFAQItem() {
+      const container = document.getElementById('faqItems')
+      const newItem = document.createElement('div')
+      newItem.className = 'faq-item border border-gray-200 rounded-xl p-4'
+      newItem.innerHTML = `
+                <div class="grid gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Question*</label>
+                        <input type="text" name="question[]" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="What is...?">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Answer*</label>
+                        <textarea name="answer[]" required rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none" placeholder="The answer is..."></textarea>
+                    </div>
+                    <button type="button" onclick="this.closest('.faq-item').remove()" class="text-red-600 hover:text-red-700 text-sm flex items-center">
+                        <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>
+                        Remove
+                    </button>
+                </div>
+            `
+      container.appendChild(newItem)
+      lucide.createIcons()
+    }
+    
+    document.getElementById('schemaForm').addEventListener('submit', async function (e) {
+      e.preventDefault()
+    
+      if (!selectedSchemaType) {
+        alert('Please select a schema type first')
+        return
+      }
+    
+      const formData = new FormData(this)
+      const data = {
+        schema_type: selectedSchemaType
+      }
+    
+      // Collect form data
+      for (let [key, value] of formData.entries()) {
+        if (key.endsWith('[]')) {
+          const cleanKey = key.slice(0, -2)
+          if (!data[cleanKey]) data[cleanKey] = []
+          data[cleanKey].push(value)
+        } else {
+          data[key] = value
+        }
+      }
+    
+      try {
+        document.getElementById('loadingOverlay').style.display = 'flex'
+    
+        const response = await fetch('/tools/schema-generator/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+    
+        const result = await response.json()
+    
+        if (result.success) {
+          displaySchemaOutput(result.schema)
+        } else {
+          alert('Error: ' + result.error)
+        }
+      } catch (error) {
+        console.error('Error:', error)
+        alert('An error occurred while generating schema')
+      } finally {
+        document.getElementById('loadingOverlay').style.display = 'none'
+      }
+    })
+    
+    function displaySchemaOutput(schema) {
+      const output = document.getElementById('schemaOutput')
+      output.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-semibold text-gray-900">JSON-LD Schema</h4>
+                        <div class="flex space-x-2">
+                            <button onclick="copySchema()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
+                                <i data-lucide="copy" class="w-4 h-4 inline mr-1"></i>
+                                Copy
+                            </button>
+                            <button onclick="downloadSchema()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
+                                <i data-lucide="download" class="w-4 h-4 inline mr-1"></i>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                    <pre id="schemaCode" class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-sm"><code>${JSON.stringify(schema, null, 2)}</code></pre>
+                    <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+                        <div class="flex items-center">
+                            <i data-lucide="info" class="w-5 h-5 text-green-600 mr-3"></i>
+                            <div>
+                                <h5 class="font-medium text-green-900">Implementation</h5>
+                                <p class="text-green-700 text-sm">Add this script tag to your HTML head section to implement the schema markup.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
+      lucide.createIcons()
+    }
+    
+    function copySchema() {
+      const schemaCode = document.getElementById('schemaCode').textContent
+      navigator.clipboard.writeText(schemaCode).then(() => {
+        // Show success feedback
+        const btn = event.target.closest('button')
+        const originalText = btn.innerHTML
+        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 inline mr-1"></i>Copied!'
+        setTimeout(() => {
+          btn.innerHTML = originalText
+          lucide.createIcons()
+        }, 2000)
+      })
+    }
+    
+    function downloadSchema() {
+      const schemaCode = document.getElementById('schemaCode').textContent
+      const blob = new Blob([schemaCode], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${selectedSchemaType.toLowerCase()}-schema.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    }
+    
+    async function validateSchema() {
+      const input = document.getElementById('validationInput').value.trim()
+    
+      if (!input) {
+        alert('Please enter schema markup to validate')
+        return
+      }
+    
+      try {
+        const response = await fetch('/tools/schema-generator/validate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ schema: input })
+        })
+    
+        const result = await response.json()
+    
+        const resultsDiv = document.getElementById('validationResults')
+        const statusDiv = document.getElementById('validationStatus')
+    
+        if (result.success) {
+          if (result.valid) {
+            statusDiv.className = 'mt-4 p-4 rounded-xl bg-green-50 border border-green-200'
+            statusDiv.innerHTML = `
+                            <div class="flex items-center">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mr-3"></i>
+                                <div>
+                                    <h5 class="font-medium text-green-900">Schema is Valid!</h5>
+                                    <p class="text-green-700 text-sm">Your schema markup follows the correct structure.</p>
+                                </div>
+                            </div>
+                        `
+          } else {
+            statusDiv.className = 'mt-4 p-4 rounded-xl bg-red-50 border border-red-200'
+            statusDiv.innerHTML = `
+                            <div class="flex items-start">
+                                <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mr-3 mt-0.5"></i>
+                                <div>
+                                    <h5 class="font-medium text-red-900">Schema Validation Failed</h5>
+                                    <p class="text-red-700 text-sm">Issues found:</p>
+                                    <ul class="list-disc list-inside text-red-700 text-sm mt-2">
+                                        ${result.errors.map((error) => `<li>${error}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        `
+          }
+        } else {
+          statusDiv.className = 'mt-4 p-4 rounded-xl bg-red-50 border border-red-200'
+          statusDiv.innerHTML = `
+                        <div class="flex items-center">
+                            <i data-lucide="x-circle" class="w-5 h-5 text-red-600 mr-3"></i>
+                            <div>
+                                <h5 class="font-medium text-red-900">Validation Error</h5>
+                                <p class="text-red-700 text-sm">${result.error}</p>
+                            </div>
+                        </div>
+                    `
+        }
+    
+        resultsDiv.classList.remove('hidden')
+        lucide.createIcons()
+      } catch (error) {
+        console.error('Error:', error)
+        alert('An error occurred during validation')
+      }
+    }
+  </script>
+{% endblock %}

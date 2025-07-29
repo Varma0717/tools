@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
+    <title>
+      {% block title %}
+        Super SEO Toolkit - Professional SEO Platform
+      {% endblock %}
+    </title>
+    <meta name="title"
+      content="{% block meta_title %}
+        Super SEO Toolkit - Professional SEO Platform
+      {% endblock %}" />
+    <meta name="description"
+      content="{% block meta_description %}
+        Professional SEO tools and website optimization platform. Secure authentication for your SEO toolkit account.
+      {% endblock %}" />
+    <meta name="author" content="Super SEO Toolkit" />
+    <meta name="robots" content="noindex, nofollow" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Super SEO Toolkit" />
+    <meta property="og:title"
+      content="{% block og_title %}
+        Super SEO Toolkit - Professional SEO Platform
+      {% endblock %}" />
+    <meta property="og:description"
+      content="{% block og_description %}
+        Professional SEO tools and website optimization platform.
+      {% endblock %}" />
+    <meta property="og:image" content="https://superseotoolkit.com/static/og-preview.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.png') }}" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <!-- Custom Tailwind Config for Auth Pages -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif']
+            },
+            boxShadow: {
+              auth: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    {% block head %}
+    {% endblock %}
+  </head>
+  <body class="font-sans antialiased">
+    <!-- Main Content -->
+    <main class="min-h-screen">
+      {% block content %}
+      {% endblock %}
+    </main>
+
+    <!-- Corporate Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200">
+      <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <!-- Company Info -->
+          <div class="flex items-center space-x-3">
+            <img src="{{ url_for('static', filename='favicon.png') }}" alt="Super SEO Toolkit" class="w-6 h-6 rounded" />
+            <div class="text-sm text-gray-600">
+              <span class="font-medium">© 2025 Super SEO Toolkit</span>
+              <span class="block md:inline md:ml-2">Professional SEO Platform</span>
+            </div>
+          </div>
+
+          <!-- Links -->
+          <div class="flex items-center space-x-6 text-sm text-gray-600">
+            <a href="{{ url_for('main.contact') }}" class="hover:text-blue-600 transition-colors">
+              <i data-lucide="mail" class="w-4 h-4 inline mr-1"></i>
+              Support
+            </a>
+            <a href="{{ url_for('main.privacy') }}" class="hover:text-blue-600 transition-colors">Privacy Policy</a>
+            <a href="{{ url_for('main.terms') }}" class="hover:text-blue-600 transition-colors">Terms of Service</a>
+            <a href="{{ url_for('main.home') }}" class="hover:text-blue-600 transition-colors font-medium">
+              <i data-lucide="arrow-left" class="w-4 h-4 inline mr-1"></i>
+              Back to Site
+            </a>
+          </div>
+        </div>
+
+        <!-- Security Badge -->
+        <div class="mt-6 pt-6 border-t border-gray-200 text-center">
+          <div class="flex items-center justify-center space-x-6 text-xs text-gray-500">
+            <div class="flex items-center">
+              <i data-lucide="shield-check" class="w-4 h-4 mr-1 text-green-600"></i>
+              <span>SSL Secured</span>
+            </div>
+            <div class="flex items-center">
+              <i data-lucide="lock" class="w-4 h-4 mr-1 text-blue-600"></i>
+              <span>Encrypted Authentication</span>
+            </div>
+            <div class="flex items-center">
+              <i data-lucide="globe" class="w-4 h-4 mr-1 text-purple-600"></i>
+              <span>Trusted by 50,000+ Users</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Flash Messages -->
+    {% with messages=get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-container" class="fixed top-4 right-4 z-50 space-y-2">
+          {% for category, message in messages %}
+            <div class="flash-message max-w-md bg-white rounded-lg shadow-auth border-l-4 {% if category == 'error' %}
+                border-red-500
+              {% elif category == 'success' %}
+                border-green-500
+              {% elif category == 'warning' %}
+                border-yellow-500
+              {% else %}
+                border-blue-500
+              {% endif %} p-4">
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  {% if category == 'error' %}
+                    <i data-lucide="alert-circle" class="w-5 h-5 text-red-500"></i>
+                  {% elif category == 'success' %}
+                    <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                  {% elif category == 'warning' %}
+                    <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-500"></i>
+                  {% else %}
+                    <i data-lucide="info" class="w-5 h-5 text-blue-500"></i>
+                  {% endif %}
+                </div>
+                <div class="ml-3 flex-1">
+                  <p class="text-sm font-medium text-gray-900">{{ message }}</p>
+                </div>
+                <div class="ml-4 flex-shrink-0 flex">
+                  <button class="flash-close bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none" onclick="this.parentElement.parentElement.parentElement.remove()"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Auto-hide flash messages after 5 seconds -->
+        <script>
+          setTimeout(function () {
+            const flashContainer = document.getElementById('flash-container')
+            if (flashContainer) {
+              flashContainer.style.opacity = '0'
+              flashContainer.style.transform = 'translateX(100%)'
+              setTimeout(() => flashContainer.remove(), 300)
+            }
+          }, 5000)
+        </script>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons()
+        }
+      })
+    </script>
+
+    {% block scripts %}
+    {% endblock %}
+  </body>
+</html>

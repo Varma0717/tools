@@ -1,0 +1,180 @@
+/* Additional CSS for enhanced mesmerizing effects */
+
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 640px) {
+    .floating-bubbles .bubble {
+        display: none;
+        /* Hide bubbles on mobile for better performance */
+    }
+
+    .glass-card {
+        margin: 0 1rem;
+        padding: 1rem;
+    }
+
+    .filter-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .action-button {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Advanced Hover Effects */
+.tool-card:hover .premium-badge,
+.tool-card:hover .free-badge {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced Glass Effects */
+.glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    opacity: 0.5;
+}
+
+/* Improved Loading States */
+.tool-card.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.tool-card.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Enhanced Filter Animations */
+.filter-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.filter-btn:hover::before {
+    left: 100%;
+}
+
+/* Search Input Enhancements */
+#toolSearch {
+    transition: all 0.3s ease;
+}
+
+#toolSearch:focus {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
+}
+
+/* Category-specific Color Themes */
+.tool-card[data-category="technical-seo"] {
+    --primary-color: #3b82f6;
+    --secondary-color: #1d4ed8;
+}
+
+.tool-card[data-category="keyword-research"] {
+    --primary-color: #10b981;
+    --secondary-color: #047857;
+}
+
+.tool-card[data-category="link-analysis"] {
+    --primary-color: #8b5cf6;
+    --secondary-color: #7c3aed;
+}
+
+.tool-card[data-category="content-optimization"] {
+    --primary-color: #f59e0b;
+    --secondary-color: #d97706;
+}
+
+/* Particle Effect on Hover */
+.tool-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: 16px;
+}
+
+.tool-card:hover::after {
+    opacity: 1;
+}
+
+/* Enhanced Typography */
+.tool-card h3 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+}
+
+/* Improved Accessibility */
+.filter-btn:focus-visible,
+.action-button:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Dark Theme Optimizations */
+@media (prefers-color-scheme: dark) {
+    .glass-card {
+        background: rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+
+    .floating-bubbles,
+    .glow-effect,
+    .animate-pulse-slow {
+        animation: none;
+    }
+
+    .tool-card {
+        transition: none;
+    }
+
+    .bubble {
+        display: none;
+    }
+}

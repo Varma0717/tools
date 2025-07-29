@@ -1,0 +1,488 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Upgrade to Pro - Unlock Advanced SEO Tools | Super SEO Toolkit
+{% endblock %}
+
+{% block meta_description %}
+  Upgrade to Super SEO Toolkit Pro for $29/month. Get unlimited access to 50+ advanced SEO tools, competitor analysis, white-label reports, and priority support.
+{% endblock %}
+
+{% block content %}
+  <div class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white py-20">
+      <div class="max-w-6xl mx-auto px-6 text-center">
+        <div class="mb-8">
+          <div class="flex items-center justify-center mb-6">
+            <img src="/static/favicon.png" alt="Super SEO Toolkit" class="w-16 h-16 rounded-xl shadow-lg mr-4" />
+            <h1 class="text-4xl md:text-6xl font-bold">Upgrade to <span class="text-yellow-400">Pro</span></h1>
+          </div>
+          <p class="text-xl md:text-2xl text-blue-100 max-w-4xl mx-auto leading-relaxed">🚀 Unlock the full potential of Super SEO Toolkit with 50+ advanced tools, unlimited usage, and professional features for serious SEO optimization and digital marketing success.</p>
+        </div>
+
+        <!-- Social Proof -->
+        <div class="flex flex-wrap justify-center items-center gap-8 mb-12">
+          <div class="text-center">
+            <div class="text-3xl font-bold text-yellow-400">10,000+</div>
+            <div class="text-blue-200">SEO Professionals</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-yellow-400">500,000+</div>
+            <div class="text-blue-200">Websites Analyzed</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-yellow-400">99.9%</div>
+            <div class="text-blue-200">Uptime Guarantee</div>
+          </div>
+        </div>
+
+        <!-- Quick CTA -->
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 max-w-2xl mx-auto">
+          <p class="text-lg mb-4">
+            🎯 <strong>Limited Time:</strong> Get your first month at 50% off!
+          </p>
+          {% if current_user and current_user.is_authenticated and not current_user.is_pro_user() %}
+            <form action="/users/payment" method="POST" class="inline-block">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <input type="hidden" name="amount" value="1450" />
+              <input type="hidden" name="plan" value="pro" />
+              <input type="hidden" name="discount" value="50" />
+              <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-yellow-900 px-8 py-4 rounded-lg font-bold text-lg transition-colors">Start Pro for $14.50 →</button>
+            </form>
+          {% else %}
+            <a href="/auth/login" class="bg-yellow-500 hover:bg-yellow-600 text-yellow-900 px-8 py-4 rounded-lg font-bold text-lg transition-colors inline-block">Sign In to Upgrade →</a>
+          {% endif %}
+          <p class="text-sm text-blue-200 mt-3">Then $29/month. Cancel anytime. 30-day money-back guarantee.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problems vs Solutions -->
+    <section class="py-16">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Stop Struggling With Limited SEO Tools</h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">Free tools have restrictions that hold back your SEO success. Pro removes all barriers.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <!-- Problems -->
+          <div>
+            <h3 class="text-2xl font-bold text-red-600 mb-8">❌ With Free Tools:</h3>
+            <div class="space-y-6">
+              <div class="flex items-start">
+                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                  <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-900 mb-2">Daily Usage Limits</h4>
+                  <p class="text-gray-600">Only 100 tool uses per day - not enough for serious SEO work</p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                  <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-900 mb-2">Basic Reports Only</h4>
+                  <p class="text-gray-600">Limited data, no white-labeling, unprofessional appearance</p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                  <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-900 mb-2">No Competitor Intelligence</h4>
+                  <p class="text-gray-600">Miss out on what your competitors are doing to rank higher</p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                  <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-900 mb-2">Slow Support Response</h4>
+                  <p class="text-gray-600">Wait days for help when you need answers now</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Solutions -->
+          <div>
+            <h3 class="text-2xl font-bold text-green-600 mb-8">✅ With Pro Plan:</h3>
+            <div class="space-y-6">
+              <div class="flex items-start">
+                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                  <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-900 mb-2">Unlimited Usage</h4>
+                  <p class="text-gray-600">Analyze as many websites and keywords as you need, anytime</p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                  <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-900 mb-2">Professional Reports</h4>
+                  <p class="text-gray-600">White-label PDF reports perfect for client presentations</p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                  <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-900 mb-2">Advanced Competitor Analysis</h4>
+                  <p class="text-gray-600">Spy on competitors' keywords, backlinks, and strategies</p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                  <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-900 mb-2">Priority Support</h4>
+                  <p class="text-gray-600">Get expert help within hours, not days</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Plans -->
+    <section class="py-16 bg-gradient-to-br from-gray-50 to-blue-50">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Choose Your Plan</h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">Start free, upgrade when you're ready to scale your SEO success</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <!-- Free Plan -->
+          <div class="bg-white rounded-2xl shadow-lg p-8 border-2 border-gray-200">
+            <div class="text-center mb-8">
+              <h3 class="text-2xl font-bold text-gray-900 mb-4">Free Plan</h3>
+              <div class="text-4xl font-bold text-gray-900 mb-2">$0</div>
+              <p class="text-gray-600">Perfect for getting started</p>
+            </div>
+
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>100+ free SEO tools</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>100 daily tool uses</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>Basic SEO analysis</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>Community support</span>
+              </li>
+              <li class="flex items-center text-gray-400">
+                <svg class="w-5 h-5 text-gray-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                <span>Advanced competitor analysis</span>
+              </li>
+              <li class="flex items-center text-gray-400">
+                <svg class="w-5 h-5 text-gray-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                <span>White-label reports</span>
+              </li>
+            </ul>
+
+            {% if current_user and current_user.is_authenticated and not current_user.is_pro_user() %}
+              <button disabled class="w-full bg-gray-300 text-gray-500 py-4 rounded-lg font-bold cursor-not-allowed">Current Plan</button>
+            {% else %}
+              <a href="/auth/register" class="block w-full bg-gray-600 hover:bg-gray-700 text-white text-center py-4 rounded-lg font-bold transition-colors">Start Free</a>
+            {% endif %}
+          </div>
+
+          <!-- Pro Plan -->
+          <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white border-2 border-blue-600 relative">
+            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <span class="bg-yellow-500 text-yellow-900 px-6 py-2 rounded-full text-sm font-bold">🔥 Most Popular</span>
+            </div>
+
+            <div class="text-center mb-8">
+              <h3 class="text-2xl font-bold mb-4">Pro Plan</h3>
+              <div class="mb-4">
+                <span class="text-2xl line-through text-blue-200">$58</span>
+                <div class="text-4xl font-bold mb-2">$29</div>
+              </div>
+              <p class="text-blue-100">Per month, 50% off first month!</p>
+            </div>
+
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-yellow-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span><strong>Everything in Free +</strong></span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-yellow-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>50+ premium SEO tools</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-yellow-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span><strong>Unlimited</strong> tool usage</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-yellow-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>Advanced competitor analysis</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-yellow-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>White-label PDF reports</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-yellow-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>API access</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-yellow-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span><strong>Priority support</strong></span>
+              </li>
+            </ul>
+
+            {% if current_user and current_user.is_authenticated %}
+              {% if current_user.is_pro_user() %}
+                <button disabled class="w-full bg-yellow-500/30 text-yellow-200 py-4 rounded-lg font-bold cursor-not-allowed">Current Plan ✓</button>
+              {% else %}
+                <form action="/users/payment" method="POST">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                  <input type="hidden" name="amount" value="1450" />
+                  <input type="hidden" name="plan" value="pro" />
+                  <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-yellow-900 py-4 rounded-lg font-bold text-lg transition-colors">Start Pro for $14.50 →</button>
+                </form>
+              {% endif %}
+            {% else %}
+              <a href="/auth/login" class="block w-full bg-yellow-500 hover:bg-yellow-600 text-yellow-900 text-center py-4 rounded-lg font-bold text-lg transition-colors">Sign In to Upgrade</a>
+            {% endif %}
+
+            <p class="text-center text-blue-200 text-sm mt-4">💳 No setup fees • Cancel anytime • 30-day guarantee</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Comparison -->
+    <section class="py-16">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Detailed Feature Comparison</h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">See exactly what you get with each plan</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Features</th>
+                  <th class="px-6 py-4 text-center text-sm font-medium text-gray-500 uppercase tracking-wider">Free Plan</th>
+                  <th class="px-6 py-4 text-center text-sm font-medium text-gray-500 uppercase tracking-wider">Pro Plan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                <tr>
+                  <td class="px-6 py-4 text-sm font-medium text-gray-900">SEO Tools Available</td>
+                  <td class="px-6 py-4 text-center text-sm text-gray-600">100+ Tools</td>
+                  <td class="px-6 py-4 text-center text-sm text-green-600 font-bold">150+ Tools</td>
+                </tr>
+                <tr class="bg-gray-50">
+                  <td class="px-6 py-4 text-sm font-medium text-gray-900">Daily Usage Limit</td>
+                  <td class="px-6 py-4 text-center text-sm text-gray-600">100 uses/day</td>
+                  <td class="px-6 py-4 text-center text-sm text-green-600 font-bold">Unlimited</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 text-sm font-medium text-gray-900">Website Analysis Depth</td>
+                  <td class="px-6 py-4 text-center">
+                    <svg class="w-5 h-5 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <span class="text-green-600 font-bold">✓ Advanced</span>
+                  </td>
+                </tr>
+                <tr class="bg-gray-50">
+                  <td class="px-6 py-4 text-sm font-medium text-gray-900">Competitor Analysis</td>
+                  <td class="px-6 py-4 text-center">
+                    <svg class="w-5 h-5 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <svg class="w-5 h-5 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 text-sm font-medium text-gray-900">Report Formats</td>
+                  <td class="px-6 py-4 text-center text-sm text-gray-600">Basic HTML</td>
+                  <td class="px-6 py-4 text-center text-sm text-green-600 font-bold">PDF, CSV, Excel</td>
+                </tr>
+                <tr class="bg-gray-50">
+                  <td class="px-6 py-4 text-sm font-medium text-gray-900">White-label Reports</td>
+                  <td class="px-6 py-4 text-center">
+                    <svg class="w-5 h-5 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <svg class="w-5 h-5 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 text-sm font-medium text-gray-900">API Access</td>
+                  <td class="px-6 py-4 text-center">
+                    <svg class="w-5 h-5 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <svg class="w-5 h-5 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </td>
+                </tr>
+                <tr class="bg-gray-50">
+                  <td class="px-6 py-4 text-sm font-medium text-gray-900">Support Response Time</td>
+                  <td class="px-6 py-4 text-center text-sm text-gray-600">2-3 business days</td>
+                  <td class="px-6 py-4 text-center text-sm text-green-600 font-bold">Within 4 hours</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 text-sm font-medium text-gray-900">Advertisements</td>
+                  <td class="px-6 py-4 text-center text-sm text-gray-600">Shown</td>
+                  <td class="px-6 py-4 text-center text-sm text-green-600 font-bold">Ad-free</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 bg-gray-50">
+      <div class="max-w-4xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+          <p class="text-xl text-gray-600">Everything you need to know about upgrading to Pro</p>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">💳 Can I cancel my subscription anytime?</h3>
+            <p class="text-gray-600">Absolutely! You can cancel your Pro subscription at any time from your account settings. Your Pro access will continue until the end of your current billing period, and you won't be charged again.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">💰 Do you offer refunds?</h3>
+            <p class="text-gray-600">Yes! We offer a 30-day money-back guarantee. If you're not completely satisfied with Super SEO Toolkit Pro within the first 30 days, contact our support team for a full refund.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">💎 What payment methods do you accept?</h3>
+            <p class="text-gray-600">We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and bank transfers for enterprise customers. All payments are processed securely through industry-standard encryption.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">🔒 Is my data secure and private?</h3>
+            <p class="text-gray-600">Absolutely! We use enterprise-grade security measures including SSL encryption, secure data centers, and strict privacy policies. We never share your data with third parties and you maintain full ownership of all your SEO data.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">🚀 What's the difference between Pro and Free?</h3>
+            <p class="text-gray-600">Pro removes all usage limits (unlimited vs 100/day), adds 50+ advanced tools, provides professional white-label reports, includes competitor analysis, API access, and priority support. It's designed for serious SEO professionals and agencies.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">🎯 Is there a discount for annual billing?</h3>
+            <p class="text-gray-600">Currently we offer monthly billing at $29/month. We're working on annual plans with significant discounts - join our newsletter to be notified when they're available!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Supercharge Your SEO?</h2>
+        <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Join thousands of SEO professionals who trust Super SEO Toolkit Pro for their optimization needs</p>
+
+        {% if current_user and current_user.is_authenticated and not current_user.is_pro_user() %}
+          <form action="/users/payment" method="POST" class="inline-block">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <input type="hidden" name="amount" value="1450" />
+            <input type="hidden" name="plan" value="pro" />
+            <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-yellow-900 px-12 py-4 rounded-lg font-bold text-xl transition-colors">Start Pro for $14.50 →</button>
+          </form>
+          <p class="text-blue-200 text-sm mt-4">50% off first month • Cancel anytime • 30-day guarantee</p>
+        {% else %}
+          <a href="/auth/login" class="bg-yellow-500 hover:bg-yellow-600 text-yellow-900 px-12 py-4 rounded-lg font-bold text-xl transition-colors inline-block">Sign In to Upgrade →</a>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+{% endblock %}

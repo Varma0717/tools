@@ -1,0 +1,342 @@
+{% extends 'base_auth.html' %}
+
+{% block title %}Create Account - Super SEO Toolkit{% endblock %}
+{% block meta_title %}Create Account - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Create your free Super SEO Toolkit account to access professional SEO tools and start optimizing your website today.{% endblock %}
+
+{% block content %}
+  <!-- Corporate Header -->
+  <div class="absolute top-0 left-0 right-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <!-- Logo -->
+        <a href="{{ url_for('main.home') }}" class="flex items-center space-x-3">
+          <img src="{{ url_for('static', filename='favicon.png') }}" alt="Super SEO Toolkit" class="w-8 h-8 rounded-lg" />
+          <div>
+            <span class="text-lg font-bold text-gray-900">Super SEO Toolkit</span>
+            <span class="block text-xs text-gray-500">Professional SEO Platform</span>
+          </div>
+        </a>
+        
+        <!-- Support Links -->
+        <div class="flex items-center space-x-6 text-sm">
+          <a href="{{ url_for('main.contact') }}" class="text-gray-600 hover:text-blue-600 transition-colors">
+            <i data-lucide="help-circle" class="w-4 h-4 inline mr-1"></i>
+            Help
+          </a>
+          <a href="{{ url_for('main.privacy') }}" class="text-gray-600 hover:text-blue-600 transition-colors">Privacy</a>
+          <a href="{{ url_for('main.terms') }}" class="text-gray-600 hover:text-blue-600 transition-colors">Terms</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="h-screen bg-gradient-to-br from-green-600 via-blue-600 to-purple-800 grid grid-cols-1 lg:grid-cols-2 pt-20">
+    
+    <!-- Left Panel - Desktop Only -->
+    <div class="hidden lg:flex flex-col justify-center items-center p-12 text-white relative overflow-hidden">
+      <!-- Background Pattern -->
+      <div class="absolute inset-0 bg-black bg-opacity-10"></div>
+      
+      <!-- Content -->
+      <div class="relative z-10 max-w-md text-center">
+        <div class="flex items-center justify-center mb-8">
+          <img src="{{ url_for('static', filename='favicon.png') }}" alt="Super SEO Toolkit" class="w-16 h-16 rounded-xl shadow-lg mr-4" />
+          <div class="text-left">
+            <h1 class="text-3xl font-bold">Super SEO</h1>
+            <p class="text-lg opacity-90">Toolkit</p>
+          </div>
+        </div>
+        
+        <h2 class="text-4xl font-bold mb-6">Join Thousands!</h2>
+        <p class="text-xl mb-12 opacity-90 leading-relaxed">
+          Create your free account and start optimizing your website with professional SEO tools.
+        </p>
+        
+        <div class="space-y-6">
+          <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 text-center">
+            <i data-lucide="gift" class="w-8 h-8 mx-auto mb-3"></i>
+            <h3 class="font-semibold mb-2">Free Forever Plan</h3>
+            <p class="text-sm opacity-80">Start with essential SEO tools and monthly reports</p>
+          </div>
+          
+          <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 text-center">
+            <i data-lucide="rocket" class="w-8 h-8 mx-auto mb-3"></i>
+            <h3 class="font-semibold mb-2">Instant Setup</h3>
+            <p class="text-sm opacity-80">Get your dashboard ready in under 60 seconds</p>
+          </div>
+          
+          <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 text-center">
+            <i data-lucide="users" class="w-8 h-8 mx-auto mb-3"></i>
+            <h3 class="font-semibold mb-2">Join 10,000+ Users</h3>
+            <p class="text-sm opacity-80">Growing community of successful marketers</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel - Form -->
+    <div class="flex flex-col justify-center items-center p-6 bg-white h-full overflow-y-auto">
+      <div class="w-full max-w-md">
+        <div class="text-center mb-6">
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
+          <p class="text-gray-600">Start your SEO journey today - completely free!</p>
+        </div>
+
+        <!-- Social Registration Buttons -->
+        <div class="space-y-2 mb-4">
+          <button onclick="registerWithGoogle()" class="w-full flex items-center justify-center px-4 py-2.5 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 text-gray-700 font-medium shadow-sm transition-all hover:-translate-y-0.5">
+            <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24">
+              <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+              <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+            </svg>
+            Sign up with Google
+          </button>
+
+          <button onclick="registerWithGitHub()" class="w-full flex items-center justify-center px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-900 hover:bg-gray-800 text-white font-medium shadow-sm transition-all hover:-translate-y-0.5">
+            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+            </svg>
+            Sign up with GitHub
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="relative mb-4">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white text-gray-500">Or create account with email</span>
+          </div>
+        </div>
+
+        <!-- Registration Form -->
+        <form id="registerForm" method="POST" class="space-y-3">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+
+          <!-- Username Field -->
+          <div>
+            <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <input type="text" id="username" name="username" required autocomplete="username" 
+                   pattern="^[a-zA-Z0-9_]{3,20}$" 
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                   placeholder="Enter username (3-20 characters)" oninput="validateUsername()" />
+            <div id="usernameError" class="text-red-500 text-sm mt-1 hidden"></div>
+          </div>
+
+          <!-- Email Field -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <input type="email" id="email" name="email" required autocomplete="email" 
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                   placeholder="Enter your email address" />
+          </div>
+
+          <!-- Password Field -->
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div class="relative">
+              <input type="password" id="password" name="password" required autocomplete="new-password" 
+                     class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                     placeholder="Create a strong password" oninput="checkPasswordStrength()" />
+              <button type="button" onclick="togglePassword('password')" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600" aria-label="Toggle password visibility">
+                <i data-lucide="eye" id="passwordEyeIcon" class="w-5 h-5"></i>
+              </button>
+            </div>
+            <div class="mt-1">
+              <div class="bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                <div id="strengthFill" class="h-full transition-all duration-300 rounded-full"></div>
+              </div>
+              <div id="strengthText" class="text-xs mt-1"></div>
+            </div>
+          </div>
+
+          <!-- Confirm Password Field -->
+          <div>
+            <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <div class="relative">
+              <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password" 
+                     class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                     placeholder="Confirm your password" oninput="checkPasswordMatch()" />
+              <button type="button" onclick="togglePassword('confirm_password')" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600" aria-label="Toggle password visibility">
+                <i data-lucide="eye" id="confirmPasswordEyeIcon" class="w-5 h-5"></i>
+              </button>
+            </div>
+            <div id="passwordMatchError" class="text-red-500 text-sm mt-1 hidden"></div>
+          </div>
+
+          <!-- Terms and Privacy -->
+          <div class="space-y-2">
+            <label class="flex items-start">
+              <input type="checkbox" id="terms" name="terms" required class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1 flex-shrink-0" />
+              <span class="ml-2 text-sm text-gray-600">
+                I agree to the <a href="{{ url_for('main.terms') }}" target="_blank" class="text-blue-600 hover:text-blue-700 font-medium">Terms of Service</a> 
+                and <a href="{{ url_for('main.privacy') }}" target="_blank" class="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</a>
+              </span>
+            </label>
+
+            <label class="flex items-start">
+              <input type="checkbox" id="newsletter" name="newsletter" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1 flex-shrink-0" />
+              <span class="ml-2 text-sm text-gray-600">
+                Subscribe to our newsletter for SEO tips and updates (optional)
+              </span>
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="registerBtn" class="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-2 rounded-md font-semibold transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center mt-4">
+            <span id="registerText">Create My Free Account</span>
+            <div id="registerSpinner" class="hidden ml-2">
+              <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            </div>
+          </button>
+        </form>
+
+        <!-- Login Link -->
+        <div class="mt-4 text-center">
+          <p class="text-gray-600">
+            Already have an account?
+            <a href="{{ url_for('auth.login') }}" class="text-blue-600 hover:text-blue-700 font-medium">Sign in here</a>
+          </p>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <div class="flex items-center justify-center space-x-6 text-gray-500 text-sm">
+            <div class="flex items-center">
+              <i data-lucide="shield-check" class="w-4 h-4 mr-1 text-green-600"></i>
+              <span>Enterprise Security</span>
+            </div>
+            <div class="flex items-center">
+              <i data-lucide="gift" class="w-4 h-4 mr-1 text-blue-600"></i>
+              <span>Free Forever</span>
+            </div>
+            <div class="flex items-center">
+              <i data-lucide="clock" class="w-4 h-4 mr-1 text-purple-600"></i>
+              <span>60s Setup</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Password strength checker
+    function checkPasswordStrength() {
+      const password = document.getElementById('password').value
+      const strengthFill = document.getElementById('strengthFill')
+      const strengthText = document.getElementById('strengthText')
+
+      let strength = 0
+      let feedback = []
+
+      if (password.length >= 8) strength += 1
+      else feedback.push('at least 8 characters')
+
+      if (/[a-z]/.test(password)) strength += 1
+      else feedback.push('lowercase letter')
+
+      if (/[A-Z]/.test(password)) strength += 1
+      else feedback.push('uppercase letter')
+
+      if (/[0-9]/.test(password)) strength += 1
+      else feedback.push('number')
+
+      if (/[^A-Za-z0-9]/.test(password)) strength += 1
+      else feedback.push('special character')
+
+      const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#10b981']
+      const labels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong']
+
+      strengthFill.style.width = `${(strength / 5) * 100}%`
+      strengthFill.style.backgroundColor = colors[strength - 1] || '#e5e7eb'
+
+      if (password.length > 0) {
+        strengthText.textContent = `${labels[strength - 1] || 'Very Weak'}`
+        strengthText.style.color = colors[strength - 1] || '#ef4444'
+        if (feedback.length > 0) {
+          strengthText.textContent += ` - Add: ${feedback.join(', ')}`
+        }
+      } else {
+        strengthText.textContent = ''
+      }
+    }
+
+    // Check password match
+    function checkPasswordMatch() {
+      const password = document.getElementById('password').value
+      const confirmPassword = document.getElementById('confirm_password').value
+      const errorDiv = document.getElementById('passwordMatchError')
+
+      if (confirmPassword && password !== confirmPassword) {
+        errorDiv.textContent = 'Passwords do not match'
+        errorDiv.classList.remove('hidden')
+      } else {
+        errorDiv.classList.add('hidden')
+      }
+    }
+
+    // Username validation
+    function validateUsername() {
+      const username = document.getElementById('username').value
+      const errorDiv = document.getElementById('usernameError')
+      const pattern = /^[a-zA-Z0-9_]{3,20}$/
+
+      if (username && !pattern.test(username)) {
+        errorDiv.textContent = 'Username must be 3-20 characters, letters, numbers, and underscores only'
+        errorDiv.classList.remove('hidden')
+      } else {
+        errorDiv.classList.add('hidden')
+      }
+    }
+
+    // Toggle password visibility
+    function togglePassword(fieldId) {
+      const passwordField = document.getElementById(fieldId)
+      const eyeIcon = document.getElementById(fieldId + 'EyeIcon')
+
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text'
+        eyeIcon.setAttribute('data-lucide', 'eye-off')
+      } else {
+        passwordField.type = 'password'
+        eyeIcon.setAttribute('data-lucide', 'eye')
+      }
+
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons()
+      }
+    }
+
+    // Social registration functions
+    function registerWithGoogle() {
+      window.location.href = '/auth/google'
+    }
+
+    function registerWithGitHub() {
+      alert('GitHub registration coming soon!')
+    }
+
+    // Form submission with loading state
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+      const btn = document.getElementById('registerBtn')
+      const text = document.getElementById('registerText')
+      const spinner = document.getElementById('registerSpinner')
+
+      text.textContent = 'Creating account...'
+      spinner.classList.remove('hidden')
+      btn.disabled = true
+    })
+
+    // Initialize icons when page loads
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons()
+      }
+    })
+  </script>
+{% endblock %}

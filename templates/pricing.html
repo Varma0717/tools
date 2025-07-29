@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  SEO Tools Pricing - Affordable Professional Plans | Super SEO Toolkit
+{% endblock %}
+
+{% block meta_description %}
+  Choose the perfect SEO tools plan for your needs. Free forever plan with 100+ tools, Pro plan $29/month with unlimited access. Start your free trial today.
+{% endblock %}
+
+{% block meta_keywords %}
+  seo tools pricing, seo software cost, professional seo tools, seo platform pricing, website optimization tools, affordable seo tools
+{% endblock %}
+
+{% block content %}
+  <div class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white py-20">
+      <div class="max-w-7xl mx-auto px-6 text-center">
+        <img src="/static/favicon.png" alt="Super SEO Toolkit Pricing" class="w-16 h-16 mx-auto mb-6 rounded-xl shadow-lg" />
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+          Simple, Transparent
+          <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Pricing</span>
+        </h1>
+        <p class="text-xl text-blue-100 max-w-3xl mx-auto mb-10">Start free with 100+ professional SEO tools. Upgrade to Pro for unlimited access, advanced features, and priority support.</p>
+
+        <div class="flex flex-wrap justify-center gap-6 text-sm">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+            <span>No Credit Card Required</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i data-lucide="x-circle" class="w-5 h-5 text-red-400"></i>
+            <span>Cancel Anytime</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i data-lucide="shield" class="w-5 h-5 text-purple-400"></i>
+            <span>30-Day Money Back</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i data-lucide="clock" class="w-5 h-5 text-yellow-400"></i>
+            <span>Instant Activation</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Plans -->
+    <section class="py-20 -mt-10 relative z-10">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <!-- Free Plan -->
+          <div class="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 p-8 relative">
+            <div class="text-center mb-8">
+              <div class="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-4">
+                <i data-lucide="gift" class="w-4 h-4 mr-2"></i>
+                Forever Free
+              </div>
+              <h3 class="text-3xl font-bold text-gray-900 mb-4">Starter Plan</h3>
+              <div class="mb-6">
+                <span class="text-5xl font-bold text-gray-900">$0</span>
+                <span class="text-xl text-gray-500">/month</span>
+              </div>
+              <p class="text-gray-600 leading-relaxed">Perfect for individuals and small businesses getting started with SEO optimization.</p>
+            </div>
+
+            <div class="space-y-4 mb-8">
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
+                <span class="text-gray-700">100+ Free SEO Tools</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
+                <span class="text-gray-700">Basic Website Analysis</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
+                <span class="text-gray-700">Meta Tag Analyzer</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
+                <span class="text-gray-700">SSL Certificate Checker</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
+                <span class="text-gray-700">Robots.txt Validator</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
+                <span class="text-gray-700">Basic Keyword Research</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
+                <span class="text-gray-700">Daily Usage Limits</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-600 flex-shrink-0"></i>
+                <span class="text-gray-700">Community Support</span>
+              </div>
+            </div>
+
+            <a href="{{ url_for('auth.register') }}" class="w-full bg-gray-900 hover:bg-gray-800 text-white py-4 rounded-xl font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl block text-center">Start Free Forever</a>
+
+            <p class="text-center text-sm text-gray-500 mt-4">No credit card required • Instant access</p>
+          </div>
+
+          <!-- Pro Plan -->
+          <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-300 p-8 relative text-white transform scale-105">
+            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <div class="bg-yellow-400 text-gray-900 px-6 py-2 rounded-full text-sm font-bold">Most Popular</div>
+            </div>
+
+            <div class="text-center mb-8">
+              <div class="inline-flex items-center px-4 py-2 bg-white/20 text-white rounded-full text-sm font-medium mb-4">
+                <i data-lucide="crown" class="w-4 h-4 mr-2"></i>
+                Professional
+              </div>
+              <h3 class="text-3xl font-bold mb-4">Pro Plan</h3>
+              <div class="mb-6">
+                <span class="text-5xl font-bold">$29</span>
+                <span class="text-xl opacity-75">/month</span>
+              </div>
+              <p class="opacity-90 leading-relaxed">Everything you need for professional SEO campaigns and comprehensive website optimization.</p>
+            </div>
+
+            <div class="space-y-4 mb-8">
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-300 flex-shrink-0"></i>
+                <span><strong>Everything in Free</strong> +</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-300 flex-shrink-0"></i>
+                <span>Unlimited Tool Usage</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-300 flex-shrink-0"></i>
+                <span>Advanced SEO Audit Reports</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-300 flex-shrink-0"></i>
+                <span>Competitor Analysis Tools</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-300 flex-shrink-0"></i>
+                <span>Backlink Analysis & Monitoring</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-300 flex-shrink-0"></i>
+                <span>Rank Tracking & Alerts</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-300 flex-shrink-0"></i>
+                <span>White-label Reports</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-300 flex-shrink-0"></i>
+                <span>API Access</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-300 flex-shrink-0"></i>
+                <span>Priority Email Support</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i data-lucide="check" class="w-5 h-5 text-green-300 flex-shrink-0"></i>
+                <span>Advanced Analytics Dashboard</span>
+              </div>
+            </div>
+
+            <a href="{{ url_for('users.upgrade') }}" class="w-full bg-white text-blue-600 hover:bg-gray-100 py-4 rounded-xl font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl block text-center">Start Pro Trial</a>
+
+            <p class="text-center text-sm opacity-75 mt-4">7-day free trial • Cancel anytime</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Comparison -->
+    <section class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Detailed Feature Comparison</h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">See exactly what's included in each plan to make the best choice for your SEO needs.</p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full bg-white rounded-2xl shadow-lg overflow-hidden">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Features</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-900">Free Plan</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-900">Pro Plan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr>
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">SEO Tools Access</td>
+                <td class="px-6 py-4 text-center text-sm text-gray-600">100+ Basic Tools</td>
+                <td class="px-6 py-4 text-center text-sm text-gray-600">All Tools + Advanced</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">Daily Usage Limits</td>
+                <td class="px-6 py-4 text-center text-sm text-gray-600">50 Analyses/day</td>
+                <td class="px-6 py-4 text-center text-sm text-gray-600">Unlimited</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">Website Audit Reports</td>
+                <td class="px-6 py-4 text-center text-sm text-gray-600">Basic</td>
+                <td class="px-6 py-4 text-center text-sm text-gray-600">Advanced + PDF Export</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">Competitor Analysis</td>
+                <td class="px-6 py-4 text-center">
+                  <i data-lucide="x" class="w-5 h-5 text-red-500 mx-auto"></i>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <i data-lucide="check" class="w-5 h-5 text-green-500 mx-auto"></i>
+                </td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">Backlink Monitoring</td>
+                <td class="px-6 py-4 text-center">
+                  <i data-lucide="x" class="w-5 h-5 text-red-500 mx-auto"></i>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <i data-lucide="check" class="w-5 h-5 text-green-500 mx-auto"></i>
+                </td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">Rank Tracking</td>
+                <td class="px-6 py-4 text-center">
+                  <i data-lucide="x" class="w-5 h-5 text-red-500 mx-auto"></i>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <i data-lucide="check" class="w-5 h-5 text-green-500 mx-auto"></i>
+                </td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">API Access</td>
+                <td class="px-6 py-4 text-center">
+                  <i data-lucide="x" class="w-5 h-5 text-red-500 mx-auto"></i>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <i data-lucide="check" class="w-5 h-5 text-green-500 mx-auto"></i>
+                </td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">White-label Reports</td>
+                <td class="px-6 py-4 text-center">
+                  <i data-lucide="x" class="w-5 h-5 text-red-500 mx-auto"></i>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <i data-lucide="check" class="w-5 h-5 text-green-500 mx-auto"></i>
+                </td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">Support Level</td>
+                <td class="px-6 py-4 text-center text-sm text-gray-600">Community</td>
+                <td class="px-6 py-4 text-center text-sm text-gray-600">Priority Email</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16">
+      <div class="max-w-4xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+          <p class="text-xl text-gray-600">Everything you need to know about our pricing and plans.</p>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Is the free plan really free forever?</h3>
+            <p class="text-gray-600 leading-relaxed">Yes! Our free plan includes 100+ SEO tools and will always be free. You can use it indefinitely with daily usage limits. Upgrade to Pro only when you need unlimited access and advanced features.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Can I cancel my Pro subscription anytime?</h3>
+            <p class="text-gray-600 leading-relaxed">Absolutely. You can cancel your Pro subscription at any time from your account settings. You'll continue to have Pro access until the end of your billing period, then automatically switch to the free plan.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Do you offer refunds?</h3>
+            <p class="text-gray-600 leading-relaxed">Yes, we offer a 30-day money-back guarantee. If you're not satisfied with Pro features within the first 30 days, contact our support team for a full refund.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">What payment methods do you accept?</h3>
+            <p class="text-gray-600 leading-relaxed">We accept all major credit cards (Visa, Mastercard, American Express) and PayPal. All payments are processed securely through Stripe with enterprise-grade encryption.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Supercharge Your SEO?</h2>
+        <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">Start with our free plan today. Upgrade to Pro when you're ready for unlimited access and advanced features.</p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="{{ url_for('auth.register') }}" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">Start Free Account</a>
+          <a href="{{ url_for('users.upgrade') }}" class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200">Try Pro Free</a>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}

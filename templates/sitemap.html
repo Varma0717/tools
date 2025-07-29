@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Sitemap - Complete Site Navigation | Super SEO Toolkit
+{% endblock %}
+
+{% block meta_description %}
+  Browse the complete sitemap of Super SEO Toolkit. Find all pages, tools, and resources available on our comprehensive SEO platform.
+{% endblock %}
+
+{% block content %}
+  <div class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-20">
+      <div class="max-w-7xl mx-auto px-6 text-center">
+        <img src="/static/favicon.png" alt="Sitemap" class="w-16 h-16 mx-auto mb-6 rounded-xl shadow-lg" />
+        <h1 class="text-4xl md:text-6xl font-bold mb-6">Site <span class="text-yellow-400">Navigation</span></h1>
+        <p class="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-8">Complete overview of all pages, tools, and resources available on Super SEO Toolkit platform.</p>
+        <div class="flex flex-wrap justify-center gap-8 text-sm md:text-base">
+          <div class="flex items-center gap-2">
+            <i data-lucide="list" class="w-5 h-5 text-yellow-400"></i>
+            <span>Complete Navigation</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="link" class="w-5 h-5 text-yellow-400"></i>
+            <span>All Pages Listed</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="search" class="w-5 h-5 text-yellow-400"></i>
+            <span>Easy Discovery</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sitemap Content -->
+    <div class="max-w-7xl mx-auto px-6 py-16">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Main Pages -->
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
+              <i data-lucide="home" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Main Pages</h3>
+          </div>
+          <ul class="space-y-3">
+            <li>
+              <a href="/" class="text-blue-600 hover:underline">• Home</a>
+            </li>
+            <li>
+              <a href="/about" class="text-blue-600 hover:underline">• About Us</a>
+            </li>
+            <li>
+              <a href="/pricing" class="text-blue-600 hover:underline">• Pricing</a>
+            </li>
+            <li>
+              <a href="/contact" class="text-blue-600 hover:underline">• Contact</a>
+            </li>
+            <li>
+              <a href="/faq" class="text-blue-600 hover:underline">• FAQ</a>
+            </li>
+            <li>
+              <a href="/testimonials" class="text-blue-600 hover:underline">• Testimonials</a>
+            </li>
+            <li>
+              <a href="/blog" class="text-blue-600 hover:underline">• Blog</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- SEO Tools -->
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mr-4">
+              <i data-lucide="settings" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">SEO Tools</h3>
+          </div>
+          <ul class="space-y-3">
+            <li>
+              <a href="/tools" class="text-blue-600 hover:underline">• All Tools</a>
+            </li>
+            <li>
+              <a href="/tools/seo-audit-tool" class="text-blue-600 hover:underline">• SEO Audit</a>
+            </li>
+            <li>
+              <a href="/tools/meta-tag-analyzer" class="text-blue-600 hover:underline">• Meta Tag Analyzer</a>
+            </li>
+            <li>
+              <a href="/tools/ssl-checker" class="text-blue-600 hover:underline">• SSL Checker</a>
+            </li>
+            <li>
+              <a href="/tools/keyword-density-analyzer" class="text-blue-600 hover:underline">• Keyword Density</a>
+            </li>
+            <li>
+              <a href="/tools/page-speed-analyzer" class="text-blue-600 hover:underline">• Page Speed</a>
+            </li>
+            <li>
+              <a href="/tools/broken-link-checker" class="text-blue-600 hover:underline">• Broken Link Checker</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- User Area -->
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
+              <i data-lucide="user" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">User Area</h3>
+          </div>
+          <ul class="space-y-3">
+            <li>
+              <a href="/auth/login" class="text-blue-600 hover:underline">• Login</a>
+            </li>
+            <li>
+              <a href="/auth/register" class="text-blue-600 hover:underline">• Register</a>
+            </li>
+            <li>
+              <a href="/users/dashboard" class="text-blue-600 hover:underline">• Dashboard</a>
+            </li>
+            <li>
+              <a href="/users/account" class="text-blue-600 hover:underline">• Account Settings</a>
+            </li>
+            <li>
+              <a href="/users/upgrade" class="text-blue-600 hover:underline">• Upgrade Plan</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Legal Pages -->
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center mr-4">
+              <i data-lucide="file-text" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Legal & Support</h3>
+          </div>
+          <ul class="space-y-3">
+            <li>
+              <a href="/privacy" class="text-blue-600 hover:underline">• Privacy Policy</a>
+            </li>
+            <li>
+              <a href="/terms" class="text-blue-600 hover:underline">• Terms of Service</a>
+            </li>
+            <li>
+              <a href="/cookies" class="text-blue-600 hover:underline">• Cookie Policy</a>
+            </li>
+            <li>
+              <a href="/sitemap" class="text-blue-600 hover:underline">• Sitemap</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Resources -->
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mr-4">
+              <i data-lucide="book-open" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Resources</h3>
+          </div>
+          <ul class="space-y-3">
+            <li>
+              <a href="/blog" class="text-blue-600 hover:underline">• SEO Blog</a>
+            </li>
+            <li>
+              <a href="/guides" class="text-blue-600 hover:underline">• SEO Guides</a>
+            </li>
+            <li>
+              <a href="/tutorials" class="text-blue-600 hover:underline">• Video Tutorials</a>
+            </li>
+            <li>
+              <a href="/case-studies" class="text-blue-600 hover:underline">• Case Studies</a>
+            </li>
+            <li>
+              <a href="/api" class="text-blue-600 hover:underline">• API Documentation</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Additional Tools -->
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center mr-4">
+              <i data-lucide="wrench" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Advanced Tools</h3>
+          </div>
+          <ul class="space-y-3">
+            <li>
+              <a href="/tools/whois-lookup" class="text-blue-600 hover:underline">• WHOIS Lookup</a>
+            </li>
+            <li>
+              <a href="/tools/dns-lookup" class="text-blue-600 hover:underline">• DNS Lookup</a>
+            </li>
+            <li>
+              <a href="/tools/robots-txt-tester" class="text-blue-600 hover:underline">• Robots.txt Tester</a>
+            </li>
+            <li>
+              <a href="/tools/schema-markup-tester" class="text-blue-600 hover:underline">• Schema Validator</a>
+            </li>
+            <li>
+              <a href="/tools/http-header-checker" class="text-blue-600 hover:underline">• HTTP Header Checker</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Search Help -->
+      <div class="mt-16 text-center">
+        <div class="bg-gradient-to-r from-blue-600 to-purple-700 rounded-2xl p-8 md:p-12 text-white">
+          <h3 class="text-3xl font-bold mb-4">Can't Find What You're Looking For?</h3>
+          <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Use our search feature or contact support for assistance navigating our platform.</p>
+          <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="/contact" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg transition-colors">Contact Support</a>
+            <a href="/faq" class="border-2 border-white text-white hover:bg-white/20 px-8 py-4 rounded-lg font-bold text-lg transition-colors">View FAQ</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

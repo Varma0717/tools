@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Frequently Asked Questions - SEO Tools Help & Support | Super SEO Toolkit
+{% endblock %}
+
+{% block meta_description %}
+  Find answers to common questions about Super SEO Toolkit. Learn about our SEO tools, pricing, features, technical support, and how to optimize your website effectively.
+{% endblock %}
+
+{% block meta_keywords %}
+  seo tools faq, seo help, website optimization questions, seo support, technical help, seo guide
+{% endblock %}
+
+{% block content %}
+  <div class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white py-20">
+      <div class="max-w-7xl mx-auto px-6 text-center">
+        <img src="/static/favicon.png" alt="FAQ Super SEO Toolkit" class="w-16 h-16 mx-auto mb-6 rounded-xl shadow-lg" />
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+          Frequently Asked
+          <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Questions</span>
+        </h1>
+        <p class="text-xl text-blue-100 max-w-3xl mx-auto mb-10">Get instant answers to common questions about our SEO tools, features, pricing, and best practices for website optimization.</p>
+
+        <div class="flex flex-wrap justify-center gap-6 text-sm">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="search" class="w-5 h-5 text-green-400"></i>
+            <span>Quick Search Available</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i data-lucide="book-open" class="w-5 h-5 text-blue-400"></i>
+            <span>Comprehensive Guides</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i data-lucide="clock" class="w-5 h-5 text-purple-400"></i>
+            <span>Updated Weekly</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i data-lucide="users" class="w-5 h-5 text-yellow-400"></i>
+            <span>Community Driven</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search Bar -->
+    <section class="py-16 -mt-10 relative z-10">
+      <div class="max-w-4xl mx-auto px-6">
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+          <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Search for Answers</h2>
+            <p class="text-gray-600">Type your question below to find relevant answers instantly</p>
+          </div>
+          <div class="relative">
+            <input type="text" placeholder="Search FAQ..." class="w-full px-6 py-4 pl-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-lg" />
+            <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Categories -->
+    <section class="py-16">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Browse by Category</h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">Find answers organized by topic to quickly locate the information you need.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          <a href="#getting-started" class="block p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <i data-lucide="play-circle" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Getting Started</h3>
+            <p class="text-gray-600 text-sm">Account setup, first steps, and basic usage</p>
+          </a>
+
+          <a href="#tools-features" class="block p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <i data-lucide="settings" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Tools & Features</h3>
+            <p class="text-gray-600 text-sm">How to use specific SEO tools and features</p>
+          </a>
+
+          <a href="#billing-pricing" class="block p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <i data-lucide="credit-card" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Billing & Pricing</h3>
+            <p class="text-gray-600 text-sm">Plans, payments, refunds, and upgrades</p>
+          </a>
+
+          <a href="#technical-support" class="block p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <i data-lucide="wrench" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Technical Support</h3>
+            <p class="text-gray-600 text-sm">Troubleshooting and technical issues</p>
+          </a>
+
+          <a href="#seo-best-practices" class="block p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <div class="w-12 h-12 bg-yellow-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">SEO Best Practices</h3>
+            <p class="text-gray-600 text-sm">Optimization tips and strategies</p>
+          </a>
+
+          <a href="#account-management" class="block p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <i data-lucide="user" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Account Management</h3>
+            <p class="text-gray-600 text-sm">Profile settings, security, and preferences</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Sections -->
+    <section class="py-16 bg-white">
+      <div class="max-w-4xl mx-auto px-6">
+        <!-- Getting Started -->
+        <div id="getting-started" class="mb-16">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+            <i data-lucide="play-circle" class="w-8 h-8 text-blue-600 mr-3"></i>
+            Getting Started
+          </h2>
+
+          <div class="space-y-6">
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-blue-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">How do I create a free account?</h3>
+              <p class="text-gray-600 leading-relaxed">Creating a free account is simple. Click "Start Free" on our homepage, enter your email address and create a password. You'll have instant access to 100+ SEO tools without any credit card required. Verify your email to unlock additional features.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-blue-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">What tools are available in the free plan?</h3>
+              <p class="text-gray-600 leading-relaxed">The free plan includes over 100 SEO tools including Meta Tag Analyzer, SSL Checker, Robots.txt Validator, Basic Keyword Research, Website Speed Test, Broken Link Checker, and many more. You can perform up to 50 analyses per day with the free plan.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-blue-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">How do I run my first SEO analysis?</h3>
+              <p class="text-gray-600 leading-relaxed">After logging in, go to the Tools section and select any tool you'd like to use. Enter your website URL or the required information, and click "Analyze". Most tools provide results within 30 seconds. Start with the Website Audit tool for a comprehensive overview.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tools & Features -->
+        <div id="tools-features" class="mb-16">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+            <i data-lucide="settings" class="w-8 h-8 text-green-600 mr-3"></i>
+            Tools & Features
+          </h2>
+
+          <div class="space-y-6">
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-green-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">What's the difference between free and Pro tools?</h3>
+              <p class="text-gray-600 leading-relaxed">Free tools provide basic analysis with daily limits. Pro tools offer unlimited usage, advanced features like competitor analysis, backlink monitoring, rank tracking, white-label reports, API access, and priority support. Pro users also get more detailed reports and data export options.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-green-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">How accurate are the SEO analysis results?</h3>
+              <p class="text-gray-600 leading-relaxed">Our tools use industry-standard algorithms and real-time data from multiple sources to ensure high accuracy. We regularly update our analysis engines to reflect the latest search engine guidelines and best practices. Results are typically 95%+ accurate for technical SEO factors.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-green-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">Can I analyze competitor websites?</h3>
+              <p class="text-gray-600 leading-relaxed">Yes! With a Pro account, you can analyze any public website including competitors. Use our Competitor Analysis tools to compare SEO metrics, discover their top keywords, analyze their backlink profiles, and identify opportunities to improve your own SEO strategy.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-green-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">How do I export analysis reports?</h3>
+              <p class="text-gray-600 leading-relaxed">Pro users can export reports in PDF, CSV, and Excel formats. After running an analysis, click the "Export" button and choose your preferred format. Reports include all analysis data, recommendations, and can be white-labeled for client presentations.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing & Pricing -->
+        <div id="billing-pricing" class="mb-16">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+            <i data-lucide="credit-card" class="w-8 h-8 text-purple-600 mr-3"></i>
+            Billing & Pricing
+          </h2>
+
+          <div class="space-y-6">
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-purple-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">How much does the Pro plan cost?</h3>
+              <p class="text-gray-600 leading-relaxed">The Pro plan costs $29/month and includes unlimited access to all tools, advanced features, priority support, and no daily limits. We offer a 7-day free trial so you can test all Pro features before committing. Annual billing is available with a 20% discount.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-purple-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">Can I cancel my subscription anytime?</h3>
+              <p class="text-gray-600 leading-relaxed">Yes, you can cancel your Pro subscription at any time from your account settings. There are no cancellation fees or penalties. You'll continue to have Pro access until the end of your current billing period, then automatically switch to the free plan.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-purple-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">Do you offer refunds?</h3>
+              <p class="text-gray-600 leading-relaxed">We offer a 30-day money-back guarantee. If you're not satisfied with the Pro features within the first 30 days, contact our support team for a full refund. Refunds are processed within 5-7 business days to your original payment method.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-purple-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">What payment methods do you accept?</h3>
+              <p class="text-gray-600 leading-relaxed">We accept all major credit cards (Visa, Mastercard, American Express, Discover) and PayPal. All payments are processed securely through Stripe with enterprise-grade encryption. We also offer invoicing for enterprise customers.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technical Support -->
+        <div id="technical-support" class="mb-16">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+            <i data-lucide="wrench" class="w-8 h-8 text-red-600 mr-3"></i>
+            Technical Support
+          </h2>
+
+          <div class="space-y-6">
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-red-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">Why is a tool showing "Error" or not working?</h3>
+              <p class="text-gray-600 leading-relaxed">Tool errors can occur due to website accessibility issues, invalid URLs, or temporary server problems. First, check that your URL is correct and publicly accessible. If the issue persists, try again in a few minutes or contact support with the specific error message.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-red-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">How fast should analysis results appear?</h3>
+              <p class="text-gray-600 leading-relaxed">Most tools provide results within 10-30 seconds. More comprehensive analyses like full website audits may take 1-2 minutes. If an analysis takes longer than 5 minutes, there may be an issue - try refreshing the page or running the analysis again.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-red-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">Can I analyze password-protected websites?</h3>
+              <p class="text-gray-600 leading-relaxed">Our tools can only analyze publicly accessible websites. Password-protected or private websites cannot be analyzed. However, you can analyze specific pages if you have public URLs, or use our API with authentication credentials for custom integrations.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEO Best Practices -->
+        <div id="seo-best-practices" class="mb-16">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+            <i data-lucide="trending-up" class="w-8 h-8 text-yellow-600 mr-3"></i>
+            SEO Best Practices
+          </h2>
+
+          <div class="space-y-6">
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-yellow-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">How often should I run SEO analyses?</h3>
+              <p class="text-gray-600 leading-relaxed">For ongoing monitoring, run basic analyses weekly and comprehensive audits monthly. After making significant website changes, run immediate analyses to check impact. Pro users can set up automated monitoring and alerts for key metrics like rankings and backlinks.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-yellow-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">What are the most important SEO factors to focus on?</h3>
+              <p class="text-gray-600 leading-relaxed">Focus on technical SEO (site speed, mobile-friendliness, crawlability), content quality and relevance, proper meta tags, internal linking structure, and building quality backlinks. Our Website Audit tool prioritizes issues by impact to help you focus on the most important improvements first.</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl p-6 hover:border-yellow-300 transition-colors">
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">How long does it take to see SEO improvements?</h3>
+              <p class="text-gray-600 leading-relaxed">Technical fixes can show results within days, while content and link-building efforts typically take 3-6 months to show significant impact. Track progress with our rank monitoring tools and focus on consistent, quality improvements rather than quick fixes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Still Need Help -->
+    <section class="py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Still Need Help?</h2>
+        <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">Can't find the answer you're looking for? Our expert support team is here to help you succeed.</p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/contact" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">Contact Support</a>
+          <a href="mailto:support@superseotoolkit.com" class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200">Email Us</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Simple FAQ search functionality
+    document.addEventListener('DOMContentLoaded', function () {
+      const searchInput = document.querySelector('input[type="text"]')
+      if (searchInput) {
+        searchInput.addEventListener('input', function (e) {
+          const searchTerm = e.target.value.toLowerCase()
+          const faqItems = document.querySelectorAll('.border.border-gray-200')
+    
+          faqItems.forEach((item) => {
+            const text = item.textContent.toLowerCase()
+            if (text.includes(searchTerm)) {
+              item.style.display = 'block'
+              item.classList.add('bg-blue-50')
+            } else {
+              item.style.display = searchTerm ? 'none' : 'block'
+              item.classList.remove('bg-blue-50')
+            }
+          })
+        })
+      }
+    })
+  </script>
+{% endblock %}
