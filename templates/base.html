@@ -454,7 +454,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/tools/seo-audit" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors">
+                            <a href="/tools/seo-audit-tool" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors">
                                 <i data-lucide="search" class="w-4 h-4"></i>
                                 <span>SEO Audit</span>
                                 <span class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-2 py-1 rounded text-xs font-medium">Pro</span>
@@ -575,9 +575,10 @@
     <script src="{{ url_for("static", filename='js/premium-design.js') }}"></script>
     
     <!-- Floating Refresh Button -->
-    <div id="floating-refresh" class="fixed bottom-6 right-6 z-50">
+    <div id="floating-refresh" class="fixed bottom-6 right-6 z-50" style="z-index: 9999;">
         <button onclick="hardRefresh()" 
                 class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: block;"
                 title="Refresh Page (Clear Cache)"
                 aria-label="Refresh Page">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
