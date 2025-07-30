@@ -459,8 +459,8 @@ function generateTechnicalHTML(results) {
 
 function generateContentHTML(results) {
     // Get page analysis data if available
-    const pageAnalysis = results.page_analysis && Object.keys(results.page_analysis).length > 0 
-        ? Object.values(results.page_analysis)[0] 
+    const pageAnalysis = results.pages_analysis && Object.keys(results.pages_analysis).length > 0 
+        ? Object.values(results.pages_analysis)[0] 
         : {};
     
     return `
@@ -528,8 +528,8 @@ function generateContentHTML(results) {
 }
 
 function generatePerformanceHTML(results) {
-    const pageAnalysis = results.page_analysis && Object.keys(results.page_analysis).length > 0 
-        ? Object.values(results.page_analysis)[0] 
+    const pageAnalysis = results.pages_analysis && Object.keys(results.pages_analysis).length > 0 
+        ? Object.values(results.pages_analysis)[0] 
         : {};
     
     return `
@@ -610,7 +610,7 @@ function generateRecommendationsHTML(results) {
 }
 
 function generatePagesHTML(results) {
-    const pages = results.page_analysis ? Object.entries(results.page_analysis) : [];
+    const pages = results.pages_analysis ? Object.entries(results.pages_analysis) : [];
     return `
         <div class="space-y-4">
             <div class="bg-gray-50 p-4 rounded-lg">

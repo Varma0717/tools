@@ -275,10 +275,16 @@ def tools_index():
         for cat in tools_data.keys()
     ]
 
+    # Flatten tools for template compatibility
+    all_tools = []
+    for category_tools in tools_data.values():
+        all_tools.extend(category_tools)
+
     return render_template(
         "tools/index.html",
         tools_data=tools_data,
         tools_by_category=tools_data,  # Also pass as expected name
+        tools=all_tools,  # Add flattened tools list
         categories=categories,
         total_tools=total_tools,
     )
