@@ -1,192 +1,207 @@
-{%- extends "base_standardized.html" -%}
+{% extends "base.html" %}
 
-{%- block title -%}Seo Audit Tool - Free SEO Tool{%- endblock -%}
+{% block title %}SEO Audit Tool - Free SEO Tool{% endblock %}
 
-{%- block meta_description -%}Advanced seo audit tool tool for comprehensive website analysis and optimization.{%- endblock -%}
+{% block meta_description %}Comprehensive SEO audit tool for website analysis and optimization. Free tool to analyze your website's SEO performance.{% endblock %}
 
-{%- block hero_title -%}Seo Audit Tool{%- endblock -%}
-{%- block hero_description -%}Advanced seo audit tool tool for comprehensive website analysis and optimization.{%- endblock -%}
-
-{%- block tool_content -%}
-{%- extends "base_standardized.html" -%}
-
-{%- block title -%}
-SEO Audit Tool - Professional SEO Tools
-{%- endblock -%}
-
-{%- block description -%}
-Comprehensive SEO analysis for your website. Free SEO tool for website optimization and analysis.
-{%- endblock -%}
-
-{%- block keywords -%}
-seo audit tool, SEO tool, website analysis, SEO optimization, seo audit tool
-{%- endblock -%}
-
-{%- block content -%}
+{% block content %}
 <!-- Hero Section -->
-<div class="gradient-bg text-white py-16">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-6">
-            SEO Audit Tool
-        </h1>
-        <p class="text-xl md:text-2xl text-blue-100 mb-8">
-            Comprehensive SEO analysis for your website
-        </p>
-        <div class="flex justify-center items-center space-x-4">
-            <span class="success-badge text-white px-4 py-2 rounded-full text-sm font-medium">
-                ✨ Free Tool
-            </span>
-            <span class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full text-sm font-medium">
-                🚀 Instant Results
-            </span>
+<section class="bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900 text-white py-20">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">
+                SEO Audit Tool
+            </h1>
+            <p class="text-xl mb-8 text-blue-100">
+                Comprehensive SEO analysis with site-wide crawling and technical insights
+            </p>
+            <div class="flex justify-center items-center space-x-4 mb-8">
+                <span class="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+                    ✨ Free Tool
+                </span>
+                <span class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full text-sm font-medium">
+                    🚀 Instant Results
+                </span>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Tool Section -->
-<div class="max-w-4xl mx-auto px-4 py-12">
-    <!-- Tool Interface -->
-    <div class="tool-card bg-white rounded-lg shadow-lg p-8 mb-8">
-        <form id="seo_audit_tool_form" class="space-y-6">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+<section class="py-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <!-- Tool Interface -->
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <form id="seo_audit_tool_form" class="space-y-6">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                    
+                    <!-- Primary Input -->
+                    <div>
+                        <label for="primary_input" class="block text-sm font-medium text-gray-700 mb-2">
+                            Enter your website URL for comprehensive SEO audit:
+                        </label>
+                        <div class="relative">
+                            <input type="text" 
+                                   id="primary_input" 
+                                   name="primary_input"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                                   placeholder="https://example.com"
+                                   required>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500">
+                            We'll analyze up to 50 pages of your website for comprehensive SEO insights.
+                        </p>
+                    </div>
+                    
+                    <!-- Action Button -->
+                    <button type="submit" 
+                            id="analyze_btn"
+                            class="w-full bg-blue-600 text-white py-4 px-6 rounded-lg hover:bg-blue-700 transition duration-200 font-medium text-lg flex items-center justify-center">
+                        <span id="btn_text">Analyze Website SEO</span>
+                        <span id="btn_loading" class="hidden">
+                            <div class="loading-spinner mr-3"></div>
+                            Analyzing...
+                        </span>
+                    </button>
+                </form>
+            </div>
             
-            <!-- Primary Input -->
-            <div>
-                <label for="primary_input" class="block text-sm font-medium text-gray-700 mb-2">
-                    Enter your website URL or data:
-                </label>
-                <div class="relative">
-                    <input type="text" 
-                           id="primary_input" 
-                           name="primary_input"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                           placeholder="https://example.com"
-                           required>
-                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+            <!-- Results Section -->
+            <div id="results" class="hidden">
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
+                        Analysis Results
+                    </h3>
+                    <div id="results_content" class="space-y-4">
+                        <!-- Results will be displayed here -->
                     </div>
                 </div>
             </div>
-            
-            <!-- Action Button -->
-            <button type="submit" 
-                    id="analyze_btn"
-                    class="w-full bg-blue-600 text-white py-4 px-6 rounded-lg hover:bg-blue-700 transition duration-200 font-medium text-lg flex items-center justify-center">
-                <span id="btn_text">Analyze Now</span>
-                <span id="btn_loading" class="hidden flex items-center">
-                    <div class="loading-spinner mr-3"></div>
-                    Processing...
-                </span>
-            </button>
-        </form>
-    </div>
-    
-    <!-- Results Section -->
-    <div id="results" class="hidden">
-        <div class="tool-card bg-white rounded-lg shadow-lg p-8">
-            <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Analysis Results
-            </h3>
-            <div id="results_content" class="space-y-4">
-                <!-- Results will be displayed here -->
-            </div>
         </div>
     </div>
-    
-    <!-- Information Section -->
-    <div class="mt-12 grid md:grid-cols-2 gap-8">
-        <!-- How to Use -->
-        <div class="tool-card bg-white rounded-lg shadow-lg p-6">
-            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                How to Use
-            </h3>
-            <ol class="space-y-2 text-gray-600">
-                <li class="flex items-start">
-                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">1</span>
-                    Enter your website URL in the input field
-                </li>
-                <li class="flex items-start">
-                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">2</span>
-                    Click "Analyze Now" to start the analysis
-                </li>
-                <li class="flex items-start">
-                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">3</span>
-                    Review the detailed results and recommendations
-                </li>
-            </ol>
-        </div>
-        
-        <!-- Features -->
-        <div class="tool-card bg-white rounded-lg shadow-lg p-6">
-            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                Key Features
-            </h3>
-            <ul class="space-y-2 text-gray-600">
-                <li class="flex items-center">
-                    <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                    Instant analysis and results
-                </li>
-                <li class="flex items-center">
-                    <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                    Professional-grade accuracy
-                </li>
-                <li class="flex items-center">
-                    <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                    Actionable recommendations
-                </li>
-                <li class="flex items-center">
-                    <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                    No registration required
-                </li>
-            </ul>
-        </div>
-    </div>
-    
-    <!-- FAQ Section -->
-    <div class="mt-12">
-        <div class="tool-card bg-white rounded-lg shadow-lg p-8">
-            <h3 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
-                <svg class="h-6 w-6 text-purple-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Frequently Asked Questions
-            </h3>
-            <div class="space-y-4">
-                <div>
-                    <h4 class="font-medium text-gray-900 mb-2">Is this tool free to use?</h4>
-                    <p class="text-gray-600">Yes, this tool is completely free to use with no registration required.</p>
+</section>
+
+<!-- Information Section -->
+<section class="py-12 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- How to Use -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                        <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        How to Use
+                    </h3>
+                    <ol class="space-y-2 text-gray-600">
+                        <li class="flex items-start">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">1</span>
+                            Enter your website URL in the input field
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">2</span>
+                            Click "Analyze Website SEO" to start comprehensive crawling
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">3</span>
+                            Review detailed results, issues, and actionable recommendations
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">4</span>
+                            Implement suggested improvements to boost SEO performance
+                        </li>
+                    </ol>
                 </div>
-                <div>
-                    <h4 class="font-medium text-gray-900 mb-2">How accurate are the results?</h4>
-                    <p class="text-gray-600">Our tools use industry-standard algorithms and best practices to provide professional-grade accuracy.</p>
-                </div>
-                <div>
-                    <h4 class="font-medium text-gray-900 mb-2">Can I use this for multiple websites?</h4>
-                    <p class="text-gray-600">Yes, you can analyze as many websites as you need with our free tools.</p>
+                
+                <!-- Features -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                        <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Key Features
+                    </h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Site-wide crawling (up to 50 pages)
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Technical SEO analysis
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Robots.txt & Sitemap validation
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Duplicate content detection
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Actionable recommendations
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                    <svg class="h-6 w-6 text-purple-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Frequently Asked Questions
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-medium text-gray-900 mb-2">How many pages does this tool analyze?</h4>
+                        <p class="text-gray-600">Our SEO audit tool crawls up to 50 pages of your website to provide comprehensive site-wide analysis.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-900 mb-2">What does the comprehensive analysis include?</h4>
+                        <p class="text-gray-600">We analyze technical SEO, content quality, site structure, robots.txt, XML sitemaps, duplicate content, and provide prioritized recommendations.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-900 mb-2">How long does the analysis take?</h4>
+                        <p class="text-gray-600">Analysis typically takes 30-90 seconds depending on your website size and server response times.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-900 mb-2">Is this tool completely free?</h4>
+                        <p class="text-gray-600">Yes! You get 5 comprehensive website audits per day for free, with no registration required.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <script>
 document.getElementById('seo_audit_tool_form').addEventListener('submit', function(e) {
@@ -194,34 +209,314 @@ document.getElementById('seo_audit_tool_form').addEventListener('submit', functi
     
     const input = document.getElementById('primary_input').value.trim();
     if (!input) {
-        alert('Please enter a URL or data to analyze.');
+        alert('Please enter a website URL to analyze.');
+        return;
+    }
+    
+    // Validate URL format
+    if (!input.match(/^https?:\/\/.+/) && !input.match(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/)) {
+        alert('Please enter a valid URL (e.g., https://example.com or example.com)');
         return;
     }
     
     // Show loading state
     showLoading('analyze_btn', 'btn_text', 'btn_loading');
     
-    // Simulate processing (replace with actual AJAX call)
-    setTimeout(() => {
-        // Hide loading state
+    // Perform comprehensive SEO audit via AJAX
+    fetch('/tools/seo-audit-tool/analyze', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'url=' + encodeURIComponent(input) + '&csrf_token={{ csrf_token }}'
+    })
+    .then(response => response.json())
+    .then(data => {
         hideLoading('analyze_btn', 'btn_text', 'btn_loading');
         
-        // Show results
-        showResults('results');
-        
-        // Display sample results (replace with actual data)
-        document.getElementById('results_content').innerHTML = `
-            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                <h4 class="font-medium text-green-800 mb-2">Analysis Complete!</h4>
-                <p class="text-green-700">Your analysis for <strong>${input}</strong> has been completed successfully.</p>
+        if (data.success) {
+            showResults('results');
+            displayComprehensiveSEOResults(data.data);
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        hideLoading('analyze_btn', 'btn_text', 'btn_loading');
+        alert('An error occurred during analysis. Please try again.');
+        console.error('Error:', error);
+    });
+});
+
+function displayComprehensiveSEOResults(data) {
+    const resultsContent = document.getElementById('results_content');
+    
+    let html = `
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <!-- Overall Score -->
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6 text-center">
+                <h4 class="font-semibold text-blue-800 mb-3 flex items-center justify-center">
+                    <svg class="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    Overall SEO Score
+                </h4>
+                <div class="text-4xl font-bold text-blue-900 mb-2">${data.overall_score}/100</div>
+                <div class="bg-white rounded-full h-3 mb-2">
+                    <div class="bg-blue-600 h-3 rounded-full transition-all duration-500" style="width: ${data.overall_score}%"></div>
+                </div>
+                <div class="text-sm text-blue-700">
+                    ${data.overall_score >= 80 ? 'Excellent' : data.overall_score >= 60 ? 'Good' : data.overall_score >= 40 ? 'Needs Improvement' : 'Poor'}
+                </div>
             </div>
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 class="font-medium text-blue-800 mb-2">Next Steps</h4>
-                <p class="text-blue-700">Review the recommendations and implement the suggested improvements.</p>
+            
+            <!-- Crawl Summary -->
+            <div class="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-6">
+                <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+                    </svg>
+                    Crawl Summary
+                </h4>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-green-700">Pages Found:</span>
+                        <span class="font-semibold text-green-900">${data.crawl_summary.total_pages_found}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-green-700">Successfully Crawled:</span>
+                        <span class="font-semibold text-green-900">${data.crawl_summary.successfully_crawled}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-green-700">Failed Pages:</span>
+                        <span class="font-semibold text-green-900">${data.crawl_summary.failed_pages}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Analysis Time -->
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-6">
+                <h4 class="font-semibold text-purple-800 mb-3 flex items-center">
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Analysis Info
+                </h4>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-purple-700">Analysis Time:</span>
+                        <span class="font-semibold text-purple-900">${data.total_audit_time}s</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-purple-700">Timestamp:</span>
+                        <span class="font-semibold text-purple-900">${data.timestamp}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-purple-700">Website:</span>
+                        <span class="font-semibold text-purple-900 text-xs break-all">${data.url}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Technical Analysis Section
+    if (data.technical_analysis) {
+        html += `
+            <div class="bg-white border rounded-lg p-6 mb-6">
+                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                    <svg class="h-5 w-5 text-orange-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Technical Analysis
+                </h4>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-gray-50 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-${data.technical_analysis.https_usage?.https_percentage === 100 ? 'green' : 'red'}-600">
+                            ${data.technical_analysis.https_usage?.https_percentage || 0}%
+                        </div>
+                        <div class="text-sm text-gray-600">HTTPS Usage</div>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-${data.technical_analysis.canonical_tags?.canonical_percentage >= 80 ? 'green' : 'orange'}-600">
+                            ${data.technical_analysis.canonical_tags?.canonical_percentage || 0}%
+                        </div>
+                        <div class="text-sm text-gray-600">Canonical Tags</div>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-${data.technical_analysis.structured_data?.schema_percentage >= 50 ? 'green' : 'orange'}-600">
+                            ${data.technical_analysis.structured_data?.schema_percentage || 0}%
+                        </div>
+                        <div class="text-sm text-gray-600">Schema Markup</div>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-${data.technical_analysis.meta_robots?.meta_robots_percentage >= 80 ? 'green' : 'orange'}-600">
+                            ${data.technical_analysis.meta_robots?.meta_robots_percentage || 0}%
+                        </div>
+                        <div class="text-sm text-gray-600">Meta Robots</div>
+                    </div>
+                </div>
             </div>
         `;
-    }, 2000);
-});
+    }
+    
+    // Site-wide Issues
+    if (data.site_wide_issues) {
+        html += `
+            <div class="bg-white border rounded-lg p-6 mb-6">
+                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                    <svg class="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                    Site-wide Issues Found
+                </h4>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-600">${Object.keys(data.site_wide_issues.duplicate_titles || {}).length}</div>
+                            <div class="text-sm text-red-700">Duplicate Titles</div>
+                        </div>
+                    </div>
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-600">${Object.keys(data.site_wide_issues.duplicate_meta_descriptions || {}).length}</div>
+                            <div class="text-sm text-red-700">Duplicate Meta Descriptions</div>
+                        </div>
+                    </div>
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-600">${Object.keys(data.site_wide_issues.duplicate_h1_tags || {}).length}</div>
+                            <div class="text-sm text-red-700">Duplicate H1 Tags</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Infrastructure Analysis (Robots.txt & Sitemap)
+    html += `
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <!-- Robots.txt Analysis -->
+            <div class="bg-white border rounded-lg p-6">
+                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                    <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Robots.txt
+                </h4>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700">Status:</span>
+                        <span class="px-2 py-1 rounded text-sm ${data.robots_txt?.exists ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${data.robots_txt?.exists ? 'Found' : 'Not Found'}
+                        </span>
+                    </div>
+                    ${data.robots_txt?.exists ? `
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">Sitemaps Listed:</span>
+                            <span class="font-semibold">${(data.robots_txt.sitemaps || []).length}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">Disallow Rules:</span>
+                            <span class="font-semibold">${(data.robots_txt.disallow_patterns || []).length}</span>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+            
+            <!-- Sitemap Analysis -->
+            <div class="bg-white border rounded-lg p-6">
+                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                    <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                    </svg>
+                    XML Sitemap
+                </h4>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700">Status:</span>
+                        <span class="px-2 py-1 rounded text-sm ${data.sitemap?.exists ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${data.sitemap?.exists ? 'Found' : 'Not Found'}
+                        </span>
+                    </div>
+                    ${data.sitemap?.exists ? `
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">URLs Listed:</span>
+                            <span class="font-semibold">${data.sitemap.total_urls || 0}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">Size:</span>
+                            <span class="font-semibold">${Math.round((data.sitemap.size || 0) / 1024)} KB</span>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Recommendations
+    if (data.recommendations && data.recommendations.length > 0) {
+        html += `
+            <div class="bg-white border rounded-lg p-6 mb-6">
+                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                    <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                    Priority Recommendations
+                </h4>
+                <div class="space-y-3">
+                    ${data.recommendations.slice(0, 10).map((rec, index) => `
+                        <div class="flex items-start space-x-3 p-4 border rounded-lg ${rec.priority === 'high' ? 'bg-red-50 border-red-200' : rec.priority === 'medium' ? 'bg-yellow-50 border-yellow-200' : 'bg-blue-50 border-blue-200'}">
+                            <div class="flex-shrink-0">
+                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium ${rec.priority === 'high' ? 'bg-red-500 text-white' : rec.priority === 'medium' ? 'bg-yellow-500 text-white' : 'bg-blue-500 text-white'}">
+                                    ${index + 1}
+                                </span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <span class="font-medium text-gray-900">${rec.category}</span>
+                                    <span class="px-2 py-1 text-xs rounded ${rec.priority === 'high' ? 'bg-red-100 text-red-800' : rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'}">
+                                        ${rec.priority.toUpperCase()}
+                                    </span>
+                                </div>
+                                <div class="text-sm text-gray-700">${rec.message}</div>
+                                ${rec.details ? `<div class="text-xs text-gray-500 mt-1">${typeof rec.details === 'string' ? rec.details : JSON.stringify(rec.details)}</div>` : ''}
+                            </div>
+                        </div>
+                    `).join('')}
+                    ${data.recommendations.length > 10 ? `
+                        <div class="text-center text-sm text-gray-500 mt-4">
+                            ... and ${data.recommendations.length - 10} more recommendations
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }
+    
+    resultsContent.innerHTML = html;
+}
+
+// Utility functions for loading states
+function showLoading(btnId, textId, loadingId) {
+    document.getElementById(textId).style.display = 'none';
+    document.getElementById(loadingId).style.display = 'flex';
+    document.getElementById(loadingId).classList.remove('hidden');
+    document.getElementById(btnId).disabled = true;
+}
+
+function hideLoading(btnId, textId, loadingId) {
+    document.getElementById(textId).style.display = 'block';
+    document.getElementById(loadingId).style.display = 'none';
+    document.getElementById(loadingId).classList.add('hidden');
+    document.getElementById(btnId).disabled = false;
+}
+
+function showResults(resultsId) {
+    document.getElementById(resultsId).classList.remove('hidden');
+    document.getElementById(resultsId).scrollIntoView({ behavior: 'smooth' });
+}
 </script>
-{%- endblock -%}
-{%- endblock -%}
+{% endblock %}

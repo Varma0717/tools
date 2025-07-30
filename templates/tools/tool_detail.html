@@ -20,16 +20,13 @@
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <div>
                     <!-- Tool Icon & Title -->
-                    <div class="flex flex-col sm:flex-row sm:items-center mb-6">
-                        <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4 sm:mb-0 sm:mr-6">
-                            <i data-lucide="{{ tool.icon or 'tool' }}" class="w-8 h-8 text-white"></i>
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mr-4">
+                            <i data-lucide="search" class="w-8 h-8 text-white"></i>
                         </div>
-                        <div class="text-center sm:text-left">
-                            <div class="flex flex-col sm:flex-row sm:items-center mb-2">
-                                <img src="{{ url_for('static', filename='favicon.png') }}" alt="Super SEO Toolkit" class="w-8 h-8 rounded-lg mx-auto sm:mx-0 sm:mr-3 mb-2 sm:mb-0">
-                                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold">{{ tool.name }}</h1>
-                            </div>
-                            <span class="bg-yellow-500 text-yellow-900 px-3 py-1 rounded-full text-sm font-medium inline-block">
+                        <div>
+                            <h1 class="text-4xl md:text-5xl font-bold mb-2">{{ tool.name }}</h1>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-600/20 text-blue-300 border border-blue-500/30">
                                 {{ tool.category.name if tool.category else 'SEO Tool' }}
                             </span>
                         </div>
@@ -71,21 +68,28 @@
                 <!-- Tool Preview/Mockup -->
                 <div class="lg:ml-8">
                     <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
-                        <h3 class="text-2xl font-bold mb-6">Tool Preview</h3>
-                        <div class="bg-white/20 backdrop-blur-sm rounded-xl p-6 mb-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-3 h-3 bg-red-400 rounded-full mr-2"></div>
-                                <div class="w-3 h-3 bg-yellow-400 rounded-full mr-2"></div>
-                                <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                        <div class="bg-white rounded-xl p-6 shadow-xl">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-900">{{ tool.name }}</h3>
+                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">Ready Soon</span>
                             </div>
                             <div class="space-y-3">
-                                <div class="h-4 bg-white/30 rounded animate-pulse"></div>
-                                <div class="h-4 bg-white/30 rounded animate-pulse w-3/4"></div>
-                                <div class="h-4 bg-white/30 rounded animate-pulse w-1/2"></div>
-                                <div class="h-8 bg-yellow-500/30 rounded animate-pulse"></div>
+                                <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                                <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                                <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">Tool Interface Preview</span>
+                                    <div class="flex space-x-1">
+                                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                                        <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                                        <div class="w-2 h-2 bg-red-400 rounded-full"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <p class="text-blue-200 text-sm">
+                        <p class="text-blue-200 text-center mt-6 text-sm">
                             Interactive interface coming soon with real-time analysis and detailed reporting.
                         </p>
                     </div>
@@ -113,15 +117,19 @@
                                 This professional-grade SEO tool is designed to help digital marketers, SEO professionals, and website owners optimize their online presence effectively.
                             </p>
 
-                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Key Features (Coming Soon)</h3>
-                            <ul class="space-y-3 mb-8">
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-4">Key Features (Coming Soon)</h3>
+                            <ul class="space-y-3 mb-6 md:mb-8">
                                 <li class="flex items-start">
                                     <i data-lucide="check" class="w-6 h-6 text-green-500 mr-3 mt-0.5"></i>
-                                    <span class="text-gray-700">Professional-grade analysis with industry-leading accuracy</span>
+                                    <span class="text-gray-700">Comprehensive analysis with detailed insights</span>
                                 </li>
                                 <li class="flex items-start">
                                     <i data-lucide="check" class="w-6 h-6 text-green-500 mr-3 mt-0.5"></i>
-                                    <span class="text-gray-700">Real-time results with detailed explanations</span>
+                                    <span class="text-gray-700">Real-time results and recommendations</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i data-lucide="check" class="w-6 h-6 text-green-500 mr-3 mt-0.5"></i>
+                                    <span class="text-gray-700">User-friendly interface and clear reporting</span>
                                 </li>
                                 <li class="flex items-start">
                                     <i data-lucide="check" class="w-6 h-6 text-green-500 mr-3 mt-0.5"></i>
@@ -160,27 +168,21 @@
                                 <span class="font-medium text-orange-600">In Development</span>
                             </div>
                             <div class="flex items-center justify-between pb-3 border-b border-gray-200">
-                                <span class="text-gray-600">Expected Launch</span>
-                                <span class="font-medium text-gray-900">Q1 2025</span>
-                            </div>
-                            <div class="flex items-center justify-between pb-3 border-b border-gray-200">
-                                <span class="text-gray-600">Access Level</span>
-                                <span class="font-medium text-green-600">Free & Pro</span>
+                                <span class="text-gray-600">Price</span>
+                                <span class="font-medium text-green-600">Free</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-600">Usage Limits</span>
-                                <span class="font-medium text-gray-900">Pro: Unlimited</span>
+                                <span class="text-gray-600">Launch</span>
+                                <span class="font-medium text-gray-900">Coming Soon</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Newsletter Signup -->
-                    <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl shadow-lg p-6 text-white">
-                        <h3 class="text-xl font-bold mb-3">Get Notified</h3>
-                        <p class="text-blue-100 mb-6 text-sm">
-                            Be the first to know when {{ tool.name }} launches. Join our newsletter for updates.
-                        </p>
-                        <a href="{{ url_for('auth.register') }}" class="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold text-center block transition-colors">
+                    <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 text-white">
+                        <h3 class="text-xl font-bold mb-4">Stay Updated</h3>
+                        <p class="text-blue-100 mb-6">Be the first to know when {{ tool.name }} launches!</p>
+                        <a href="{{ url_for('auth.register') }}" class="block w-full bg-white text-blue-600 hover:bg-gray-100 px-4 py-3 rounded-lg font-semibold text-center transition-colors">
                             Join Newsletter
                         </a>
                     </div>
@@ -192,196 +194,11 @@
     <!-- CTA Section -->
     <section class="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div class="max-w-4xl mx-auto px-6 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6">Explore More SEO Tools</h2>
-            <p class="text-xl text-blue-100 mb-10">Discover our complete collection of professional SEO tools while waiting for {{ tool.name }} to launch.</p>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Optimize Your Website?</h2>
+            <p class="text-xl text-blue-100 mb-10">Join thousands of professionals using our SEO tools to improve their search rankings and website performance.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ url_for('tools.tools_index') }}" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">Browse All Tools</a>
                 <a href="{{ url_for('auth.register') }}" class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200">Start Free Account</a>
-            </div>
-        </div>
-    </section>
-</div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    // Initialize Lucide icons
-    lucide.createIcons();
-</script>
-{% endblock %}
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Tool Information Section -->
-    <section class="py-16">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Main Information -->
-                <div class="lg:col-span-2">
-                    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
-                        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 md:mb-6 flex items-center">
-                            <i data-lucide="info" class="w-5 h-5 mr-2 text-blue-600"></i>
-                            About This Tool
-                        </h2>
-                        <div class="prose max-w-none">
-                            <p class="text-base md:text-lg text-gray-600 mb-4 md:mb-6">
-                                {{ tool.description }}
-                            </p>
-                            <p class="text-base md:text-lg text-gray-600 mb-4 md:mb-6">
-                                This professional-grade SEO tool is designed to help digital marketers, SEO professionals, and website owners optimize their online presence effectively.
-                            </p>
-
-                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Key Features (Coming Soon)</h3>
-                            <ul class="space-y-3 mb-8">
-                                <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span class="text-gray-700">Professional-grade analysis with industry-leading accuracy</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span class="text-gray-700">Real-time results with detailed explanations</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span class="text-gray-700">Actionable recommendations for immediate improvements</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span class="text-gray-700">Export capabilities for reports and documentation</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span class="text-gray-700">Integration with other Super SEO Toolkit tools</span>
-                                </li>
-                            </ul>
-
-                            <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-4">How It Will Help Your SEO</h3>
-                            <p class="text-gray-600 mb-4 md:mb-6">
-                                This tool will be part of our comprehensive SEO toolkit designed to help you identify optimization opportunities, track improvements, and maintain competitive advantage in search rankings. Whether you're an SEO beginner or expert, you'll find valuable insights to boost your website's performance.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sidebar -->
-                <div class="lg:col-span-1">
-                    <!-- Tool Details Card -->
-                    <div class="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-6 md:mb-8">
-                        <h3 class="text-xl font-bold text-gray-900 mb-6">Tool Details</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between pb-3 border-b border-gray-200">
-                                <span class="text-gray-600">Category</span>
-                                <span class="font-medium text-gray-900">{{ tool.category.name if tool.category else 'SEO Analysis' }}</span>
-                            </div>
-                            <div class="flex items-center justify-between pb-3 border-b border-gray-200">
-                                <span class="text-gray-600">Status</span>
-                                <span class="font-medium text-orange-600">In Development</span>
-                            </div>
-                            <div class="flex items-center justify-between pb-3 border-b border-gray-200">
-                                <span class="text-gray-600">Expected Launch</span>
-                                <span class="font-medium text-gray-900">Q1 2025</span>
-                            </div>
-                            <div class="flex items-center justify-between pb-3 border-b border-gray-200">
-                                <span class="text-gray-600">Access Level</span>
-                                <span class="font-medium text-green-600">Free & Pro</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-gray-600">Usage Limits</span>
-                                <span class="font-medium text-gray-900">Pro: Unlimited</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Newsletter Signup -->
-                    <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl shadow-lg p-6 text-white">
-                        <h3 class="text-xl font-bold mb-3">Get Notified</h3>
-                        <p class="text-blue-100 mb-6 text-sm">
-                            Be the first to know when {{ tool.name }} launches. Join our newsletter for updates.
-                        </p>
-                        <form action="/newsletter/subscribe" method="POST" class="space-y-3 md:space-y-4">
-                            {% if csrf_token %}
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            {% endif %}
-                            <input type="hidden" name="source" value="tool_{{ tool.slug if tool.slug else 'detail' }}">
-                            <div>
-                                <input type="email" name="email" placeholder="Enter your email" required 
-                                       class="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm md:text-base">
-                            </div>
-                            <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-yellow-900 py-2 md:py-3 rounded-lg font-bold transition-colors text-sm md:text-base">
-                                Notify Me →
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Related Tools Section -->
-    <section class="py-12 md:py-16 bg-gray-100">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6">
-            <div class="text-center mb-8 md:mb-12">
-                <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 md:mb-4">Try Our Available SEO Tools</h2>
-                <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                    While waiting for {{ tool.name }}, explore these powerful SEO tools that are ready to use now
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                <!-- Sample Available Tools (Static for Demo) -->
-                <div class="bg-white rounded-2xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-shadow">
-                    <div class="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-3 md:mb-4">
-                        <i data-lucide="search" class="w-5 h-5 md:w-6 md:h-6 text-white"></i>
-                    </div>
-                    <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3">Website Analyzer</h3>
-                    <p class="text-sm md:text-base text-gray-600 mb-3 md:mb-4">Comprehensive SEO analysis of your entire website with detailed recommendations.</p>
-                    <span class="text-blue-600 font-medium text-sm md:text-base">Coming Soon</span>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-shadow">
-                    <div class="w-10 h-10 md:w-12 md:h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-3 md:mb-4">
-                        <i data-lucide="key" class="w-5 h-5 md:w-6 md:h-6 text-white"></i>
-                    </div>
-                    <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3">Keyword Research</h3>
-                    <p class="text-sm md:text-base text-gray-600 mb-3 md:mb-4">Discover high-impact keywords and analyze search volume and competition.</p>
-                    <span class="text-purple-600 font-medium text-sm md:text-base">Coming Soon</span>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-shadow">
-                    <div class="w-10 h-10 md:w-12 md:h-12 bg-green-600 rounded-lg flex items-center justify-center mb-3 md:mb-4">
-                        <i data-lucide="zap" class="w-5 h-5 md:w-6 md:h-6 text-white"></i>
-                    </div>
-                    <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3">Page Speed Analyzer</h3>
-                    <p class="text-sm md:text-base text-gray-600 mb-3 md:mb-4">Test your website's loading speed and get optimization recommendations.</p>
-                    <span class="text-green-600 font-medium text-sm md:text-base">Coming Soon</span>
-                </div>
-
-                {% if tool.category %}
-                    {% for related_tool in tool.category.tools[:3] %}
-                        {% if related_tool.id != tool.id %}
-                        <a href="{{ url_for('tools.tool_detail_page', slug=related_tool.slug) }}" class="bg-white rounded-2xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-shadow block">
-                            <div class="w-10 h-10 md:w-12 md:h-12 bg-orange-600 rounded-lg flex items-center justify-center mb-3 md:mb-4">
-                                <i data-lucide="{{ related_tool.icon or 'tool' }}" class="w-5 h-5 md:w-6 md:h-6 text-white"></i>
-                            </div>
-                            <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3">{{ related_tool.name }}</h3>
-                            <p class="text-sm md:text-base text-gray-600 mb-3 md:mb-4">{{ related_tool.description[:100] }}...</p>
-                            <span class="text-orange-600 font-medium text-sm md:text-base">View Details</span>
-                        </a>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
             </div>
         </div>
     </section>
@@ -395,4 +212,4 @@
         lucide.createIcons();
     }
 </script>
-{% endblock %} 
+{% endblock %}

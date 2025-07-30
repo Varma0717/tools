@@ -58,7 +58,8 @@ def register_tool_blueprints(app):
             app.register_blueprint(blueprint)
             tools_registered += 1
         except Exception as e:
-            pass  # Silently skip tools that can't be registered
+            # Silently skip tools that can't be registered to avoid spam
+            pass
 
 
 @tools_bp.route("/")
@@ -295,6 +296,208 @@ def tools_index():
         page_title="SEO Tools - Complete Toolkit",
         meta_description="Access our comprehensive SEO toolkit with 25+ free and premium tools for technical SEO, content optimization, and website analysis.",
     )
+
+
+@tools_bp.route("/<slug>/")
+def tool_detail(slug):
+    """Handle tool detail pages - show coming soon page for all tools except working ones."""
+    from flask import abort
+
+    # Skip tools that have their own dedicated routes
+    if slug == "seo-audit-tool":
+        abort(404)  # Let the specific blueprint handle this
+
+    # Tool information for creating tool detail pages
+    tools_info = {
+        # Core Tools
+        "meta-tag-analyzer": {
+            "name": "Meta Tag Analyzer",
+            "description": "Analyze and optimize your meta tags",
+            "category": "Technical SEO",
+        },
+        "page-speed-analyzer": {
+            "name": "Page Speed Analyzer",
+            "description": "Test your website loading speed",
+            "category": "Performance",
+        },
+        "keyword-density-analyzer": {
+            "name": "Keyword Density Analyzer",
+            "description": "Analyze keyword density in your content",
+            "category": "Content Analysis",
+        },
+        # Advanced Tools
+        "advanced-keyword-research": {
+            "name": "Advanced Keyword Research",
+            "description": "Advanced keyword research tool",
+            "category": "Keyword Research",
+        },
+        "advanced-backlink-analyzer": {
+            "name": "Advanced Backlink Analyzer",
+            "description": "Advanced backlink analysis",
+            "category": "Link Analysis",
+        },
+        "technical-seo-analyzer": {
+            "name": "Technical SEO Analyzer",
+            "description": "Comprehensive technical SEO analysis",
+            "category": "Technical SEO",
+        },
+        "content-optimizer": {
+            "name": "Content Optimizer",
+            "description": "Optimize content for SEO",
+            "category": "Content Analysis",
+        },
+        "schema-generator": {
+            "name": "Schema Generator",
+            "description": "Generate schema markup",
+            "category": "Technical SEO",
+        },
+        # Technical SEO Tools
+        "canonical-tag-checker": {
+            "name": "Canonical Tag Checker",
+            "description": "Check canonical tag implementation",
+            "category": "Technical SEO",
+        },
+        "open-graph-preview": {
+            "name": "Open Graph Preview",
+            "description": "Preview Open Graph tags",
+            "category": "Social & Preview",
+        },
+        "schema-markup-tester": {
+            "name": "Schema Markup Tester",
+            "description": "Test and validate schema markup",
+            "category": "Technical SEO",
+        },
+        "sitemap-xml-validator": {
+            "name": "Sitemap XML Validator",
+            "description": "Validate XML sitemaps",
+            "category": "Technical SEO",
+        },
+        "robots-txt-tester": {
+            "name": "Robots.txt Tester",
+            "description": "Test and validate robots.txt file",
+            "category": "Technical SEO",
+        },
+        "ssl-checker": {
+            "name": "SSL Checker",
+            "description": "Verify SSL certificate status",
+            "category": "Technical SEO",
+        },
+        "http-header-checker": {
+            "name": "HTTP Header Checker",
+            "description": "Analyze HTTP response headers",
+            "category": "Technical SEO",
+        },
+        "mobile-optimization-tester": {
+            "name": "Mobile Optimization Tester",
+            "description": "Test mobile optimization",
+            "category": "Performance",
+        },
+        "hreflang-tag-checker": {
+            "name": "Hreflang Tag Checker",
+            "description": "Check hreflang tag implementation",
+            "category": "Technical SEO",
+        },
+        # Content Tools
+        "headline-generator": {
+            "name": "Headline Generator",
+            "description": "Generate engaging headlines",
+            "category": "Content Analysis",
+        },
+        # Link Analysis Tools
+        "broken-link-checker": {
+            "name": "Broken Link Checker",
+            "description": "Find and fix broken links",
+            "category": "Link Analysis",
+        },
+        "link-status-monitor": {
+            "name": "Link Status Monitor",
+            "description": "Monitor link status",
+            "category": "Link Analysis",
+        },
+        "internal-link-analyzer": {
+            "name": "Internal Link Analyzer",
+            "description": "Analyze internal linking structure",
+            "category": "Link Analysis",
+        },
+        "redirect-checker": {
+            "name": "Redirect Checker",
+            "description": "Check redirect chains",
+            "category": "Link Analysis",
+        },
+        # Performance Tools
+        "image-compressor": {
+            "name": "Image Compressor",
+            "description": "Compress images for better performance",
+            "category": "Performance",
+        },
+        "javascript-minifier": {
+            "name": "JavaScript Minifier",
+            "description": "Minify JavaScript code",
+            "category": "Performance",
+        },
+        "core-web-vitals": {
+            "name": "Core Web Vitals",
+            "description": "Measure Core Web Vitals",
+            "category": "Performance",
+        },
+        # Keyword Research Tools
+        "keyword-suggestion-generator": {
+            "name": "Keyword Suggestion Generator",
+            "description": "Generate keyword suggestions",
+            "category": "Keyword Research",
+        },
+        "lsi-keyword-generator": {
+            "name": "LSI Keyword Generator",
+            "description": "Generate LSI keywords",
+            "category": "Keyword Research",
+        },
+        # Technical Tools
+        "dns-lookup": {
+            "name": "DNS Lookup",
+            "description": "Perform DNS lookup queries",
+            "category": "Technical Tools",
+        },
+        "whois-lookup": {
+            "name": "WHOIS Lookup",
+            "description": "Get domain WHOIS information",
+            "category": "Technical Tools",
+        },
+        "password-generator": {
+            "name": "Password Generator",
+            "description": "Generate secure passwords",
+            "category": "Technical Tools",
+        },
+        # Social & Preview Tools
+        "twitter-card-preview": {
+            "name": "Twitter Card Preview",
+            "description": "Preview Twitter cards",
+            "category": "Social & Preview",
+        },
+        "social-media-preview": {
+            "name": "Social Media Preview",
+            "description": "Preview social media posts",
+            "category": "Social & Preview",
+        },
+    }
+
+    # Check if we have info for this tool
+    if slug in tools_info:
+        tool_info = tools_info[slug]
+
+        # Create a tool object for the template
+        tool = {
+            "name": tool_info["name"],
+            "slug": slug,
+            "description": tool_info["description"],
+            "category": {"name": tool_info["category"]},
+            "is_premium": False,  # You can adjust this per tool
+        }
+
+        # Render the tool detail template (coming soon page)
+        return render_template("tools/tool_detail.html", tool=tool)
+    else:
+        # Tool not found
+        abort(404)
 
 
 # Category routes disabled - using static tools only

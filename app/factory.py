@@ -163,8 +163,10 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(auth_bp)
 
     # Tools routes
-    from app.blueprints.tools import tools_bp
+    from app.blueprints.tools import tools_bp, register_tool_blueprints
 
+    # Register individual tool blueprints FIRST to ensure specific routes take precedence
+    register_tool_blueprints(app)
     app.register_blueprint(tools_bp)
 
     # API routes
