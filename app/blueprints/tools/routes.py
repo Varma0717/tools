@@ -111,7 +111,22 @@ def tools_index():
         {"name": "Content", "slug": "content"},
     ]
 
-    return render_template("tools/index.html", tools=tools, categories=categories)
+    # Group tools by category slug for template
+    tools_by_category = {}
+    for category in categories:
+        slug = category["slug"]
+        tools_by_category[slug] = [
+            tool
+            for tool in tools
+            if tool["category"]["name"].replace(" ", "-").lower() == slug
+        ]
+
+    return render_template(
+        "tools/index.html",
+        tools=tools,
+        categories=categories,
+        tools_by_category=tools_by_category,
+    )
 
 
 @tools_bp.route("/<slug>")

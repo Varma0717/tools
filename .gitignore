@@ -49,6 +49,47 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# Test files and debug scripts - CUSTOM ADDITIONS
+test_*.py
+debug_*.py
+check_*.py
+audit_*.py
+fix_*.py
+cleanup_*.py
+*_fixer.py
+*_repair*.py
+quick_fix.py
+manual_*.py
+validate_*.py
+verify_*.py
+diagnose_*.py
+restart_*.py
+comprehensive_*.py
+systematic_*.py
+enhanced_*.py
+advanced_*.py
+final_*.py
+endpoint_*.py
+anti_*.py
+phase*_*.py
+modernize_*.py
+update_*.py
+init_*.py
+
+# Report files - CUSTOM ADDITIONS
+*.md
+!README.md
+
+# Batch files - CUSTOM ADDITIONS
+*.bat
+
+# Template variants - CUSTOM ADDITIONS
+templates/**/*_new.html
+templates/**/*_old.html
+templates/**/*_backup.html
+templates/**/index_*.html
+!templates/**/index.html
+
 # Translations
 *.mo
 *.pot
