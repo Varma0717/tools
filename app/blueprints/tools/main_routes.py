@@ -278,6 +278,7 @@ def tools_index():
     return render_template(
         "tools/index.html",
         tools_data=tools_data,
+        tools_by_category=tools_data,  # Also pass as expected name
         categories=categories,
         total_tools=total_tools,
     )

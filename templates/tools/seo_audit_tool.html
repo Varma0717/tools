@@ -327,7 +327,7 @@ function displayResults(results) {
 }
 
 function generateOverviewHTML(results) {
-    const seoScore = results.seo_score || 0;
+    const seoScore = results.overall_score || 0;
     const scoreColor = seoScore >= 80 ? 'green' : seoScore >= 60 ? 'yellow' : 'red';
     
     return `
@@ -336,7 +336,7 @@ function generateOverviewHTML(results) {
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-blue-100">SEO Score</p>
-                        <p class="text-3xl font-bold">${seoScore}%</p>
+                        <p class="text-3xl font-bold">${seoScore}/100</p>
                     </div>
                     <i data-lucide="target" class="w-8 h-8"></i>
                 </div>
@@ -345,7 +345,7 @@ function generateOverviewHTML(results) {
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-green-100">Pages Analyzed</p>
-                        <p class="text-3xl font-bold">${results.pages_crawled || 0}</p>
+                        <p class="text-3xl font-bold">${results.crawl_summary?.successfully_crawled || 1}</p>
                     </div>
                     <i data-lucide="layers" class="w-8 h-8"></i>
                 </div>
@@ -354,7 +354,7 @@ function generateOverviewHTML(results) {
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-orange-100">Issues Found</p>
-                        <p class="text-3xl font-bold">${(results.issues && results.issues.length) || 0}</p>
+                        <p class="text-3xl font-bold">${results.issues_summary?.total_issues || 0}</p>
                     </div>
                     <i data-lucide="alert-triangle" class="w-8 h-8"></i>
                 </div>
@@ -365,20 +365,20 @@ function generateOverviewHTML(results) {
             <h4 class="text-lg font-semibold mb-4">Quick Summary</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <p class="text-sm text-gray-600 mb-2">Domain Authority</p>
-                    <p class="font-medium">${results.domain_authority || 'N/A'}</p>
+                    <p class="text-sm text-gray-600 mb-2">Robots.txt</p>
+                    <p class="font-medium ${results.robots_txt?.exists ? 'text-green-600' : 'text-red-600'}">${results.robots_txt?.exists ? 'Found' : 'Missing'}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-600 mb-2">Page Load Time</p>
-                    <p class="font-medium">${results.performance?.avg_load_time || 'N/A'}s</p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-600 mb-2">Mobile Friendly</p>
-                    <p class="font-medium">${results.mobile_friendly ? 'Yes' : 'No'}</p>
+                    <p class="text-sm text-gray-600 mb-2">Sitemap</p>
+                    <p class="font-medium ${results.sitemap?.exists ? 'text-green-600' : 'text-red-600'}">${results.sitemap?.exists ? 'Found' : 'Missing'}</p>
                 </div>
                 <div>
                     <p class="text-sm text-gray-600 mb-2">SSL Certificate</p>
-                    <p class="font-medium">${results.has_ssl ? 'Valid' : 'Invalid'}</p>
+                    <p class="font-medium ${results.ssl_info?.is_valid ? 'text-green-600' : 'text-red-600'}">${results.ssl_info?.is_valid ? 'Valid' : 'Invalid'}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600 mb-2">Total Pages Found</p>
+                    <p class="font-medium">${results.crawl_summary?.total_pages_found || 1}</p>
                 </div>
             </div>
         </div>
@@ -396,13 +396,34 @@ function generateTechnicalHTML(results) {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="flex justify-between">
                         <span>SSL Certificate:</span>
-                        <span class="font-medium ${results.has_ssl ? 'text-green-600' : 'text-red-600'}">
-                            ${results.has_ssl ? 'Valid' : 'Invalid'}
+                        <span class="font-medium ${results.ssl_info?.is_valid ? 'text-green-600' : 'text-red-600'}">
+                            ${results.ssl_info?.is_valid ? 'Valid' : 'Invalid'}
                         </span>
                     </div>
                     <div class="flex justify-between">
-                        <span>HTTPS Redirect:</span>
-                        <span class="font-medium">${results.https_redirect ? 'Yes' : 'No'}</span>
+                        <span>HTTPS Status:</span>
+                        <span class="font-medium">${results.ssl_info?.protocol || 'Unknown'}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>
+                    Site Files
+                </h4>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span>Robots.txt:</span>
+                        <span class="font-medium ${results.robots_txt?.exists ? 'text-green-600' : 'text-red-600'}">
+                            ${results.robots_txt?.exists ? 'Found' : 'Missing'}
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span>Sitemap:</span>
+                        <span class="font-medium ${results.sitemap?.exists ? 'text-green-600' : 'text-red-600'}">
+                            ${results.sitemap?.exists ? 'Found' : 'Missing'}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -410,15 +431,17 @@ function generateTechnicalHTML(results) {
             <div class="bg-gray-50 p-6 rounded-lg">
                 <h4 class="text-lg font-semibold mb-4 flex items-center">
                     <i data-lucide="code" class="w-5 h-5 mr-2"></i>
-                    Meta Tags & Structure
+                    Page Analysis Summary
                 </h4>
                 <div class="space-y-3">
-                    ${results.meta_analysis ? Object.entries(results.meta_analysis).map(([key, value]) => `
-                        <div class="flex justify-between items-center">
-                            <span class="capitalize">${key.replace(/_/g, ' ')}:</span>
-                            <span class="font-medium">${typeof value === 'boolean' ? (value ? 'Present' : 'Missing') : value}</span>
-                        </div>
-                    `).join('') : '<p>No meta analysis data available</p>'}
+                    <div class="flex justify-between items-center">
+                        <span>Total Pages Crawled:</span>
+                        <span class="font-medium">${results.crawl_summary?.successfully_crawled || 1}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span>Failed Pages:</span>
+                        <span class="font-medium text-red-600">${results.crawl_summary?.failed_pages || 0}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -426,24 +449,29 @@ function generateTechnicalHTML(results) {
 }
 
 function generateContentHTML(results) {
+    // Get page analysis data if available
+    const pageAnalysis = results.page_analysis && Object.keys(results.page_analysis).length > 0 
+        ? Object.values(results.page_analysis)[0] 
+        : {};
+    
     return `
         <div class="space-y-6">
             <div class="bg-gray-50 p-6 rounded-lg">
                 <h4 class="text-lg font-semibold mb-4 flex items-center">
                     <i data-lucide="type" class="w-5 h-5 mr-2"></i>
-                    Content Metrics
+                    Content Overview
                 </h4>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="text-center">
-                        <p class="text-2xl font-bold text-blue-600">${results.content_analysis?.total_words || 0}</p>
+                        <p class="text-2xl font-bold text-blue-600">${pageAnalysis.content_analysis?.word_count || 'N/A'}</p>
                         <p class="text-sm text-gray-600">Total Words</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-2xl font-bold text-green-600">${results.content_analysis?.headings_count || 0}</p>
-                        <p class="text-sm text-gray-600">Headings</p>
+                        <p class="text-2xl font-bold text-green-600">${pageAnalysis.content_analysis?.headings_h1 || 0}</p>
+                        <p class="text-sm text-gray-600">H1 Tags</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-2xl font-bold text-purple-600">${results.content_analysis?.images_count || 0}</p>
+                        <p class="text-2xl font-bold text-purple-600">${pageAnalysis.content_analysis?.total_images || 0}</p>
                         <p class="text-sm text-gray-600">Images</p>
                     </div>
                 </div>
@@ -456,12 +484,33 @@ function generateContentHTML(results) {
                 </h4>
                 <div class="space-y-2">
                     <div class="flex justify-between">
+                        <span>Total Images:</span>
+                        <span class="font-medium">${pageAnalysis.content_analysis?.total_images || 0}</span>
+                    </div>
+                    <div class="flex justify-between">
                         <span>Images with Alt Text:</span>
-                        <span class="font-medium">${results.content_analysis?.images_with_alt || 0}</span>
+                        <span class="font-medium text-green-600">${pageAnalysis.content_analysis?.images_with_alt || 0}</span>
                     </div>
                     <div class="flex justify-between">
                         <span>Missing Alt Text:</span>
-                        <span class="font-medium text-red-600">${results.content_analysis?.images_without_alt || 0}</span>
+                        <span class="font-medium text-red-600">${pageAnalysis.content_analysis?.images_without_alt || 0}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i data-lucide="link" class="w-5 h-5 mr-2"></i>
+                    Link Analysis
+                </h4>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span>Internal Links:</span>
+                        <span class="font-medium">${pageAnalysis.content_analysis?.internal_links || 0}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>External Links:</span>
+                        <span class="font-medium">${pageAnalysis.content_analysis?.external_links || 0}</span>
                     </div>
                 </div>
             </div>
@@ -470,6 +519,10 @@ function generateContentHTML(results) {
 }
 
 function generatePerformanceHTML(results) {
+    const pageAnalysis = results.page_analysis && Object.keys(results.page_analysis).length > 0 
+        ? Object.values(results.page_analysis)[0] 
+        : {};
+    
     return `
         <div class="space-y-6">
             <div class="bg-gray-50 p-6 rounded-lg">
@@ -479,12 +532,12 @@ function generatePerformanceHTML(results) {
                 </h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <p class="text-sm text-gray-600 mb-2">Average Load Time</p>
-                        <p class="text-2xl font-bold text-blue-600">${results.performance?.avg_load_time || 'N/A'}s</p>
+                        <p class="text-sm text-gray-600 mb-2">Page Load Time</p>
+                        <p class="text-2xl font-bold text-blue-600">${pageAnalysis.performance_metrics?.load_time || 'N/A'}s</p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-600 mb-2">Fastest Page</p>
-                        <p class="text-2xl font-bold text-green-600">${results.performance?.fastest_page || 'N/A'}s</p>
+                        <p class="text-sm text-gray-600 mb-2">Response Code</p>
+                        <p class="text-2xl font-bold text-green-600">${pageAnalysis.basic_info?.status_code || 'N/A'}</p>
                     </div>
                 </div>
             </div>
@@ -492,13 +545,27 @@ function generatePerformanceHTML(results) {
             <div class="bg-gray-50 p-6 rounded-lg">
                 <h4 class="text-lg font-semibold mb-4 flex items-center">
                     <i data-lucide="smartphone" class="w-5 h-5 mr-2"></i>
-                    Mobile Optimization
+                    Page Information
                 </h4>
-                <div class="flex justify-between items-center">
-                    <span>Mobile Friendly:</span>
-                    <span class="font-medium ${results.mobile_friendly ? 'text-green-600' : 'text-red-600'}">
-                        ${results.mobile_friendly ? 'Yes' : 'No'}
-                    </span>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span>Title Tag:</span>
+                        <span class="font-medium ${pageAnalysis.seo_elements?.title ? 'text-green-600' : 'text-red-600'}">
+                            ${pageAnalysis.seo_elements?.title ? 'Present' : 'Missing'}
+                        </span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Meta Description:</span>
+                        <span class="font-medium ${pageAnalysis.seo_elements?.meta_description ? 'text-green-600' : 'text-red-600'}">
+                            ${pageAnalysis.seo_elements?.meta_description ? 'Present' : 'Missing'}
+                        </span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Canonical Tag:</span>
+                        <span class="font-medium ${pageAnalysis.seo_elements?.canonical ? 'text-green-600' : 'text-red-600'}">
+                            ${pageAnalysis.seo_elements?.canonical ? 'Present' : 'Missing'}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -516,19 +583,25 @@ function generateRecommendationsHTML(results) {
                             <i data-lucide="lightbulb" class="w-5 h-5 text-blue-500 mt-0.5"></i>
                         </div>
                         <div class="ml-3">
-                            <h5 class="font-medium text-blue-800">${rec.title || 'Recommendation ' + (index + 1)}</h5>
-                            <p class="text-blue-700 mt-1">${rec.description || rec}</p>
+                            <h5 class="font-medium text-blue-800">${rec.title || rec.category || 'Recommendation ' + (index + 1)}</h5>
+                            <p class="text-blue-700 mt-1">${rec.description || rec.message || rec}</p>
                             ${rec.priority ? `<span class="inline-block mt-2 px-2 py-1 text-xs font-medium bg-${rec.priority === 'high' ? 'red' : rec.priority === 'medium' ? 'yellow' : 'green'}-100 text-${rec.priority === 'high' ? 'red' : rec.priority === 'medium' ? 'yellow' : 'green'}-800 rounded">${rec.priority.toUpperCase()} PRIORITY</span>` : ''}
                         </div>
                     </div>
                 </div>
-            `).join('') : '<p class="text-gray-600 text-center py-8">No specific recommendations available.</p>'}
+            `).join('') : `
+                <div class="text-center py-8">
+                    <i data-lucide="check-circle" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Great Job!</h4>
+                    <p class="text-gray-600">No major issues found. Your site looks good!</p>
+                </div>
+            `}
         </div>
     `;
 }
 
 function generatePagesHTML(results) {
-    const pages = results.page_details || [];
+    const pages = results.page_analysis ? Object.entries(results.page_analysis) : [];
     return `
         <div class="space-y-4">
             <div class="bg-gray-50 p-4 rounded-lg">
@@ -548,22 +621,22 @@ function generatePagesHTML(results) {
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            ${pages.slice(0, 20).map(page => `
+                            ${pages.slice(0, 20).map(([url, page]) => `
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600">
-                                        <a href="${page.url}" target="_blank" class="hover:underline">
-                                            ${page.url.length > 50 ? page.url.substring(0, 50) + '...' : page.url}
+                                        <a href="${url}" target="_blank" class="hover:underline">
+                                            ${url.length > 50 ? url.substring(0, 50) + '...' : url}
                                         </a>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        ${page.title ? (page.title.length > 40 ? page.title.substring(0, 40) + '...' : page.title) : 'No Title'}
+                                        ${page.seo_elements?.title ? (page.seo_elements.title.length > 40 ? page.seo_elements.title.substring(0, 40) + '...' : page.seo_elements.title) : 'No Title'}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        ${page.load_time ? page.load_time + 's' : 'N/A'}
+                                        ${page.performance_metrics?.load_time ? page.performance_metrics.load_time + 's' : 'N/A'}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${page.status_code === 200 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                            ${page.status_code || 'Unknown'}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${page.basic_info?.status_code === 200 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                            ${page.basic_info?.status_code || 'Unknown'}
                                         </span>
                                     </td>
                                 </tr>

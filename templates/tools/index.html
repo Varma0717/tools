@@ -88,7 +88,7 @@
                     <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ tool.description or 'Professional SEO tool for analysis and optimization.' }}</p>
                     
                     <div class="mt-auto">
-                      <a href="/tools/{{ tool.slug }}/" class="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
+                      <a href="/tools/{{ tool.slug }}" class="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
                         Use Tool
                       </a>
                     </div>
@@ -131,7 +131,7 @@
                     
                     <div class="mt-auto">
                       {% if user_has_pro %}
-                        <a href="/tools/{{ tool.slug }}/" class="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
+                        <a href="/tools/{{ tool.slug }}" class="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
                           Use Tool
                         </a>
                       {% else %}
