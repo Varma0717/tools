@@ -35,7 +35,7 @@ def audit_seo(url: str) -> dict:
 
 
 class SEOSiteCrawler:
-    def __init__(self, base_url, max_pages=50, max_depth=3):
+    def __init__(self, base_url, max_pages=500, max_depth=5):
         self.base_url = base_url.rstrip("/")
         self.domain = urlparse(base_url).netloc
         self.max_pages = max_pages

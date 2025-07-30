@@ -148,6 +148,12 @@ def tools_index():
         ],
         "Content Analysis": [
             {
+                "name": "Content Optimizer",
+                "slug": "content-optimizer",
+                "description": "Optimize your content for SEO",
+                "is_premium": False,
+            },
+            {
                 "name": "Keyword Density Analyzer",
                 "slug": "keyword-density-analyzer",
                 "description": "Analyze keyword density in your content",
@@ -156,17 +162,17 @@ def tools_index():
             {
                 "name": "Headline Generator",
                 "slug": "headline-generator",
-                "description": "Generate engaging headlines",
+                "description": "Generate compelling headlines",
                 "is_premium": False,
-            },
-            {
-                "name": "Content Optimizer",
-                "slug": "content-optimizer",
-                "description": "Optimize content for SEO",
-                "is_premium": True,
             },
         ],
         "Keyword Research": [
+            {
+                "name": "Advanced Keyword Research",
+                "slug": "advanced-keyword-research",
+                "description": "Advanced keyword research tool",
+                "is_premium": True,
+            },
             {
                 "name": "Keyword Suggestion Generator",
                 "slug": "keyword-suggestion-generator",
@@ -179,56 +185,78 @@ def tools_index():
                 "description": "Generate LSI keywords",
                 "is_premium": False,
             },
-            {
-                "name": "Advanced Keyword Research",
-                "slug": "advanced-keyword-research",
-                "description": "Advanced keyword research tool",
-                "is_premium": True,
-            },
         ],
         "Link Analysis": [
-            {
-                "name": "Broken Link Checker",
-                "slug": "broken-link-checker",
-                "description": "Find and fix broken links",
-                "is_premium": False,
-            },
-            {
-                "name": "Link Status Monitor",
-                "slug": "link-status-monitor",
-                "description": "Monitor link status",
-                "is_premium": False,
-            },
-            {
-                "name": "Internal Link Analyzer",
-                "slug": "internal-link-analyzer",
-                "description": "Analyze internal linking structure",
-                "is_premium": False,
-            },
-            {
-                "name": "Redirect Checker",
-                "slug": "redirect-checker",
-                "description": "Check redirect chains",
-                "is_premium": False,
-            },
             {
                 "name": "Advanced Backlink Analyzer",
                 "slug": "advanced-backlink-analyzer",
                 "description": "Advanced backlink analysis",
                 "is_premium": True,
             },
+            {
+                "name": "Internal Link Analyzer",
+                "slug": "internal-link-analyzer",
+                "description": "Analyze internal link structure",
+                "is_premium": False,
+            },
+            {
+                "name": "Link Status Monitor",
+                "slug": "link-status-monitor",
+                "description": "Monitor link status and health",
+                "is_premium": False,
+            },
+            {
+                "name": "Broken Link Checker",
+                "slug": "broken-link-checker",
+                "description": "Find and fix broken links",
+                "is_premium": False,
+            },
         ],
-        "Technical Tools": [
+        "Social Media": [
+            {
+                "name": "Open Graph Preview",
+                "slug": "open-graph-preview",
+                "description": "Preview how your page looks on social media",
+                "is_premium": False,
+            },
+        ],
+        "Domain Analysis": [
             {
                 "name": "DNS Lookup",
                 "slug": "dns-lookup",
-                "description": "Perform DNS lookup queries",
+                "description": "Perform DNS record lookup",
                 "is_premium": False,
             },
             {
                 "name": "WHOIS Lookup",
                 "slug": "whois-lookup",
-                "description": "Get domain WHOIS information",
+                "description": "Domain WHOIS information lookup",
+                "is_premium": False,
+            },
+            {
+                "name": "Redirect Checker",
+                "slug": "redirect-checker",
+                "description": "Check redirect chains and status",
+                "is_premium": False,
+            },
+        ],
+        "Other": [
+            {
+                "name": "Speed Tester",
+                "slug": "speed-tester",
+                "description": "Comprehensive website speed test",
+                "is_premium": False,
+            },
+            {
+                "name": "Schema Generator",
+                "slug": "schema-generator",
+                "description": "Generate structured data",
+                "is_premium": False,
+            },
+            {
+                "name": "Sitemap XML Validator",
+                "slug": "sitemap-xml-validator",
+                "description": "Validate XML sitemap structure",
                 "is_premium": False,
             },
             {
@@ -237,268 +265,23 @@ def tools_index():
                 "description": "Generate secure passwords",
                 "is_premium": False,
             },
-            {
-                "name": "Schema Generator",
-                "slug": "schema-generator",
-                "description": "Generate schema markup",
-                "is_premium": False,
-            },
-            {
-                "name": "Sitemap XML Validator",
-                "slug": "sitemap-xml-validator",
-                "description": "Validate XML sitemaps",
-                "is_premium": False,
-            },
-        ],
-        "Social & Preview": [
-            {
-                "name": "Open Graph Preview",
-                "slug": "open-graph-preview",
-                "description": "Preview Open Graph tags",
-                "is_premium": False,
-            },
         ],
     }
 
-    categories = [
-        {"name": "Technical SEO", "slug": "technical-seo", "icon": "search"},
-        {"name": "Performance", "slug": "performance", "icon": "zap"},
-        {"name": "Content Analysis", "slug": "content-analysis", "icon": "file-text"},
-        {"name": "Keyword Research", "slug": "keyword-research", "icon": "target"},
-        {"name": "Link Analysis", "slug": "link-analysis", "icon": "link"},
-        {"name": "Technical Tools", "slug": "technical-tools", "icon": "tool"},
-        {"name": "Social & Preview", "slug": "social-preview", "icon": "share"},
-    ]
-
-    # Map tools data to use slugs as keys for template compatibility
-    tools_by_category = {
-        "technical-seo": tools_data["Technical SEO"],
-        "performance": tools_data["Performance"],
-        "content-analysis": tools_data["Content Analysis"],
-        "keyword-research": tools_data["Keyword Research"],
-        "link-analysis": tools_data["Link Analysis"],
-        "technical-tools": tools_data["Technical Tools"],
-        "social-preview": tools_data["Social & Preview"],
-    }
-
-    # Calculate totals for template
+    # Calculate total tools count and categorize
     total_tools = sum(len(tools) for tools in tools_data.values())
-    tool_counts = {category: len(tools) for category, tools in tools_data.items()}
-    tool_counts["total"] = total_tools
+    categories = [
+        {"name": cat, "slug": cat.lower().replace(" ", "-")}
+        for cat in tools_data.keys()
+    ]
 
     return render_template(
         "tools/index.html",
-        tools=tools_data,
-        tools_by_category=tools_by_category,  # Template expects this with slug keys
+        tools_data=tools_data,
         categories=categories,
         total_tools=total_tools,
-        tool_counts=tool_counts,
-        page_title="SEO Tools - Complete Toolkit",
-        meta_description="Access our comprehensive SEO toolkit with 25+ free and premium tools for technical SEO, content optimization, and website analysis.",
     )
 
 
-@tools_bp.route("/<slug>/")
-def tool_detail(slug):
-    """Handle tool detail pages - show coming soon page for all tools except working ones."""
-    from flask import abort
-
-    # Skip tools that have their own dedicated routes
-    if slug == "seo-audit-tool":
-        abort(404)  # Let the specific blueprint handle this
-
-    # Tool information for creating tool detail pages
-    tools_info = {
-        # Core Tools
-        "meta-tag-analyzer": {
-            "name": "Meta Tag Analyzer",
-            "description": "Analyze and optimize your meta tags",
-            "category": "Technical SEO",
-        },
-        "page-speed-analyzer": {
-            "name": "Page Speed Analyzer",
-            "description": "Test your website loading speed",
-            "category": "Performance",
-        },
-        "keyword-density-analyzer": {
-            "name": "Keyword Density Analyzer",
-            "description": "Analyze keyword density in your content",
-            "category": "Content Analysis",
-        },
-        # Advanced Tools
-        "advanced-keyword-research": {
-            "name": "Advanced Keyword Research",
-            "description": "Advanced keyword research tool",
-            "category": "Keyword Research",
-        },
-        "advanced-backlink-analyzer": {
-            "name": "Advanced Backlink Analyzer",
-            "description": "Advanced backlink analysis",
-            "category": "Link Analysis",
-        },
-        "technical-seo-analyzer": {
-            "name": "Technical SEO Analyzer",
-            "description": "Comprehensive technical SEO analysis",
-            "category": "Technical SEO",
-        },
-        "content-optimizer": {
-            "name": "Content Optimizer",
-            "description": "Optimize content for SEO",
-            "category": "Content Analysis",
-        },
-        "schema-generator": {
-            "name": "Schema Generator",
-            "description": "Generate schema markup",
-            "category": "Technical SEO",
-        },
-        # Technical SEO Tools
-        "canonical-tag-checker": {
-            "name": "Canonical Tag Checker",
-            "description": "Check canonical tag implementation",
-            "category": "Technical SEO",
-        },
-        "open-graph-preview": {
-            "name": "Open Graph Preview",
-            "description": "Preview Open Graph tags",
-            "category": "Social & Preview",
-        },
-        "schema-markup-tester": {
-            "name": "Schema Markup Tester",
-            "description": "Test and validate schema markup",
-            "category": "Technical SEO",
-        },
-        "sitemap-xml-validator": {
-            "name": "Sitemap XML Validator",
-            "description": "Validate XML sitemaps",
-            "category": "Technical SEO",
-        },
-        "robots-txt-tester": {
-            "name": "Robots.txt Tester",
-            "description": "Test and validate robots.txt file",
-            "category": "Technical SEO",
-        },
-        "ssl-checker": {
-            "name": "SSL Checker",
-            "description": "Verify SSL certificate status",
-            "category": "Technical SEO",
-        },
-        "http-header-checker": {
-            "name": "HTTP Header Checker",
-            "description": "Analyze HTTP response headers",
-            "category": "Technical SEO",
-        },
-        "mobile-optimization-tester": {
-            "name": "Mobile Optimization Tester",
-            "description": "Test mobile optimization",
-            "category": "Performance",
-        },
-        "hreflang-tag-checker": {
-            "name": "Hreflang Tag Checker",
-            "description": "Check hreflang tag implementation",
-            "category": "Technical SEO",
-        },
-        # Content Tools
-        "headline-generator": {
-            "name": "Headline Generator",
-            "description": "Generate engaging headlines",
-            "category": "Content Analysis",
-        },
-        # Link Analysis Tools
-        "broken-link-checker": {
-            "name": "Broken Link Checker",
-            "description": "Find and fix broken links",
-            "category": "Link Analysis",
-        },
-        "link-status-monitor": {
-            "name": "Link Status Monitor",
-            "description": "Monitor link status",
-            "category": "Link Analysis",
-        },
-        "internal-link-analyzer": {
-            "name": "Internal Link Analyzer",
-            "description": "Analyze internal linking structure",
-            "category": "Link Analysis",
-        },
-        "redirect-checker": {
-            "name": "Redirect Checker",
-            "description": "Check redirect chains",
-            "category": "Link Analysis",
-        },
-        # Performance Tools
-        "image-compressor": {
-            "name": "Image Compressor",
-            "description": "Compress images for better performance",
-            "category": "Performance",
-        },
-        "javascript-minifier": {
-            "name": "JavaScript Minifier",
-            "description": "Minify JavaScript code",
-            "category": "Performance",
-        },
-        "core-web-vitals": {
-            "name": "Core Web Vitals",
-            "description": "Measure Core Web Vitals",
-            "category": "Performance",
-        },
-        # Keyword Research Tools
-        "keyword-suggestion-generator": {
-            "name": "Keyword Suggestion Generator",
-            "description": "Generate keyword suggestions",
-            "category": "Keyword Research",
-        },
-        "lsi-keyword-generator": {
-            "name": "LSI Keyword Generator",
-            "description": "Generate LSI keywords",
-            "category": "Keyword Research",
-        },
-        # Technical Tools
-        "dns-lookup": {
-            "name": "DNS Lookup",
-            "description": "Perform DNS lookup queries",
-            "category": "Technical Tools",
-        },
-        "whois-lookup": {
-            "name": "WHOIS Lookup",
-            "description": "Get domain WHOIS information",
-            "category": "Technical Tools",
-        },
-        "password-generator": {
-            "name": "Password Generator",
-            "description": "Generate secure passwords",
-            "category": "Technical Tools",
-        },
-        # Social & Preview Tools
-        "twitter-card-preview": {
-            "name": "Twitter Card Preview",
-            "description": "Preview Twitter cards",
-            "category": "Social & Preview",
-        },
-        "social-media-preview": {
-            "name": "Social Media Preview",
-            "description": "Preview social media posts",
-            "category": "Social & Preview",
-        },
-    }
-
-    # Check if we have info for this tool
-    if slug in tools_info:
-        tool_info = tools_info[slug]
-
-        # Create a tool object for the template
-        tool = {
-            "name": tool_info["name"],
-            "slug": slug,
-            "description": tool_info["description"],
-            "category": {"name": tool_info["category"]},
-            "is_premium": False,  # You can adjust this per tool
-        }
-
-        # Render the tool detail template (coming soon page)
-        return render_template("tools/tool_detail.html", tool=tool)
-    else:
-        # Tool not found
-        abort(404)
-
-
-# Category routes disabled - using static tools only
-# All tools are available from main tools page
+# No generic tool routes - all tools have their own specific routes
+# This prevents "Coming Soon" pages from appearing

@@ -1,26 +1,37 @@
 {% extends "base.html" %}
 
-{% block title %}SEO Audit Tool - Free SEO Tool{% endblock %}
+{% block title %}SEO Audit Tool - Comprehensive Website Analysis{% endblock %}
 
-{% block meta_description %}Comprehensive SEO audit tool for website analysis and optimization. Free tool to analyze your website's SEO performance.{% endblock %}
+{% block meta_description %}Advanced SEO audit tool with comprehensive website analysis, unlimited page crawling, technical SEO insights, and actionable recommendations.{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900 text-white py-20">
+<section class="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white py-20">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
+            <div class="flex justify-center mb-6">
+                <div class="bg-blue-500/20 p-4 rounded-full">
+                    <i data-lucide="search" class="w-12 h-12 text-blue-300"></i>
+                </div>
+            </div>
             <h1 class="text-4xl md:text-5xl font-bold mb-6">
-                SEO Audit Tool
+                Advanced SEO Audit Tool
             </h1>
             <p class="text-xl mb-8 text-blue-100">
-                Comprehensive SEO analysis with site-wide crawling and technical insights
+                Comprehensive website analysis with unlimited page crawling and in-depth technical SEO insights
             </p>
             <div class="flex justify-center items-center space-x-4 mb-8">
-                <span class="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium">
-                    ✨ Free Tool
+                <span class="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center">
+                    <i data-lucide="check" class="w-4 h-4 mr-2"></i>
+                    Free Tool
                 </span>
-                <span class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full text-sm font-medium">
-                    🚀 Instant Results
+                <span class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center">
+                    <i data-lucide="zap" class="w-4 h-4 mr-2"></i>
+                    Instant Results
+                </span>
+                <span class="bg-purple-500 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center">
+                    <i data-lucide="infinity" class="w-4 h-4 mr-2"></i>
+                    Unlimited Pages
                 </span>
             </div>
         </div>
@@ -28,9 +39,9 @@
 </section>
 
 <!-- Tool Section -->
-<section class="py-12">
+<section class="py-12 bg-gray-50">
     <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto">
+        <div class="max-w-6xl mx-auto">
             <!-- Tool Interface -->
             <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
                 <form id="seo_audit_tool_form" class="space-y-6">
@@ -39,68 +50,128 @@
                     <!-- Primary Input -->
                     <div>
                         <label for="primary_input" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="globe" class="w-4 h-4 inline mr-2"></i>
                             Enter your website URL for comprehensive SEO audit:
                         </label>
                         <div class="relative">
                             <input type="text" 
                                    id="primary_input" 
                                    name="primary_input"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                                   class="w-full px-4 py-4 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
                                    placeholder="https://example.com"
                                    required>
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
-                                </svg>
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="link" class="w-5 h-5 text-gray-400"></i>
                             </div>
                         </div>
-                        <p class="mt-2 text-sm text-gray-500">
-                            We'll analyze up to 50 pages of your website for comprehensive SEO insights.
-                        </p>
                     </div>
-                    
-                    <!-- Action Button -->
-                    <button type="submit" 
-                            id="analyze_btn"
-                            class="w-full bg-blue-600 text-white py-4 px-6 rounded-lg hover:bg-blue-700 transition duration-200 font-medium text-lg flex items-center justify-center">
-                        <span id="btn_text">Analyze Website SEO</span>
-                        <span id="btn_loading" class="hidden">
-                            <div class="loading-spinner mr-3"></div>
-                            Analyzing...
-                        </span>
-                    </button>
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" 
+                                class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center mx-auto">
+                            <i data-lucide="search" class="w-5 h-5 mr-2"></i>
+                            Analyze Website SEO
+                        </button>
+                    </div>
                 </form>
-            </div>
-            
-            <!-- Results Section -->
-            <div id="results" class="hidden">
-                <div class="bg-white rounded-xl shadow-lg p-8">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                        <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+
+                <!-- Loading State -->
+                <div id="loading_state" class="hidden text-center py-8">
+                    <div class="inline-flex items-center px-6 py-3 bg-blue-50 rounded-lg">
+                        <svg class="animate-spin -ml-1 mr-3 h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Analysis Results
-                    </h3>
-                    <div id="results_content" class="space-y-4">
-                        <!-- Results will be displayed here -->
+                        <span class="text-blue-800 font-medium">Analyzing your website... This may take a few minutes.</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
 
-<!-- Information Section -->
-<section class="py-12 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto">
-            <div class="grid md:grid-cols-2 gap-8">
+            <!-- Results Section with Tabs -->
+            <div id="results_container" class="hidden">
+                <!-- Tab Navigation -->
+                <div class="bg-white rounded-t-xl shadow-lg border-b">
+                    <nav class="flex space-x-8 px-8 py-4" aria-label="Tabs">
+                        <button class="tab-button active-tab text-blue-600 border-b-2 border-blue-600 py-2 px-1 text-sm font-medium flex items-center" data-tab="overview">
+                            <i data-lucide="pie-chart" class="w-4 h-4 mr-2"></i>
+                            Overview
+                        </button>
+                        <button class="tab-button text-gray-500 hover:text-gray-700 py-2 px-1 text-sm font-medium flex items-center" data-tab="technical">
+                            <i data-lucide="settings" class="w-4 h-4 mr-2"></i>
+                            Technical SEO
+                        </button>
+                        <button class="tab-button text-gray-500 hover:text-gray-700 py-2 px-1 text-sm font-medium flex items-center" data-tab="content">
+                            <i data-lucide="file-text" class="w-4 h-4 mr-2"></i>
+                            Content Analysis
+                        </button>
+                        <button class="tab-button text-gray-500 hover:text-gray-700 py-2 px-1 text-sm font-medium flex items-center" data-tab="performance">
+                            <i data-lucide="zap" class="w-4 h-4 mr-2"></i>
+                            Performance
+                        </button>
+                        <button class="tab-button text-gray-500 hover:text-gray-700 py-2 px-1 text-sm font-medium flex items-center" data-tab="recommendations">
+                            <i data-lucide="lightbulb" class="w-4 h-4 mr-2"></i>
+                            Recommendations
+                        </button>
+                        <button class="tab-button text-gray-500 hover:text-gray-700 py-2 px-1 text-sm font-medium flex items-center" data-tab="pages">
+                            <i data-lucide="layers" class="w-4 h-4 mr-2"></i>
+                            Page Analysis
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="bg-white rounded-b-xl shadow-lg">
+                    <!-- Overview Tab -->
+                    <div id="overview-tab" class="tab-content p-8">
+                        <div id="overview_content">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Technical SEO Tab -->
+                    <div id="technical-tab" class="tab-content hidden p-8">
+                        <div id="technical_content">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Content Analysis Tab -->
+                    <div id="content-tab" class="tab-content hidden p-8">
+                        <div id="content_content">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Performance Tab -->
+                    <div id="performance-tab" class="tab-content hidden p-8">
+                        <div id="performance_content">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Recommendations Tab -->
+                    <div id="recommendations-tab" class="tab-content hidden p-8">
+                        <div id="recommendations_content">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Page Analysis Tab -->
+                    <div id="pages-tab" class="tab-content hidden p-8">
+                        <div id="pages_content">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Information Sections -->
+            <div class="grid md:grid-cols-2 gap-8 mt-8">
                 <!-- How to Use -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                        <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
+                        <i data-lucide="help-circle" class="w-5 h-5 text-blue-500 mr-2"></i>
                         How to Use
                     </h3>
                     <ol class="space-y-2 text-gray-600">
@@ -114,11 +185,11 @@
                         </li>
                         <li class="flex items-start">
                             <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">3</span>
-                            Review detailed results, issues, and actionable recommendations
+                            Review results across different tabs: Overview, Technical, Content, Performance
                         </li>
                         <li class="flex items-start">
                             <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-0.5">4</span>
-                            Implement suggested improvements to boost SEO performance
+                            Implement actionable recommendations to boost SEO performance
                         </li>
                     </ol>
                 </div>
@@ -126,41 +197,41 @@
                 <!-- Features -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                        <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Key Features
+                        <i data-lucide="star" class="w-5 h-5 text-green-500 mr-2"></i>
+                        Advanced Features
                     </h3>
                     <ul class="space-y-2 text-gray-600">
                         <li class="flex items-center">
-                            <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            Site-wide crawling (up to 50 pages)
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            Unlimited page crawling with smart depth control
                         </li>
                         <li class="flex items-center">
-                            <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            Technical SEO analysis
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            Comprehensive technical SEO analysis
                         </li>
                         <li class="flex items-center">
-                            <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            Robots.txt & Sitemap validation
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            Content optimization insights
                         </li>
                         <li class="flex items-center">
-                            <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            Duplicate content detection
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            Performance metrics and recommendations
                         </li>
                         <li class="flex items-center">
-                            <svg class="h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            Actionable recommendations
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            Mobile-friendly analysis
+                        </li>
+                        <li class="flex items-center">
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            Internal link structure analysis
+                        </li>
+                        <li class="flex items-center">
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            Image optimization recommendations
+                        </li>
+                        <li class="flex items-center">
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-2"></i>
+                            Schema markup validation
                         </li>
                     </ul>
                 </div>
@@ -169,354 +240,347 @@
     </div>
 </section>
 
-<!-- FAQ Section -->
-<section class="py-12">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto">
-            <div class="bg-white rounded-xl shadow-lg p-8">
-                <h3 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
-                    <svg class="h-6 w-6 text-purple-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Frequently Asked Questions
-                </h3>
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="font-medium text-gray-900 mb-2">How many pages does this tool analyze?</h4>
-                        <p class="text-gray-600">Our SEO audit tool crawls up to 50 pages of your website to provide comprehensive site-wide analysis.</p>
-                    </div>
-                    <div>
-                        <h4 class="font-medium text-gray-900 mb-2">What does the comprehensive analysis include?</h4>
-                        <p class="text-gray-600">We analyze technical SEO, content quality, site structure, robots.txt, XML sitemaps, duplicate content, and provide prioritized recommendations.</p>
-                    </div>
-                    <div>
-                        <h4 class="font-medium text-gray-900 mb-2">How long does the analysis take?</h4>
-                        <p class="text-gray-600">Analysis typically takes 30-90 seconds depending on your website size and server response times.</p>
-                    </div>
-                    <div>
-                        <h4 class="font-medium text-gray-900 mb-2">Is this tool completely free?</h4>
-                        <p class="text-gray-600">Yes! You get 5 comprehensive website audits per day for free, with no registration required.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 <script>
+// Tab functionality
+function initTabs() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.getAttribute('data-tab');
+            
+            // Remove active class from all buttons
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active-tab', 'text-blue-600', 'border-b-2', 'border-blue-600');
+                btn.classList.add('text-gray-500', 'hover:text-gray-700');
+            });
+            
+            // Add active class to clicked button
+            button.classList.remove('text-gray-500', 'hover:text-gray-700');
+            button.classList.add('active-tab', 'text-blue-600', 'border-b-2', 'border-blue-600');
+            
+            // Hide all tab contents
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabId + '-tab').classList.remove('hidden');
+        });
+    });
+}
+
+// Form submission
 document.getElementById('seo_audit_tool_form').addEventListener('submit', function(e) {
     e.preventDefault();
     
-    const input = document.getElementById('primary_input').value.trim();
-    if (!input) {
-        alert('Please enter a website URL to analyze.');
-        return;
-    }
-    
-    // Validate URL format
-    if (!input.match(/^https?:\/\/.+/) && !input.match(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/)) {
-        alert('Please enter a valid URL (e.g., https://example.com or example.com)');
-        return;
-    }
+    const formData = new FormData(this);
+    const loadingState = document.getElementById('loading_state');
+    const resultsContainer = document.getElementById('results_container');
     
     // Show loading state
-    showLoading('analyze_btn', 'btn_text', 'btn_loading');
+    loadingState.classList.remove('hidden');
+    resultsContainer.classList.add('hidden');
     
-    // Perform comprehensive SEO audit via AJAX
-    fetch('/tools/seo-audit-tool/analyze', {
+    // Submit form
+    fetch('{{ url_for("seo_audit_tool.seo_audit_analyze") }}', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'url=' + encodeURIComponent(input) + '&csrf_token={{ csrf_token }}'
+        body: formData
     })
     .then(response => response.json())
     .then(data => {
-        hideLoading('analyze_btn', 'btn_text', 'btn_loading');
+        loadingState.classList.add('hidden');
         
         if (data.success) {
-            showResults('results');
-            displayComprehensiveSEOResults(data.data);
+            displayResults(data.result);
+            resultsContainer.classList.remove('hidden');
         } else {
-            alert('Error: ' + data.error);
+            alert('Error: ' + (data.error || 'An unexpected error occurred'));
         }
     })
     .catch(error => {
-        hideLoading('analyze_btn', 'btn_text', 'btn_loading');
-        alert('An error occurred during analysis. Please try again.');
+        loadingState.classList.add('hidden');
         console.error('Error:', error);
+        alert('Network error occurred. Please try again.');
     });
 });
 
-function displayComprehensiveSEOResults(data) {
-    const resultsContent = document.getElementById('results_content');
+function displayResults(results) {
+    // Overview Tab
+    document.getElementById('overview_content').innerHTML = generateOverviewHTML(results);
     
-    let html = `
-        <div class="grid md:grid-cols-3 gap-6 mb-8">
-            <!-- Overall Score -->
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6 text-center">
-                <h4 class="font-semibold text-blue-800 mb-3 flex items-center justify-center">
-                    <svg class="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                    Overall SEO Score
-                </h4>
-                <div class="text-4xl font-bold text-blue-900 mb-2">${data.overall_score}/100</div>
-                <div class="bg-white rounded-full h-3 mb-2">
-                    <div class="bg-blue-600 h-3 rounded-full transition-all duration-500" style="width: ${data.overall_score}%"></div>
+    // Technical SEO Tab
+    document.getElementById('technical_content').innerHTML = generateTechnicalHTML(results);
+    
+    // Content Analysis Tab
+    document.getElementById('content_content').innerHTML = generateContentHTML(results);
+    
+    // Performance Tab
+    document.getElementById('performance_content').innerHTML = generatePerformanceHTML(results);
+    
+    // Recommendations Tab
+    document.getElementById('recommendations_content').innerHTML = generateRecommendationsHTML(results);
+    
+    // Page Analysis Tab
+    document.getElementById('pages_content').innerHTML = generatePagesHTML(results);
+}
+
+function generateOverviewHTML(results) {
+    const seoScore = results.seo_score || 0;
+    const scoreColor = seoScore >= 80 ? 'green' : seoScore >= 60 ? 'yellow' : 'red';
+    
+    return `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100">SEO Score</p>
+                        <p class="text-3xl font-bold">${seoScore}%</p>
+                    </div>
+                    <i data-lucide="target" class="w-8 h-8"></i>
                 </div>
-                <div class="text-sm text-blue-700">
-                    ${data.overall_score >= 80 ? 'Excellent' : data.overall_score >= 60 ? 'Good' : data.overall_score >= 40 ? 'Needs Improvement' : 'Poor'}
+            </div>
+            <div class="bg-gradient-to-r from-green-500 to-teal-600 text-white p-6 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-green-100">Pages Analyzed</p>
+                        <p class="text-3xl font-bold">${results.pages_crawled || 0}</p>
+                    </div>
+                    <i data-lucide="layers" class="w-8 h-8"></i>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-orange-500 to-red-600 text-white p-6 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-orange-100">Issues Found</p>
+                        <p class="text-3xl font-bold">${(results.issues && results.issues.length) || 0}</p>
+                    </div>
+                    <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-50 p-6 rounded-lg">
+            <h4 class="text-lg font-semibold mb-4">Quick Summary</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-600 mb-2">Domain Authority</p>
+                    <p class="font-medium">${results.domain_authority || 'N/A'}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600 mb-2">Page Load Time</p>
+                    <p class="font-medium">${results.performance?.avg_load_time || 'N/A'}s</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600 mb-2">Mobile Friendly</p>
+                    <p class="font-medium">${results.mobile_friendly ? 'Yes' : 'No'}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600 mb-2">SSL Certificate</p>
+                    <p class="font-medium">${results.has_ssl ? 'Valid' : 'Invalid'}</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function generateTechnicalHTML(results) {
+    return `
+        <div class="space-y-6">
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i data-lucide="server" class="w-5 h-5 mr-2"></i>
+                    Server & Security
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex justify-between">
+                        <span>SSL Certificate:</span>
+                        <span class="font-medium ${results.has_ssl ? 'text-green-600' : 'text-red-600'}">
+                            ${results.has_ssl ? 'Valid' : 'Invalid'}
+                        </span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>HTTPS Redirect:</span>
+                        <span class="font-medium">${results.https_redirect ? 'Yes' : 'No'}</span>
+                    </div>
                 </div>
             </div>
             
-            <!-- Crawl Summary -->
-            <div class="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-6">
-                <h4 class="font-semibold text-green-800 mb-3 flex items-center">
-                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
-                    </svg>
-                    Crawl Summary
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i data-lucide="code" class="w-5 h-5 mr-2"></i>
+                    Meta Tags & Structure
                 </h4>
-                <div class="space-y-2 text-sm">
-                    <div class="flex justify-between">
-                        <span class="text-green-700">Pages Found:</span>
-                        <span class="font-semibold text-green-900">${data.crawl_summary.total_pages_found}</span>
+                <div class="space-y-3">
+                    ${results.meta_analysis ? Object.entries(results.meta_analysis).map(([key, value]) => `
+                        <div class="flex justify-between items-center">
+                            <span class="capitalize">${key.replace(/_/g, ' ')}:</span>
+                            <span class="font-medium">${typeof value === 'boolean' ? (value ? 'Present' : 'Missing') : value}</span>
+                        </div>
+                    `).join('') : '<p>No meta analysis data available</p>'}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function generateContentHTML(results) {
+    return `
+        <div class="space-y-6">
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i data-lucide="type" class="w-5 h-5 mr-2"></i>
+                    Content Metrics
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-blue-600">${results.content_analysis?.total_words || 0}</p>
+                        <p class="text-sm text-gray-600">Total Words</p>
                     </div>
-                    <div class="flex justify-between">
-                        <span class="text-green-700">Successfully Crawled:</span>
-                        <span class="font-semibold text-green-900">${data.crawl_summary.successfully_crawled}</span>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-green-600">${results.content_analysis?.headings_count || 0}</p>
+                        <p class="text-sm text-gray-600">Headings</p>
                     </div>
-                    <div class="flex justify-between">
-                        <span class="text-green-700">Failed Pages:</span>
-                        <span class="font-semibold text-green-900">${data.crawl_summary.failed_pages}</span>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-purple-600">${results.content_analysis?.images_count || 0}</p>
+                        <p class="text-sm text-gray-600">Images</p>
                     </div>
                 </div>
             </div>
             
-            <!-- Analysis Time -->
-            <div class="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-6">
-                <h4 class="font-semibold text-purple-800 mb-3 flex items-center">
-                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Analysis Info
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i data-lucide="image" class="w-5 h-5 mr-2"></i>
+                    Image Optimization
                 </h4>
-                <div class="space-y-2 text-sm">
+                <div class="space-y-2">
                     <div class="flex justify-between">
-                        <span class="text-purple-700">Analysis Time:</span>
-                        <span class="font-semibold text-purple-900">${data.total_audit_time}s</span>
+                        <span>Images with Alt Text:</span>
+                        <span class="font-medium">${results.content_analysis?.images_with_alt || 0}</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-purple-700">Timestamp:</span>
-                        <span class="font-semibold text-purple-900">${data.timestamp}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-purple-700">Website:</span>
-                        <span class="font-semibold text-purple-900 text-xs break-all">${data.url}</span>
+                        <span>Missing Alt Text:</span>
+                        <span class="font-medium text-red-600">${results.content_analysis?.images_without_alt || 0}</span>
                     </div>
                 </div>
             </div>
         </div>
     `;
-    
-    // Technical Analysis Section
-    if (data.technical_analysis) {
-        html += `
-            <div class="bg-white border rounded-lg p-6 mb-6">
-                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg class="h-5 w-5 text-orange-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    Technical Analysis
+}
+
+function generatePerformanceHTML(results) {
+    return `
+        <div class="space-y-6">
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i data-lucide="gauge" class="w-5 h-5 mr-2"></i>
+                    Loading Performance
                 </h4>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-gray-50 rounded-lg p-4 text-center">
-                        <div class="text-2xl font-bold text-${data.technical_analysis.https_usage?.https_percentage === 100 ? 'green' : 'red'}-600">
-                            ${data.technical_analysis.https_usage?.https_percentage || 0}%
-                        </div>
-                        <div class="text-sm text-gray-600">HTTPS Usage</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-2">Average Load Time</p>
+                        <p class="text-2xl font-bold text-blue-600">${results.performance?.avg_load_time || 'N/A'}s</p>
                     </div>
-                    <div class="bg-gray-50 rounded-lg p-4 text-center">
-                        <div class="text-2xl font-bold text-${data.technical_analysis.canonical_tags?.canonical_percentage >= 80 ? 'green' : 'orange'}-600">
-                            ${data.technical_analysis.canonical_tags?.canonical_percentage || 0}%
-                        </div>
-                        <div class="text-sm text-gray-600">Canonical Tags</div>
+                    <div>
+                        <p class="text-sm text-gray-600 mb-2">Fastest Page</p>
+                        <p class="text-2xl font-bold text-green-600">${results.performance?.fastest_page || 'N/A'}s</p>
                     </div>
-                    <div class="bg-gray-50 rounded-lg p-4 text-center">
-                        <div class="text-2xl font-bold text-${data.technical_analysis.structured_data?.schema_percentage >= 50 ? 'green' : 'orange'}-600">
-                            ${data.technical_analysis.structured_data?.schema_percentage || 0}%
-                        </div>
-                        <div class="text-sm text-gray-600">Schema Markup</div>
-                    </div>
-                    <div class="bg-gray-50 rounded-lg p-4 text-center">
-                        <div class="text-2xl font-bold text-${data.technical_analysis.meta_robots?.meta_robots_percentage >= 80 ? 'green' : 'orange'}-600">
-                            ${data.technical_analysis.meta_robots?.meta_robots_percentage || 0}%
-                        </div>
-                        <div class="text-sm text-gray-600">Meta Robots</div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    // Site-wide Issues
-    if (data.site_wide_issues) {
-        html += `
-            <div class="bg-white border rounded-lg p-6 mb-6">
-                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg class="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                    </svg>
-                    Site-wide Issues Found
-                </h4>
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-red-600">${Object.keys(data.site_wide_issues.duplicate_titles || {}).length}</div>
-                            <div class="text-sm text-red-700">Duplicate Titles</div>
-                        </div>
-                    </div>
-                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-red-600">${Object.keys(data.site_wide_issues.duplicate_meta_descriptions || {}).length}</div>
-                            <div class="text-sm text-red-700">Duplicate Meta Descriptions</div>
-                        </div>
-                    </div>
-                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-red-600">${Object.keys(data.site_wide_issues.duplicate_h1_tags || {}).length}</div>
-                            <div class="text-sm text-red-700">Duplicate H1 Tags</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    // Infrastructure Analysis (Robots.txt & Sitemap)
-    html += `
-        <div class="grid md:grid-cols-2 gap-6 mb-6">
-            <!-- Robots.txt Analysis -->
-            <div class="bg-white border rounded-lg p-6">
-                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    Robots.txt
-                </h4>
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-700">Status:</span>
-                        <span class="px-2 py-1 rounded text-sm ${data.robots_txt?.exists ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                            ${data.robots_txt?.exists ? 'Found' : 'Not Found'}
-                        </span>
-                    </div>
-                    ${data.robots_txt?.exists ? `
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700">Sitemaps Listed:</span>
-                            <span class="font-semibold">${(data.robots_txt.sitemaps || []).length}</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700">Disallow Rules:</span>
-                            <span class="font-semibold">${(data.robots_txt.disallow_patterns || []).length}</span>
-                        </div>
-                    ` : ''}
                 </div>
             </div>
             
-            <!-- Sitemap Analysis -->
-            <div class="bg-white border rounded-lg p-6">
-                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-                    </svg>
-                    XML Sitemap
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i data-lucide="smartphone" class="w-5 h-5 mr-2"></i>
+                    Mobile Optimization
                 </h4>
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-700">Status:</span>
-                        <span class="px-2 py-1 rounded text-sm ${data.sitemap?.exists ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                            ${data.sitemap?.exists ? 'Found' : 'Not Found'}
-                        </span>
-                    </div>
-                    ${data.sitemap?.exists ? `
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700">URLs Listed:</span>
-                            <span class="font-semibold">${data.sitemap.total_urls || 0}</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700">Size:</span>
-                            <span class="font-semibold">${Math.round((data.sitemap.size || 0) / 1024)} KB</span>
-                        </div>
-                    ` : ''}
+                <div class="flex justify-between items-center">
+                    <span>Mobile Friendly:</span>
+                    <span class="font-medium ${results.mobile_friendly ? 'text-green-600' : 'text-red-600'}">
+                        ${results.mobile_friendly ? 'Yes' : 'No'}
+                    </span>
                 </div>
             </div>
         </div>
     `;
-    
-    // Recommendations
-    if (data.recommendations && data.recommendations.length > 0) {
-        html += `
-            <div class="bg-white border rounded-lg p-6 mb-6">
-                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                    </svg>
-                    Priority Recommendations
-                </h4>
-                <div class="space-y-3">
-                    ${data.recommendations.slice(0, 10).map((rec, index) => `
-                        <div class="flex items-start space-x-3 p-4 border rounded-lg ${rec.priority === 'high' ? 'bg-red-50 border-red-200' : rec.priority === 'medium' ? 'bg-yellow-50 border-yellow-200' : 'bg-blue-50 border-blue-200'}">
-                            <div class="flex-shrink-0">
-                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium ${rec.priority === 'high' ? 'bg-red-500 text-white' : rec.priority === 'medium' ? 'bg-yellow-500 text-white' : 'bg-blue-500 text-white'}">
-                                    ${index + 1}
-                                </span>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-2 mb-1">
-                                    <span class="font-medium text-gray-900">${rec.category}</span>
-                                    <span class="px-2 py-1 text-xs rounded ${rec.priority === 'high' ? 'bg-red-100 text-red-800' : rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'}">
-                                        ${rec.priority.toUpperCase()}
-                                    </span>
-                                </div>
-                                <div class="text-sm text-gray-700">${rec.message}</div>
-                                ${rec.details ? `<div class="text-xs text-gray-500 mt-1">${typeof rec.details === 'string' ? rec.details : JSON.stringify(rec.details)}</div>` : ''}
-                            </div>
+}
+
+function generateRecommendationsHTML(results) {
+    const recommendations = results.recommendations || [];
+    return `
+        <div class="space-y-4">
+            ${recommendations.length > 0 ? recommendations.map((rec, index) => `
+                <div class="border-l-4 border-blue-500 bg-blue-50 p-4 rounded-r-lg">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <i data-lucide="lightbulb" class="w-5 h-5 text-blue-500 mt-0.5"></i>
                         </div>
-                    `).join('')}
-                    ${data.recommendations.length > 10 ? `
-                        <div class="text-center text-sm text-gray-500 mt-4">
-                            ... and ${data.recommendations.length - 10} more recommendations
+                        <div class="ml-3">
+                            <h5 class="font-medium text-blue-800">${rec.title || 'Recommendation ' + (index + 1)}</h5>
+                            <p class="text-blue-700 mt-1">${rec.description || rec}</p>
+                            ${rec.priority ? `<span class="inline-block mt-2 px-2 py-1 text-xs font-medium bg-${rec.priority === 'high' ? 'red' : rec.priority === 'medium' ? 'yellow' : 'green'}-100 text-${rec.priority === 'high' ? 'red' : rec.priority === 'medium' ? 'yellow' : 'green'}-800 rounded">${rec.priority.toUpperCase()} PRIORITY</span>` : ''}
                         </div>
-                    ` : ''}
+                    </div>
                 </div>
+            `).join('') : '<p class="text-gray-600 text-center py-8">No specific recommendations available.</p>'}
+        </div>
+    `;
+}
+
+function generatePagesHTML(results) {
+    const pages = results.page_details || [];
+    return `
+        <div class="space-y-4">
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h4 class="font-semibold mb-2">Pages Analyzed: ${pages.length}</h4>
+                <p class="text-sm text-gray-600">Detailed analysis of each page found during crawling</p>
             </div>
-        `;
-    }
-    
-    resultsContent.innerHTML = html;
+            
+            ${pages.length > 0 ? `
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">URL</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Load Time</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            ${pages.slice(0, 20).map(page => `
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600">
+                                        <a href="${page.url}" target="_blank" class="hover:underline">
+                                            ${page.url.length > 50 ? page.url.substring(0, 50) + '...' : page.url}
+                                        </a>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        ${page.title ? (page.title.length > 40 ? page.title.substring(0, 40) + '...' : page.title) : 'No Title'}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        ${page.load_time ? page.load_time + 's' : 'N/A'}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${page.status_code === 200 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                            ${page.status_code || 'Unknown'}
+                                        </span>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    ${pages.length > 20 ? `<p class="text-sm text-gray-600 mt-4 text-center">Showing first 20 of ${pages.length} pages analyzed</p>` : ''}
+                </div>
+            ` : '<p class="text-gray-600 text-center py-8">No page details available.</p>'}
+        </div>
+    `;
 }
 
-// Utility functions for loading states
-function showLoading(btnId, textId, loadingId) {
-    document.getElementById(textId).style.display = 'none';
-    document.getElementById(loadingId).style.display = 'flex';
-    document.getElementById(loadingId).classList.remove('hidden');
-    document.getElementById(btnId).disabled = true;
-}
-
-function hideLoading(btnId, textId, loadingId) {
-    document.getElementById(textId).style.display = 'block';
-    document.getElementById(loadingId).style.display = 'none';
-    document.getElementById(loadingId).classList.add('hidden');
-    document.getElementById(btnId).disabled = false;
-}
-
-function showResults(resultsId) {
-    document.getElementById(resultsId).classList.remove('hidden');
-    document.getElementById(resultsId).scrollIntoView({ behavior: 'smooth' });
-}
+// Initialize tabs when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initTabs();
+});
 </script>
+
 {% endblock %}
