@@ -1,0 +1,464 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  SEO Report: {{ report.domain }} - Detailed Analysis
+{% endblock %}
+
+{% block content %}
+  <div class="min-h-screen bg-gray-50 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">SEO Report</h1>
+            <p class="text-gray-600 mt-1">{{ report.website_url }}</p>
+            <p class="text-sm text-gray-500">Generated on {{ report.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+          </div>
+          <div class="flex space-x-3">
+            <a href="{{ url_for('tools.seo_reports_history') }}" 
+               class="text-gray-600 hover:text-gray-800">
+              <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </a>
+            {% if user_is_pro %}
+              <a href="{{ url_for('tools.download_seo_report_pdf', report_id=report.id) }}" 
+                 class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                <i data-lucide="download" class="w-4 h-4 inline mr-2"></i>
+                Download PDF
+              </a>
+            {% else %}
+              <a href="{{ url_for('main.pricing') }}" 
+                 class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+                <i data-lucide="crown" class="w-4 h-4 inline mr-2"></i>
+                Upgrade for PDF
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Score Overview -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <!-- Overall Score -->
+          <div class="text-center">
+            <div class="w-20 h-20 mx-auto mb-3 rounded-full bg-{{ report.score_color }}-100 flex items-center justify-center">
+              <span class="text-2xl font-bold text-{{ report.score_color }}-600">{{ report.score_grade }}</span>
+            </div>
+            <h3 class="font-semibold text-gray-900">Overall Score</h3>
+            <p class="text-2xl font-bold text-{{ report.score_color }}-600">{{ report.overall_score }}/100</p>
+          </div>
+
+          <!-- Pages Analyzed -->
+          <div class="text-center">
+            <div class="w-20 h-20 mx-auto mb-3 rounded-full bg-blue-100 flex items-center justify-center">
+              <i data-lucide="file-text" class="w-8 h-8 text-blue-600"></i>
+            </div>
+            <h3 class="font-semibold text-gray-900">Pages Analyzed</h3>
+            <p class="text-2xl font-bold text-blue-600">{{ report.pages_analyzed }}</p>
+          </div>
+
+          <!-- Issues Found -->
+          <div class="text-center">
+            <div class="w-20 h-20 mx-auto mb-3 rounded-full bg-orange-100 flex items-center justify-center">
+              <i data-lucide="alert-triangle" class="w-8 h-8 text-orange-600"></i>
+            </div>
+            <h3 class="font-semibold text-gray-900">Issues Found</h3>
+            <p class="text-2xl font-bold text-orange-600">{{ report.issues_found }}</p>
+          </div>
+
+          <!-- Audit Duration -->
+          <div class="text-center">
+            <div class="w-20 h-20 mx-auto mb-3 rounded-full bg-purple-100 flex items-center justify-center">
+              <i data-lucide="clock" class="w-8 h-8 text-purple-600"></i>
+            </div>
+            <h3 class="font-semibold text-gray-900">Duration</h3>
+            <p class="text-2xl font-bold text-purple-600">{{ "%.1f"|format(report.audit_duration) }}s</p>
+          </div>
+        </div>
+      </div>
+
+      {% if not user_is_pro %}
+      <!-- Pro Upgrade Notice for Free Users -->
+      <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-lg shadow-lg p-6 mb-8">
+        <div class="flex items-center justify-between text-white">
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4">
+              <i data-lucide="lock" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold mb-1">Unlock Full SEO Report</h3>
+              <p class="text-orange-100">Get complete analysis with technical SEO, content insights, performance metrics, and detailed recommendations.</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-3">
+            <div class="text-right mr-4">
+              <div class="text-2xl font-bold">$29</div>
+              <div class="text-orange-200 text-sm">per month</div>
+            </div>
+            <a href="{{ url_for('main.pricing') }}" 
+               class="bg-white text-orange-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition-colors">
+              Upgrade to Pro
+            </a>
+          </div>
+        </div>
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+          <div class="flex items-center text-orange-100">
+            <i data-lucide="check" class="w-4 h-4 mr-2"></i>
+            Complete technical analysis
+          </div>
+          <div class="flex items-center text-orange-100">
+            <i data-lucide="check" class="w-4 h-4 mr-2"></i>
+            Detailed content insights
+          </div>
+          <div class="flex items-center text-orange-100">
+            <i data-lucide="check" class="w-4 h-4 mr-2"></i>
+            Performance metrics
+          </div>
+          <div class="flex items-center text-orange-100">
+            <i data-lucide="check" class="w-4 h-4 mr-2"></i>
+            PDF report downloads
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Detailed Analysis -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <!-- Tab Headers -->
+        <div class="border-b border-gray-200">
+          <nav class="-mb-px flex space-x-8 px-6">
+            <button onclick="switchReportTab('overview')" 
+                    class="report-tab border-blue-500 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+              Overview
+            </button>
+            <button onclick="{% if user_is_pro %}switchReportTab('technical'){% else %}showUpgradeModal(){% endif %}" 
+                    class="report-tab border-transparent {% if user_is_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
+              Technical SEO
+              {% if not user_is_pro %}
+                <i data-lucide="lock" class="w-4 h-4 ml-1"></i>
+              {% endif %}
+            </button>
+            <button onclick="{% if user_is_pro %}switchReportTab('content'){% else %}showUpgradeModal(){% endif %}" 
+                    class="report-tab border-transparent {% if user_is_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
+              Content Analysis
+              {% if not user_is_pro %}
+                <i data-lucide="lock" class="w-4 h-4 ml-1"></i>
+              {% endif %}
+            </button>
+            <button onclick="{% if user_is_pro %}switchReportTab('recommendations'){% else %}showUpgradeModal(){% endif %}" 
+                    class="report-tab border-transparent {% if user_is_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
+              Recommendations
+              {% if not user_is_pro %}
+                <i data-lucide="lock" class="w-4 h-4 ml-1"></i>
+              {% endif %}
+            </button>
+            <button onclick="{% if user_is_pro %}switchReportTab('pages'){% else %}showUpgradeModal(){% endif %}" 
+                    class="report-tab border-transparent {% if user_is_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
+              Pages
+              {% if not user_is_pro %}
+                <i data-lucide="lock" class="w-4 h-4 ml-1"></i>
+              {% endif %}
+            </button>
+          </nav>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="p-6">
+          <!-- Overview Tab -->
+          <div id="overview_tab" class="tab-content">
+            <h3 class="text-lg font-semibold mb-4">Report Overview</h3>
+            
+            {% if audit_data.crawl_summary %}
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <h4 class="font-medium text-gray-900 mb-3">Crawl Summary</h4>
+                  <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                      <span>Total Pages Found:</span>
+                      <span class="font-medium">{{ audit_data.crawl_summary.get('total_pages_found', 0) }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span>Successfully Crawled:</span>
+                      <span class="font-medium text-green-600">{{ audit_data.crawl_summary.get('successfully_crawled', 0) }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span>Failed Pages:</span>
+                      <span class="font-medium text-red-600">{{ audit_data.crawl_summary.get('failed_pages', 0) }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <h4 class="font-medium text-gray-900 mb-3">Technical Status</h4>
+                  <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                      <span>Robots.txt:</span>
+                      <span class="font-medium {{ 'text-green-600' if audit_data.get('robots_txt', {}).get('exists') else 'text-red-600' }}">
+                        {{ 'Found' if audit_data.get('robots_txt', {}).get('exists') else 'Missing' }}
+                      </span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span>Sitemap:</span>
+                      <span class="font-medium {{ 'text-green-600' if audit_data.get('sitemap', {}).get('found') else 'text-red-600' }}">
+                        {{ 'Found' if audit_data.get('sitemap', {}).get('found') else 'Missing' }}
+                      </span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span>HTTPS:</span>
+                      <span class="font-medium">{{ audit_data.technical_analysis.get('https_usage', {}).get('https_percentage', 0) }}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Technical SEO Tab -->
+          <div id="technical_tab" class="tab-content hidden">
+            <h3 class="text-lg font-semibold mb-4">Technical SEO Analysis</h3>
+            
+            {% if audit_data.technical_analysis %}
+              {% set technical = audit_data.technical_analysis %}
+              
+              <!-- HTTPS Usage -->
+              {% if technical.https_usage %}
+                <div class="mb-6 p-4 border border-gray-200 rounded-lg">
+                  <h4 class="font-medium text-gray-900 mb-3">HTTPS Security</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span class="text-sm text-gray-600">HTTPS Pages:</span>
+                      <span class="font-medium ml-2">{{ technical.https_usage.get('total_https_pages', 0) }}</span>
+                    </div>
+                    <div>
+                      <span class="text-sm text-gray-600">Coverage:</span>
+                      <span class="font-medium ml-2">{{ technical.https_usage.get('https_percentage', 0) }}%</span>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- Canonical Tags -->
+              {% if technical.canonical_tags %}
+                <div class="mb-6 p-4 border border-gray-200 rounded-lg">
+                  <h4 class="font-medium text-gray-900 mb-3">Canonical Tags</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span class="text-sm text-gray-600">Pages with Canonical:</span>
+                      <span class="font-medium ml-2">{{ technical.canonical_tags.get('pages_with_canonical', 0) }}</span>
+                    </div>
+                    <div>
+                      <span class="text-sm text-gray-600">Coverage:</span>
+                      <span class="font-medium ml-2">{{ technical.canonical_tags.get('canonical_percentage', 0) }}%</span>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- Schema Markup -->
+              {% if technical.structured_data %}
+                <div class="mb-6 p-4 border border-gray-200 rounded-lg">
+                  <h4 class="font-medium text-gray-900 mb-3">Schema Markup</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span class="text-sm text-gray-600">Pages with Schema:</span>
+                      <span class="font-medium ml-2">{{ technical.structured_data.get('pages_with_schema', 0) }}</span>
+                    </div>
+                    <div>
+                      <span class="text-sm text-gray-600">Coverage:</span>
+                      <span class="font-medium ml-2">{{ technical.structured_data.get('schema_percentage', 0) }}%</span>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            {% endif %}
+          </div>
+
+          <!-- Content Analysis Tab -->
+          <div id="content_tab" class="tab-content hidden">
+            <h3 class="text-lg font-semibold mb-4">Content Analysis</h3>
+            
+            {% if audit_data.get('pages_analysis', {}) and audit_data.get('pages_analysis', {}).get('aggregate_stats') %}
+              {% set stats = audit_data.get('pages_analysis', {}).get('aggregate_stats', {}) %}
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                  <p class="text-sm text-gray-600">Avg Title Length</p>
+                  <p class="text-xl font-bold">{{ stats.get('avg_title_length', 0) }} chars</p>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                  <p class="text-sm text-gray-600">Avg Meta Description</p>
+                  <p class="text-xl font-bold">{{ stats.get('avg_meta_description_length', 0) }} chars</p>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                  <p class="text-sm text-gray-600">Missing Titles</p>
+                  <p class="text-xl font-bold text-{{ 'red' if stats.get('pages_missing_title', 0) > 0 else 'green' }}-600">
+                    {{ stats.get('pages_missing_title', 0) }}
+                  </p>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                  <p class="text-sm text-gray-600">Missing Meta Desc</p>
+                  <p class="text-xl font-bold text-{{ 'red' if stats.get('pages_missing_meta_description', 0) > 0 else 'green' }}-600">
+                    {{ stats.get('pages_missing_meta_description', 0) }}
+                  </p>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Recommendations Tab -->
+          <div id="recommendations_tab" class="tab-content hidden">
+            <h3 class="text-lg font-semibold mb-4">SEO Recommendations</h3>
+            
+            {% if audit_data.recommendations %}
+              <div class="space-y-4">
+                {% for rec in audit_data.recommendations %}
+                  <div class="border-l-4 border-{{ 'red' if rec.get('priority') == 'high' else 'yellow' if rec.get('priority') == 'medium' else 'blue' }}-500 pl-4 py-3">
+                    <div class="flex items-center justify-between">
+                      <h5 class="font-medium text-gray-900">{{ rec.get('category', 'General') }}</h5>
+                      <span class="px-2 py-1 text-xs font-medium rounded-full bg-{{ 'red' if rec.get('priority') == 'high' else 'yellow' if rec.get('priority') == 'medium' else 'blue' }}-100 text-{{ 'red' if rec.get('priority') == 'high' else 'yellow' if rec.get('priority') == 'medium' else 'blue' }}-800">
+                        {{ rec.get('priority', 'low').upper() }}
+                      </span>
+                    </div>
+                    <p class="text-gray-700 mt-1">{{ rec.get('message', 'No description available') }}</p>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="text-center py-8">
+                <i data-lucide="check-circle" class="w-12 h-12 text-green-500 mx-auto mb-3"></i>
+                <h4 class="text-lg font-medium text-green-800">Great Job!</h4>
+                <p class="text-green-600">No major SEO issues were found.</p>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Pages Tab -->
+          <div id="pages_tab" class="tab-content hidden">
+            <h3 class="text-lg font-semibold mb-4">Pages Analyzed</h3>
+            
+            {% if audit_data.get('pages_analysis', {}) and audit_data.get('pages_analysis', {}).get('pages') %}
+              <div class="space-y-4">
+                {% for url, page_data in audit_data.get('pages_analysis', {}).get('pages', {}).items() %}
+                  <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-start justify-between mb-2">
+                      <h5 class="font-medium text-blue-600 break-all">{{ url }}</h5>
+                      <span class="ml-2 px-2 py-1 text-xs font-medium rounded bg-{{ 'green' if page_data.get('page_score', 0) >= 80 else 'yellow' if page_data.get('page_score', 0) >= 60 else 'red' }}-100 text-{{ 'green' if page_data.get('page_score', 0) >= 80 else 'yellow' if page_data.get('page_score', 0) >= 60 else 'red' }}-800">
+                        {{ page_data.get('page_score', 0) }}/100
+                      </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                      <div>
+                        <span class="text-gray-600">Title:</span>
+                        <p class="font-medium truncate">{{ page_data.get('title', {}).get('text', 'Missing') }}</p>
+                        <span class="text-xs text-gray-500">{{ page_data.get('title', {}).get('length', 0) }} chars</span>
+                      </div>
+                      <div>
+                        <span class="text-gray-600">Meta Description:</span>
+                        <p class="font-medium truncate">{{ page_data.get('meta', {}).get('description', {}).get('text', 'Missing') }}</p>
+                        <span class="text-xs text-gray-500">{{ page_data.get('meta', {}).get('description', {}).get('length', 0) }} chars</span>
+                      </div>
+                      <div>
+                        <span class="text-gray-600">H1 Tags:</span>
+                        <p class="font-medium">{{ page_data.get('headings', {}).get('h1_count', 0) }}</p>
+                        <span class="text-xs text-gray-500">{{ 'Perfect' if page_data.get('headings', {}).get('h1_count', 0) == 1 else 'Too many' if page_data.get('headings', {}).get('h1_count', 0) > 1 else 'Missing' }}</span>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upgrade Modal for Free Users -->
+  <div id="upgradeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 p-6">
+      <div class="text-center">
+        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="crown" class="w-8 h-8 text-orange-600"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Upgrade to Pro Required</h3>
+        <p class="text-gray-600 mb-6">This detailed analysis is available for Pro users only. Upgrade to unlock complete SEO insights.</p>
+        
+        <div class="space-y-3 mb-6 text-sm text-left">
+          <div class="flex items-center">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-3"></i>
+            <span>Complete technical SEO analysis</span>
+          </div>
+          <div class="flex items-center">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-3"></i>
+            <span>Detailed content recommendations</span>
+          </div>
+          <div class="flex items-center">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-3"></i>
+            <span>Performance metrics & insights</span>
+          </div>
+          <div class="flex items-center">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mr-3"></i>
+            <span>PDF report downloads</span>
+          </div>
+        </div>
+
+        <div class="flex space-x-3">
+          <button onclick="closeUpgradeModal()" class="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300">
+            Maybe Later
+          </button>
+          <a href="{{ url_for('main.pricing') }}" class="flex-1 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
+            Upgrade Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchReportTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.add('hidden');
+      });
+      
+      // Remove active styles from all tab buttons
+      document.querySelectorAll('.report-tab').forEach(tab => {
+        tab.classList.remove('border-blue-500', 'text-blue-600');
+        tab.classList.add('border-transparent', 'text-gray-500');
+      });
+      
+      // Show selected tab
+      document.getElementById(tabName + '_tab').classList.remove('hidden');
+      
+      // Add active styles to selected tab button
+      event.target.classList.remove('border-transparent', 'text-gray-500');
+      event.target.classList.add('border-blue-500', 'text-blue-600');
+    }
+
+    function showUpgradeModal() {
+      const modal = document.getElementById('upgradeModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeUpgradeModal() {
+      const modal = document.getElementById('upgradeModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('upgradeModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeUpgradeModal();
+      }
+    });
+
+    // Initialize Lucide icons
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  </script>
+{% endblock %}

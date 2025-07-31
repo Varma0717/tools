@@ -12,6 +12,7 @@ from .subscription import Subscription
 from .testimonial import Testimonial
 from .setting import Setting
 from .order import Order, Download
+from .seo_reports import SEOReport, SEOUsageLimit
 
 __all__ = [
     "User",
@@ -27,4 +28,6 @@ __all__ = [
     "Setting",
     "Order",
     "Download",
+    "SEOReport",
+    "SEOUsageLimit",
 ]

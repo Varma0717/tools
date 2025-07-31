@@ -50,6 +50,29 @@ def dashboard():
     if current_user.role != "customer":
         return redirect(url_for("admin.settings"))
 
+    # Get SEO reports for the user
+    from app.models.seo_reports import SEOReport
+    from sqlalchemy import desc
+
+    # Get recent SEO reports (last 5)
+    recent_reports = (
+        SEOReport.query.filter_by(user_id=current_user.id)
+        .order_by(desc(SEOReport.created_at))
+        .limit(5)
+        .all()
+    )
+
+    # Get total reports count
+    total_reports = SEOReport.query.filter_by(user_id=current_user.id).count()
+
+    # Calculate average score from recent reports
+    avg_score = 0
+    if recent_reports:
+        scores = [
+            report.overall_score for report in recent_reports if report.overall_score
+        ]
+        avg_score = sum(scores) / len(scores) if scores else 0
+
     # Get user statistics
     user_stats = {
         "daily_usage": current_user.daily_tool_usage or 0,
@@ -57,13 +80,16 @@ def dashboard():
         "is_pro": current_user.is_pro_user(),
         "usage_limit": current_user.get_tool_usage_limit(),
         "tools_used": current_user.daily_tool_usage or 0,
-        "reports_generated": min(current_user.daily_tool_usage or 0, 50),
+        "reports_generated": total_reports or 0,  # Use actual reports count
         "account_days": (
             date.today() - (current_user.last_usage_reset or date.today())
         ).days
         + 1,
         "username": current_user.first_name or current_user.username,
         "subscription_active": current_user.subscription_active,
+        "avg_seo_score": round(avg_score),
+        "recent_reports": recent_reports,
+        "total_reports": total_reports,
     }
 
     return render_template("users/dashboard.html", stats=user_stats)
