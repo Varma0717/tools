@@ -1,16 +1,9 @@
 """
-Routes package for individual SEO tools.
-"""
-
-"""
 Route Manager - Automatically registers all tool route blueprints
 This approach scales to 100+ tools without bloating main_routes.py
 """
 
-from .seo_routes import seo_tools_bp
-from .content_routes import content_tools_bp
-from .keyword_routes import keyword_tools_bp
-from .link_routes import link_tools_bp
+from .seo_tools import seo_tools_bp
 
 
 def register_tool_routes(app):
@@ -25,12 +18,13 @@ def register_tool_routes(app):
     - Fast loading and better performance
     """
 
-    # Register all tool blueprints
+    # Register all tool blueprints (only existing ones for now)
     tool_blueprints = [
         seo_tools_bp,  # /tools/seo/*
-        content_tools_bp,  # /tools/content/*
-        keyword_tools_bp,  # /tools/keywords/*
-        link_tools_bp,  # /tools/links/*
+        # Future blueprints will be added here as we create them:
+        # content_tools_bp,  # /tools/content/*
+        # keyword_tools_bp,  # /tools/keywords/*
+        # link_tools_bp,     # /tools/links/*
     ]
 
     registered_count = 0
