@@ -8,6 +8,37 @@ class SEOAuditDisplay {
         this.loadingState = document.getElementById('loadingState');
         this.resultsContainer = document.getElementById('resultsContainer');
         this.bindEvents();
+        this.handleUrlParameter();
+    }
+
+    handleUrlParameter() {
+        // Check if there's a URL parameter from dashboard or other sources
+        const urlParams = new URLSearchParams(window.location.search);
+        const prefilledUrl = urlParams.get('url');
+
+        if (prefilledUrl) {
+            const urlInput = document.getElementById('url');
+            if (urlInput) {
+                // Clean and set the URL
+                const cleanUrl = prefilledUrl.trim();
+                urlInput.value = cleanUrl;
+                urlInput.focus();
+
+                // Optional: Auto-submit if valid URL (can be disabled)
+                // if (this.isValidUrl(cleanUrl)) {
+                //     this.handleSubmit(new Event('submit'));
+                // }
+            }
+        }
+    }
+
+    isValidUrl(string) {
+        try {
+            new URL(string.startsWith('http') ? string : 'https://' + string);
+            return true;
+        } catch (_) {
+            return false;
+        }
     }
 
     bindEvents() {
@@ -39,13 +70,17 @@ class SEOAuditDisplay {
     }
 
     submitForm(url) {
-        const formData = new FormData();
-        formData.append('primary_input', url);
-        formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+        const requestData = {
+            url: url,
+            csrf_token: document.querySelector('input[name="csrf_token"]').value
+        };
 
         fetch('/tools/seo-audit-tool/analyze', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData)
         })
             .then(response => response.json())
             .then(data => {
@@ -53,11 +88,12 @@ class SEOAuditDisplay {
 
                 console.log('SEO Audit Response:', data); // Debug logging
 
-                if (data.success) {
-                    this.displayResults(data.result);
-                    this.resultsContainer.classList.remove('hidden');
+                if (data.error) {
+                    alert('Error: ' + data.error);
                 } else {
-                    alert('Error: ' + (data.error || 'An unexpected error occurred'));
+                    // Pass the entire data object since it contains all the analysis results
+                    this.displayResults(data);
+                    this.resultsContainer.classList.remove('hidden');
                 }
             })
             .catch(error => {
@@ -75,53 +111,209 @@ class SEOAuditDisplay {
             return;
         }
 
+        // Check if this is a premium analysis
+        const isPremium = results.is_premium_analysis || false;
+
+        if (isPremium) {
+            // Display comprehensive premium results
+            this.displayPremiumResults(results);
+        } else {
+            // Display limited free results with upgrade prompts
+            this.displayFreeResults(results);
+        }
+    }
+
+    displayFreeResults(results) {
+        // Display limited results for free users with upgrade prompts
+
+        // Display all tabs with basic data and upgrade prompts
+        this.displayOverview(results);
+        this.displayLimitedTechnicalSEO(results);
+        this.displayLimitedContentAnalysis(results);
+        this.displayUpgradePrompts(results);
+        this.displayBasicRecommendations(results);
+        this.displayLimitedPages(results);
+    }
+
+    displayPremiumResults(results) {
+        // Display comprehensive results for premium users
+
         // Display all tabs with comprehensive data
         this.displayOverview(results);
-        this.displayTechnicalSEO(results);
-        this.displayContentAnalysis(results);
+        this.displayAdvancedTechnicalSEO(results);
+        this.displayAdvancedContentAnalysis(results);
+        this.displayCompetitorAnalysis(results);
         this.displayPerformanceAnalysis(results);
-        this.displayRecommendations(results);
-        this.displayPagesAnalyzed(results);
+        this.displayAdvancedRecommendations(results);
+        this.displayComprehensivePages(results);
+    }
+
+    displayLimitedTechnicalSEO(results) {
+        // Show limited technical SEO with upgrade prompt
+        const html = `
+            <div class="space-y-6">
+                <!-- Basic Technical Factors -->
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <h4 class="font-semibold mb-4">Basic Technical Factors</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                            <span>HTTPS Usage</span>
+                            <span class="flex items-center ${results.technical_analysis?.https_usage?.uses_https ? 'text-green-600' : 'text-red-600'}">
+                                <i data-lucide="${results.technical_analysis?.https_usage?.uses_https ? 'check' : 'x'}" class="w-4 h-4 mr-1"></i>
+                                ${results.technical_analysis?.https_usage?.uses_https ? 'Secure' : 'Not Secure'}
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                            <span>Robots.txt</span>
+                            <span class="flex items-center ${results.robots_txt?.exists ? 'text-green-600' : 'text-orange-600'}">
+                                <i data-lucide="${results.robots_txt?.exists ? 'check' : 'alert-triangle'}" class="w-4 h-4 mr-1"></i>
+                                ${results.robots_txt?.exists ? 'Found' : 'Missing'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Premium Features Locked -->
+                <div class="bg-gradient-to-r from-orange-100 to-red-100 border border-orange-200 rounded-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i data-lucide="lock" class="w-8 h-8 text-orange-600 mr-4"></i>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-1">Advanced Technical Analysis</h4>
+                                <p class="text-gray-600 text-sm">Unlock 50+ technical SEO checks including:</p>
+                                <ul class="text-sm text-gray-600 mt-2 space-y-1">
+                                    <li>• SSL Certificate Analysis</li>
+                                    <li>• Security Headers Check</li>
+                                    <li>• CDN Configuration</li>
+                                    <li>• Server Response Analysis</li>
+                                    <li>• JavaScript/CSS Optimization</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a href="/pricing" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold">
+                            Upgrade to Pro
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('technical_tab').innerHTML = html;
+    }
+
+    displayUpgradePrompts(results) {
+        // Display upgrade prompts throughout the interface
+
+        // Add upgrade banners to various sections
+        const upgradePrompts = `
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-lg mb-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i data-lucide="star" class="w-8 h-8 mr-4"></i>
+                        <div>
+                            <h3 class="text-xl font-bold mb-1">Unlock Complete SEO Analysis</h3>
+                            <p class="text-blue-100">Get 500+ page analysis, competitor insights, and detailed recommendations</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <div class="text-2xl font-bold">$29</div>
+                            <div class="text-blue-200 text-sm">per month</div>
+                        </div>
+                        <a href="/pricing" class="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold">
+                            Start Pro Trial
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Insert upgrade prompt after overview
+        const overviewTab = document.getElementById('overview_tab');
+        if (overviewTab) {
+            overviewTab.insertAdjacentHTML('beforeend', upgradePrompts);
+        }
     }
 
     displayOverview(results) {
         const seoScore = results.overall_score || 0;
         const scoreColor = seoScore >= 80 ? 'green' : seoScore >= 60 ? 'yellow' : 'red';
+        const scoreGrade = this.getScoreGrade(seoScore);
+        const reportId = results.report_id || null;
 
         const html = `
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-blue-100">SEO Score</p>
-                            <p class="text-3xl font-bold">${seoScore}/100</p>
+                <!-- SEO Score Card -->
+                <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-lg relative overflow-hidden">
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-blue-100">Overall SEO Score</p>
+                                <div class="flex items-baseline">
+                                    <p class="text-4xl font-bold">${seoScore}</p>
+                                    <p class="text-2xl ml-1">/100</p>
+                                    <span class="ml-3 px-2 py-1 bg-white bg-opacity-20 rounded text-sm font-medium">${scoreGrade}</span>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <div class="w-16 h-16 rounded-full border-4 border-white border-opacity-30 flex items-center justify-center">
+                                    <span class="text-xl font-bold">${scoreGrade}</span>
+                                </div>
+                            </div>
                         </div>
-                        <i data-lucide="target" class="w-8 h-8"></i>
+                        <div class="mt-4">
+                            <div class="w-full bg-white bg-opacity-20 rounded-full h-2">
+                                <div class="bg-white h-2 rounded-full transition-all duration-500" style="width: ${seoScore}%"></div>
+                            </div>
+                        </div>
                     </div>
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-white bg-opacity-10 rounded-full"></div>
                 </div>
                 
+                <!-- Pages Crawled Card -->
                 <div class="bg-gradient-to-r from-green-500 to-teal-600 text-white p-6 rounded-lg">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-green-100">Pages Crawled</p>
+                            <p class="text-green-100">Pages Analyzed</p>
                             <p class="text-3xl font-bold">${results.crawl_summary?.successfully_crawled || 1}</p>
+                            <p class="text-sm text-green-100 mt-1">
+                                ${results.crawl_summary?.total_pages_found || 1} pages found
+                            </p>
                         </div>
                         <i data-lucide="file-text" class="w-8 h-8"></i>
                     </div>
                 </div>
                 
+                <!-- Issues Card -->
                 <div class="bg-gradient-to-r from-orange-500 to-red-600 text-white p-6 rounded-lg">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-orange-100">Issues Found</p>
                             <p class="text-3xl font-bold">${this.countIssues(results)}</p>
+                            <div class="flex text-sm text-orange-100 mt-1 space-x-2">
+                                <span>${this.countCriticalIssues(results)} Critical</span>
+                                <span>•</span>
+                                <span>${this.countWarningIssues(results)} Warnings</span>
+                            </div>
                         </div>
                         <i data-lucide="alert-triangle" class="w-8 h-8"></i>
                     </div>
                 </div>
             </div>
 
+            <!-- Detailed Score Breakdown -->
+            <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5 mr-2"></i>
+                    Score Breakdown
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    ${this.generateScoreBreakdown(results)}
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Crawl Summary -->
                 <div class="bg-white p-6 rounded-lg border border-gray-200">
                     <h4 class="text-lg font-semibold mb-4">Crawl Summary</h4>
                     <div class="space-y-3">
@@ -141,9 +333,14 @@ class SEOAuditDisplay {
                             <span class="text-gray-600">Crawl Depth:</span>
                             <span class="font-medium">${results.crawl_summary?.crawl_depth || 5}</span>
                         </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Audit Duration:</span>
+                            <span class="font-medium">${results.total_audit_time || 0}s</span>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Quick Insights -->
                 <div class="bg-white p-6 rounded-lg border border-gray-200">
                     <h4 class="text-lg font-semibold mb-4">Quick Insights</h4>
                     <div class="space-y-3">
@@ -170,6 +367,28 @@ class SEOAuditDisplay {
                     </div>
                 </div>
             </div>
+
+            ${reportId ? `
+            <!-- Report Actions -->
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg mt-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h5 class="font-medium text-blue-800">Report Saved Successfully!</h5>
+                        <p class="text-sm text-blue-600">Your SEO audit has been saved to your dashboard.</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <a href="/tools/seo-report/${reportId}" 
+                           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+                            View Full Report
+                        </a>
+                        <a href="/tools/seo-report/${reportId}/pdf" 
+                           class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
+                            Download PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+            ` : ''}
         `;
 
         document.getElementById('overview_content').innerHTML = html;
@@ -654,6 +873,134 @@ class SEOAuditDisplay {
     countIssues(results) {
         const recommendations = results.recommendations || [];
         return recommendations.filter(rec => rec.type === 'error' || rec.type === 'warning').length;
+    }
+
+    countCriticalIssues(results) {
+        const recommendations = results.recommendations || [];
+        return recommendations.filter(rec => rec.priority === 'high' || rec.type === 'error').length;
+    }
+
+    countWarningIssues(results) {
+        const recommendations = results.recommendations || [];
+        return recommendations.filter(rec => rec.priority === 'medium' || rec.type === 'warning').length;
+    }
+
+    getScoreGrade(score) {
+        if (score >= 90) return 'A+';
+        if (score >= 80) return 'A';
+        if (score >= 70) return 'B';
+        if (score >= 60) return 'C';
+        if (score >= 50) return 'D';
+        return 'F';
+    }
+
+    generateScoreBreakdown(results) {
+        const technical = results.technical_analysis || {};
+        const pages = results.pages_analysis || {};
+
+        const breakdowns = [
+            {
+                label: 'Technical SEO',
+                score: this.calculateTechnicalScore(technical),
+                color: 'blue'
+            },
+            {
+                label: 'Content Quality',
+                score: this.calculateContentScore(pages),
+                color: 'green'
+            },
+            {
+                label: 'Performance',
+                score: this.calculatePerformanceScore(pages),
+                color: 'purple'
+            },
+            {
+                label: 'Accessibility',
+                score: this.calculateAccessibilityScore(results),
+                color: 'orange'
+            }
+        ];
+
+        return breakdowns.map(item => `
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-2 rounded-full bg-${item.color}-100 flex items-center justify-center">
+                    <span class="text-${item.color}-600 font-bold text-lg">${item.score}</span>
+                </div>
+                <p class="text-sm font-medium text-gray-700">${item.label}</p>
+                <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+                    <div class="bg-${item.color}-500 h-2 rounded-full transition-all duration-500" style="width: ${item.score}%"></div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    calculateTechnicalScore(technical) {
+        let score = 0;
+        let factors = 0;
+
+        if (technical.https_usage) {
+            score += technical.https_usage.https_percentage || 0;
+            factors++;
+        }
+        if (technical.canonical_tags) {
+            score += technical.canonical_tags.canonical_percentage || 0;
+            factors++;
+        }
+        if (technical.structured_data) {
+            score += technical.structured_data.schema_percentage || 0;
+            factors++;
+        }
+
+        return factors > 0 ? Math.round(score / factors) : 0;
+    }
+
+    calculateContentScore(pages) {
+        const stats = pages.aggregate_stats || {};
+        let score = 100;
+
+        // Deduct points for missing elements
+        if (stats.pages_missing_title > 0) score -= 20;
+        if (stats.pages_missing_meta_description > 0) score -= 15;
+        if (stats.pages_missing_h1 > 0) score -= 10;
+
+        // Adjust for title and meta lengths
+        const avgTitleLen = stats.avg_title_length || 0;
+        if (avgTitleLen < 30 || avgTitleLen > 60) score -= 10;
+
+        const avgMetaLen = stats.avg_meta_description_length || 0;
+        if (avgMetaLen < 120 || avgMetaLen > 160) score -= 10;
+
+        return Math.max(0, score);
+    }
+
+    calculatePerformanceScore(pages) {
+        const stats = pages.aggregate_stats || {};
+        let score = 100;
+
+        const avgPageSize = stats.avg_page_size || 0;
+        if (avgPageSize > 1000) score -= 20;
+        else if (avgPageSize > 500) score -= 10;
+
+        const avgLoadTime = stats.avg_load_time || 0;
+        if (avgLoadTime > 3) score -= 30;
+        else if (avgLoadTime > 2) score -= 15;
+
+        return Math.max(0, score);
+    }
+
+    calculateAccessibilityScore(results) {
+        const stats = results.pages_analysis?.aggregate_stats || {};
+        let score = 100;
+
+        const totalImages = stats.total_images || 0;
+        const missingAlt = stats.images_missing_alt || 0;
+
+        if (totalImages > 0) {
+            const altCoverage = ((totalImages - missingAlt) / totalImages) * 100;
+            score = Math.round(altCoverage);
+        }
+
+        return Math.max(0, score);
     }
 
     calculateAltCoverage(stats) {

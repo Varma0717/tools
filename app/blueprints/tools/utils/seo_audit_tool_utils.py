@@ -9,24 +9,39 @@ import json
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import xml.etree.ElementTree as ET
+import ssl
+import socket
+import dns.resolver
+from PIL import Image
+from io import BytesIO
+import gzip
+import hashlib
+import subprocess
+from datetime import datetime, timedelta
 
 
-def audit_seo(url: str) -> dict:
+def audit_seo(url: str, is_premium: bool = False) -> dict:
     """
-    Comprehensive SEO audit with advanced site-wide crawling and analysis
+    Comprehensive SEO audit with premium features for paying customers
     """
     try:
         start_time = time.time()
 
-        # Initialize the crawler
-        crawler = SEOSiteCrawler(url)
+        if is_premium:
+            # Use premium analyzer for Pro users
+            from .advanced_seo_analyzer import PremiumSEOAnalyzer
 
-        # Perform comprehensive site audit
-        audit_results = crawler.perform_full_audit()
+            analyzer = PremiumSEOAnalyzer(url)
+            audit_results = analyzer.perform_premium_audit()
+        else:
+            # Use standard crawler for free users (limited analysis)
+            crawler = SEOSiteCrawler(url, max_pages=10)  # Limited pages for free users
+            audit_results = crawler.perform_limited_audit()
 
         end_time = time.time()
         audit_results["total_audit_time"] = round(end_time - start_time, 2)
         audit_results["timestamp"] = time.strftime("%Y-%m-%d %H:%M:%S")
+        audit_results["is_premium_analysis"] = is_premium
 
         return audit_results
 
@@ -45,8 +60,205 @@ class SEOSiteCrawler:
         self.page_data = {}
         self.site_structure = defaultdict(list)
         self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
+
+    def perform_limited_audit(self):
+        """Limited audit for free users"""
+        try:
+            # Basic analysis only
+            robots_analysis = self.analyze_robots_txt()
+            sitemap_analysis = self.analyze_sitemap()
+
+            # Crawl only homepage and few key pages
+            basic_crawl = self.crawl_limited_pages()
+
+            # Basic page analysis
+            basic_analysis = self.analyze_basic_factors()
+
+            # Calculate basic score
+            overall_score = self.calculate_basic_score(
+                basic_analysis, robots_analysis, sitemap_analysis
+            )
+
+            # Generate limited recommendations (only 5)
+            recommendations = self.generate_basic_recommendations()[:5]
+
+            return {
+                "success": True,
+                "url": self.base_url,
+                "crawl_summary": {
+                    "total_pages_found": len(self.crawled_urls),
+                    "successfully_crawled": len(self.crawled_urls),
+                    "failed_pages": len(self.failed_urls),
+                    "analysis_type": "basic",
+                },
+                "overall_score": overall_score,
+                "robots_txt": robots_analysis,
+                "sitemap": sitemap_analysis,
+                "technical_analysis": basic_analysis,
+                "recommendations": recommendations,
+                "pages_analysis": {
+                    "analyzed_pages": min(3, len(self.crawled_urls)),
+                    "sample_pages": (
+                        list(self.crawled_urls)[:3] if self.crawled_urls else []
+                    ),
+                },
+                "upgrade_message": "Upgrade to Pro for complete analysis of 500+ pages, advanced technical SEO, competitor analysis, and detailed recommendations.",
+            }
+
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def crawl_limited_pages(self):
+        """Crawl only homepage and key pages for free users"""
+        try:
+            # Only crawl homepage for free users
+            response = requests.get(self.base_url, headers=self.headers, timeout=10)
+            if response.status_code == 200:
+                self.crawled_urls.add(self.base_url)
+                soup = BeautifulSoup(response.content, "html.parser")
+
+                # Store basic page data
+                self.page_data[self.base_url] = {
+                    "title": soup.find("title").text if soup.find("title") else "",
+                    "meta_description": (
+                        soup.find("meta", {"name": "description"})["content"]
+                        if soup.find("meta", {"name": "description"})
+                        else ""
+                    ),
+                    "h1_count": len(soup.find_all("h1")),
+                    "status_code": response.status_code,
+                    "content_length": len(response.content),
+                }
+
+                return {"status": "success", "pages_crawled": 1}
+            else:
+                self.failed_urls.add(self.base_url)
+                return {"status": "failed", "error": f"HTTP {response.status_code}"}
+
+        except Exception as e:
+            self.failed_urls.add(self.base_url)
+            return {"status": "error", "error": str(e)}
+
+    def analyze_basic_factors(self):
+        """Basic technical analysis for free users"""
+        analysis = {
+            "https_usage": {"uses_https": self.base_url.startswith("https")},
+            "meta_tags": {},
+            "heading_structure": {},
+            "page_speed": {},
+        }
+
+        try:
+            if self.crawled_urls:
+                url = list(self.crawled_urls)[0]
+                page_data = self.page_data.get(url, {})
+
+                analysis["meta_tags"] = {
+                    "has_title": bool(page_data.get("title")),
+                    "title_length": len(page_data.get("title", "")),
+                    "has_meta_description": bool(page_data.get("meta_description")),
+                    "meta_description_length": len(
+                        page_data.get("meta_description", "")
+                    ),
+                }
+
+                analysis["heading_structure"] = {
+                    "h1_count": page_data.get("h1_count", 0),
+                    "proper_h1": page_data.get("h1_count", 0) == 1,
+                }
+
+        except Exception as e:
+            analysis["error"] = str(e)
+
+        return analysis
+
+    def calculate_basic_score(self, analysis, robots, sitemap):
+        """Calculate basic SEO score for free users"""
+        score = 0
+        max_score = 100
+
+        # HTTPS check (20 points)
+        if analysis.get("https_usage", {}).get("uses_https"):
+            score += 20
+
+        # Title tag (20 points)
+        meta = analysis.get("meta_tags", {})
+        if meta.get("has_title") and 30 <= meta.get("title_length", 0) <= 60:
+            score += 20
+        elif meta.get("has_title"):
+            score += 10
+
+        # Meta description (20 points)
+        if (
+            meta.get("has_meta_description")
+            and 120 <= meta.get("meta_description_length", 0) <= 160
+        ):
+            score += 20
+        elif meta.get("has_meta_description"):
+            score += 10
+
+        # H1 tag (15 points)
+        if analysis.get("heading_structure", {}).get("proper_h1"):
+            score += 15
+
+        # Robots.txt (15 points)
+        if robots.get("exists"):
+            score += 15
+
+        # Sitemap (10 points)
+        if sitemap.get("found"):
+            score += 10
+
+        return min(score, max_score)
+
+    def generate_basic_recommendations(self):
+        """Generate basic recommendations for free users"""
+        recommendations = [
+            {
+                "priority": "critical",
+                "category": "Technical SEO",
+                "issue": "HTTPS Implementation",
+                "description": "Ensure your website uses HTTPS for security and SEO benefits.",
+                "impact": "High",
+                "effort": "Medium",
+            },
+            {
+                "priority": "high",
+                "category": "On-Page SEO",
+                "issue": "Title Tag Optimization",
+                "description": "Optimize your title tags to be between 30-60 characters and include target keywords.",
+                "impact": "High",
+                "effort": "Low",
+            },
+            {
+                "priority": "high",
+                "category": "On-Page SEO",
+                "issue": "Meta Description",
+                "description": "Write compelling meta descriptions between 120-160 characters.",
+                "impact": "Medium",
+                "effort": "Low",
+            },
+            {
+                "priority": "medium",
+                "category": "Content",
+                "issue": "H1 Tag Structure",
+                "description": "Use exactly one H1 tag per page with your primary keyword.",
+                "impact": "Medium",
+                "effort": "Low",
+            },
+            {
+                "priority": "medium",
+                "category": "Technical SEO",
+                "issue": "Robots.txt File",
+                "description": "Create and optimize your robots.txt file to guide search engine crawlers.",
+                "impact": "Medium",
+                "effort": "Low",
+            },
+        ]
+
+        return recommendations
 
     def perform_full_audit(self):
         """Perform comprehensive SEO audit"""
