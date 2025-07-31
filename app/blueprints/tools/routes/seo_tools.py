@@ -24,10 +24,59 @@ def is_premium_user():
     return current_user.is_pro_user()
 
 
+@seo_tools_bp.route("/")
+def seo_tools_index():
+    """SEO Tools Category Page - List all SEO tools"""
+    user_has_pro = is_premium_user()
+
+    seo_tools = [
+        {
+            "name": "SEO Audit Tool",
+            "url": url_for("seo_tools.seo_audit_tool"),
+            "description": "Comprehensive SEO analysis with 150+ premium checks",
+            "is_premium": False,  # Free to access, premium features inside
+            "features": ["Technical SEO", "On-page Analysis", "Performance Metrics"],
+        },
+        {
+            "name": "SEO Reports",
+            "url": url_for("seo_tools.seo_reports_history"),
+            "description": "View your SEO audit history and reports",
+            "is_premium": True,
+            "features": ["Report History", "PDF Downloads", "Trend Analysis"],
+        },
+    ]
+
+    return render_template(
+        "tools/coming_soon.html",  # We'll use this as a placeholder for now
+        tool={
+            "name": "SEO Tools",
+            "description": "Professional SEO analysis and optimization tools",
+            "is_premium": False,
+            "category": "SEO Tools",
+            "features": [
+                f"✅ {tool['name']}: {tool['description']}" for tool in seo_tools
+            ],
+        },
+        seo_tools=seo_tools,
+        user_has_pro=user_has_pro,
+        user_is_authenticated=current_user.is_authenticated,
+    )
+
+
 @seo_tools_bp.route("/audit-tool")
 def seo_audit_tool():
     """SEO Audit Tool - Main interface"""
     user_has_pro = is_premium_user()
+
+    # Usage tracking for free users
+    usage_info = {"usage_count": 0, "limit": 3}
+    usage_message = "Free users can perform 3 SEO audits per day"
+
+    if not user_has_pro and current_user.is_authenticated:
+        # TODO: Implement actual usage tracking from database
+        # For now, using placeholder values
+        usage_info = {"usage_count": 1, "limit": 3}
+        usage_message = f"You have used {usage_info['usage_count']}/{usage_info['limit']} free audits today"
 
     return render_template(
         "tools/seo_audit_tool.html",
@@ -58,6 +107,9 @@ def seo_audit_tool():
             ],
         },
         user_has_pro=user_has_pro,
+        is_premium=user_has_pro,  # Add this for template compatibility
+        usage_info=usage_info,  # Add usage information
+        usage_message=usage_message,  # Add usage message
         user_is_authenticated=current_user.is_authenticated,
     )
 
