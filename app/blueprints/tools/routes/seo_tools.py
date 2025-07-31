@@ -14,7 +14,7 @@ from ..utils.seo_audit_tool_utils import audit_seo
 from ..utils.advanced_seo_analyzer import PremiumSEOAnalyzer
 
 # Create SEO tools blueprint
-seo_tools_bp = Blueprint("seo_tools", __name__, url_prefix="/tools")
+seo_tools_bp = Blueprint("seo_tools", __name__, url_prefix="/tools/seo")
 
 
 def is_premium_user():
@@ -24,7 +24,7 @@ def is_premium_user():
     return current_user.is_pro_user()
 
 
-@seo_tools_bp.route("/seo-audit-tool")
+@seo_tools_bp.route("/audit-tool")
 def seo_audit_tool():
     """SEO Audit Tool - Main interface"""
     user_has_pro = is_premium_user()
@@ -62,7 +62,7 @@ def seo_audit_tool():
     )
 
 
-@seo_tools_bp.route("/seo-audit-tool/analyze", methods=["POST"])
+@seo_tools_bp.route("/audit-tool/analyze", methods=["POST"])
 def analyze_seo():
     """Perform SEO analysis - Premium vs Free differentiation"""
     try:
@@ -101,7 +101,7 @@ def analyze_seo():
         return jsonify({"success": False, "error": f"Analysis failed: {str(e)}"}), 500
 
 
-@seo_tools_bp.route("/seo-reports")
+@seo_tools_bp.route("/reports")
 @login_required
 def seo_reports_history():
     """SEO Reports History - Premium feature"""
@@ -120,7 +120,7 @@ def seo_reports_history():
     )
 
 
-@seo_tools_bp.route("/seo-report/<report_id>")
+@seo_tools_bp.route("/report/<report_id>")
 @login_required
 def seo_report_detail(report_id):
     """View specific SEO report - Premium feature"""

@@ -75,7 +75,7 @@ class SEOAuditDisplay {
             csrf_token: document.querySelector('input[name="csrf_token"]').value
         };
 
-        fetch('/tools/seo-audit-tool/analyze', {
+        fetch('/tools/seo/audit-tool/analyze', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
