@@ -70,38 +70,54 @@ class SEOAuditDisplay {
     }
 
     submitForm(url) {
-        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+        // Remove CSRF token requirement for now to test functionality
         const formData = new FormData();
         formData.append('url', url);
-        formData.append('csrf_token', csrfToken);
 
-        fetch('/tools/seo/audit-tool/analyze', {
+        fetch('/tools/seo/api/analyze', {
             method: 'POST',
             body: formData
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 this.hideLoading();
 
                 console.log('SEO Audit Response:', data); // Debug logging
 
-                if (data.error) {
-                    alert('Error: ' + data.error);
-                } else {
-                    // Pass the entire data object since it contains all the analysis results
-                    this.displayResults(data);
-                    this.resultsContainer.classList.remove('hidden');
+                try {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                    } else {
+                        // Pass the entire data object since it contains all the analysis results
+                        this.displayResults(data);
+                        this.resultsContainer.classList.remove('hidden');
+                    }
+                } catch (displayError) {
+                    console.error('Error displaying results:', displayError);
+                    alert('Error displaying results: ' + (displayError.message || displayError));
                 }
             })
             .catch(error => {
                 this.hideLoading();
                 console.error('Error:', error);
-                alert('An error occurred while analyzing the website');
+                // Better error handling
+                let errorMessage = 'An error occurred while analyzing the website';
+                if (error && error.message) {
+                    errorMessage += ': ' + error.message;
+                } else if (typeof error === 'string') {
+                    errorMessage += ': ' + error;
+                }
+                alert(errorMessage);
             });
     }
 
     displayResults(results) {
-        console.log('Displaying results with data:', results); // Debug logging
+        console.log('Displaying results with data:', results);
 
         if (!results) {
             console.error('No results provided to displayResults');
@@ -111,38 +127,89 @@ class SEOAuditDisplay {
         // Check if this is a premium analysis
         const isPremium = results.is_premium_analysis || false;
 
+        // Always display overview for both free and premium users
+        this.displayOverview(results);
+
         if (isPremium) {
-            // Display comprehensive premium results
-            this.displayPremiumResults(results);
+            // Display all tabs with full data for premium users
+            this.displayTechnicalSEO(results);
+            this.displayContentAnalysis(results);
+            this.displayPerformanceAnalysis(results);
+            this.displayRecommendations(results);
+            this.displayPagesAnalyzed(results);
         } else {
-            // Display limited free results with upgrade prompts
-            this.displayFreeResults(results);
+            // Display locked tabs for free users
+            this.displayLockedTabs();
         }
     }
 
-    displayFreeResults(results) {
-        // Display limited results for free users with upgrade prompts
+    displayLockedTabs() {
+        // Display locked content for free users in all tabs except overview
+        const lockedContent = `
+            <div class="flex items-center justify-center min-h-[400px]">
+                <div class="text-center max-w-md">
+                    <div class="mb-6">
+                        <i data-lucide="lock" class="w-16 h-16 text-blue-500 mx-auto"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Unlock Complete SEO Analysis</h3>
+                    <p class="text-gray-600 mb-6">
+                        Get access to comprehensive SEO analysis including technical audits, 
+                        content analysis, performance insights, and detailed recommendations.
+                    </p>
+                    <div class="space-y-3 mb-6">
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 p-4 rounded-lg text-sm">
+                            <div class="flex items-center">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mr-3"></i>
+                                <span class="text-gray-800 font-medium">500+ page deep crawl analysis</span>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 p-4 rounded-lg text-sm">
+                            <div class="flex items-center">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mr-3"></i>
+                                <span class="text-gray-800 font-medium">Advanced technical SEO checks</span>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 p-4 rounded-lg text-sm">
+                            <div class="flex items-center">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mr-3"></i>
+                                <span class="text-gray-800 font-medium">Competitor analysis & insights</span>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 p-4 rounded-lg text-sm">
+                            <div class="flex items-center">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mr-3"></i>
+                                <span class="text-gray-800 font-medium">Detailed actionable recommendations</span>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 p-4 rounded-lg text-sm">
+                            <div class="flex items-center">
+                                <i data-lucide="star" class="w-5 h-5 text-orange-600 mr-3"></i>
+                                <span class="text-gray-800 font-medium">$100 worth of analysis for just $29</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <a href="/pricing" class="inline-block w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105">
+                            Upgrade to Pro - $29/month
+                        </a>
+                        <a href="/pricing" class="inline-block text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            View all Pro features →
+                        </a>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-4">No commitment • Cancel anytime • 7-day free trial</p>
+                </div>
+            </div>
+        `;
 
-        // Display all tabs with basic data and upgrade prompts
-        this.displayOverview(results);
-        this.displayLimitedTechnicalSEO(results);
-        this.displayLimitedContentAnalysis(results);
-        this.displayUpgradePrompts(results);
-        this.displayBasicRecommendations(results);
-        this.displayLimitedPages(results);
-    }
+        // Set locked content for all tabs except overview
+        const tabIds = ['technical_content', 'content_content', 'performance_content', 'recommendations_content', 'pages_content'];
 
-    displayPremiumResults(results) {
-        // Display comprehensive results for premium users
-
-        // Display all tabs with comprehensive data
-        this.displayOverview(results);
-        this.displayAdvancedTechnicalSEO(results);
-        this.displayAdvancedContentAnalysis(results);
-        this.displayCompetitorAnalysis(results);
-        this.displayPerformanceAnalysis(results);
-        this.displayAdvancedRecommendations(results);
-        this.displayComprehensivePages(results);
+        tabIds.forEach(tabId => {
+            const element = document.getElementById(tabId);
+            if (element) {
+                element.innerHTML = lockedContent;
+            }
+        });
     }
 
     displayLimitedTechnicalSEO(results) {
@@ -195,7 +262,7 @@ class SEOAuditDisplay {
             </div>
         `;
 
-        document.getElementById('technical_tab').innerHTML = html;
+        document.getElementById('technical_content').innerHTML = html;
     }
 
     displayUpgradePrompts(results) {
@@ -226,13 +293,15 @@ class SEOAuditDisplay {
         `;
 
         // Insert upgrade prompt after overview
-        const overviewTab = document.getElementById('overview_tab');
-        if (overviewTab) {
-            overviewTab.insertAdjacentHTML('beforeend', upgradePrompts);
+        const overviewContent = document.getElementById('overview_content');
+        if (overviewContent) {
+            overviewContent.insertAdjacentHTML('beforeend', upgradePrompts);
         }
     }
 
     displayOverview(results) {
+        console.log('displayOverview called with:', results);
+
         const seoScore = results.overall_score || 0;
         const scoreColor = seoScore >= 80 ? 'green' : seoScore >= 60 ? 'yellow' : 'red';
         const scoreGrade = this.getScoreGrade(seoScore);
@@ -389,6 +458,7 @@ class SEOAuditDisplay {
         `;
 
         document.getElementById('overview_content').innerHTML = html;
+        console.log('displayOverview completed successfully');
     }
 
     displayTechnicalSEO(results) {

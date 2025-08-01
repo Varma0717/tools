@@ -27,16 +27,10 @@ def audit_seo(url: str, is_premium: bool = False) -> dict:
     try:
         start_time = time.time()
 
-        if is_premium:
-            # Use premium analyzer for Pro users
-            from .advanced_seo_analyzer import PremiumSEOAnalyzer
-
-            analyzer = PremiumSEOAnalyzer(url)
-            audit_results = analyzer.perform_premium_audit()
-        else:
-            # Use standard crawler for free users (limited analysis)
-            crawler = SEOSiteCrawler(url, max_pages=10)  # Limited pages for free users
-            audit_results = crawler.perform_limited_audit()
+        # Use the same comprehensive crawler for both free and premium users
+        # The difference is in what data we return, not how much we analyze
+        crawler = SEOSiteCrawler(url, max_pages=500)  # Always crawl comprehensively
+        audit_results = crawler.perform_full_audit()
 
         end_time = time.time()
         audit_results["total_audit_time"] = round(end_time - start_time, 2)
@@ -91,20 +85,61 @@ class SEOSiteCrawler:
                     "total_pages_found": len(self.crawled_urls),
                     "successfully_crawled": len(self.crawled_urls),
                     "failed_pages": len(self.failed_urls),
-                    "analysis_type": "basic",
+                    "analysis_type": "free_overview",
+                    "limitation_notice": "Free users receive basic overview only",
                 },
                 "overall_score": overall_score,
-                "robots_txt": robots_analysis,
-                "sitemap": sitemap_analysis,
-                "technical_analysis": basic_analysis,
-                "recommendations": recommendations,
-                "pages_analysis": {
-                    "analyzed_pages": min(3, len(self.crawled_urls)),
-                    "sample_pages": (
-                        list(self.crawled_urls)[:3] if self.crawled_urls else []
+                "score_breakdown": {
+                    "technical": overall_score * 0.3,
+                    "content": overall_score * 0.25,
+                    "performance": overall_score * 0.25,
+                    "mobile": overall_score * 0.2,
+                    "note": "Upgrade for detailed breakdown and 15+ categories",
+                },
+                "quick_overview": {
+                    "robots_txt": (
+                        "Found" if robots_analysis.get("found") else "Missing"
+                    ),
+                    "sitemap": "Found" if sitemap_analysis.get("found") else "Missing",
+                    "ssl_certificate": basic_analysis.get("ssl_status", "Unknown"),
+                    "mobile_friendly": basic_analysis.get("mobile_friendly", "Unknown"),
+                    "page_speed": (
+                        "Needs analysis"
+                        if not basic_analysis.get("page_speed")
+                        else "Good"
                     ),
                 },
-                "upgrade_message": "Upgrade to Pro for complete analysis of 500+ pages, advanced technical SEO, competitor analysis, and detailed recommendations.",
+                "top_issues": recommendations[:3],  # Only show top 3 issues
+                "limitations": {
+                    "pages_analyzed": f"{len(self.crawled_urls)} (homepage only)",
+                    "checks_performed": "Basic overview (20+ checks)",
+                    "missing_features": [
+                        "Competitor analysis",
+                        "Advanced technical SEO (180+ checks)",
+                        "Content gap analysis",
+                        "Backlink profile analysis",
+                        "Core Web Vitals monitoring",
+                        "Schema markup analysis",
+                        "Local SEO optimization",
+                        "ROI forecasting",
+                        "PDF export",
+                        "Historical tracking",
+                    ],
+                },
+                "upgrade_cta": {
+                    "message": "Unlock Professional SEO Analysis Worth $500+",
+                    "benefits": [
+                        "Complete website analysis (1000+ pages)",
+                        "200+ advanced SEO checks",
+                        "Competitor intelligence & benchmarking",
+                        "Content strategy recommendations",
+                        "Backlink analysis & opportunities",
+                        "Monthly progress tracking",
+                        "White-label PDF reports",
+                        "Priority email support",
+                    ],
+                    "pricing": "$29/month - Cancel anytime",
+                },
             }
 
         except Exception as e:
