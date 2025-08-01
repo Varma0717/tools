@@ -163,14 +163,10 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(auth_bp)
 
     # Tools routes - Now using modular routing system
-    from app.blueprints.tools import tools_bp
-    from app.blueprints.tools.main_routes import register_tool_blueprints
+    from app.blueprints.tools import register_all_tool_blueprints
 
-    # Register main tools blueprint (for index and coordination)
-    app.register_blueprint(tools_bp)
-
-    # Register all modular tool blueprints (SEO, Content, Keywords, Links, etc.)
-    register_tool_blueprints(app)
+    # Register all tool blueprints (main index + all 8 categories)
+    register_all_tool_blueprints(app)
 
     # API routes
     from app.blueprints.api import api_bp

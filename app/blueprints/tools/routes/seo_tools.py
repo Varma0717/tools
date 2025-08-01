@@ -5,6 +5,7 @@ Handles all SEO-related tools including audit, reports, and analysis
 
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
 from flask_login import login_required, current_user
+from flask_wtf.csrf import generate_csrf
 import time
 import json
 from datetime import datetime
@@ -26,40 +27,54 @@ def is_premium_user():
 
 @seo_tools_bp.route("/")
 def seo_tools_index():
-    """SEO Tools Category Page - List all SEO tools"""
+    """SEO tools category index"""
     user_has_pro = is_premium_user()
 
-    seo_tools = [
-        {
-            "name": "SEO Audit Tool",
-            "url": url_for("seo_tools.seo_audit_tool"),
-            "description": "Comprehensive SEO analysis with 150+ premium checks",
-            "is_premium": False,  # Free to access, premium features inside
-            "features": ["Technical SEO", "On-page Analysis", "Performance Metrics"],
-        },
-        {
-            "name": "SEO Reports",
-            "url": url_for("seo_tools.seo_reports_history"),
-            "description": "View your SEO audit history and reports",
-            "is_premium": True,
-            "features": ["Report History", "PDF Downloads", "Trend Analysis"],
-        },
-    ]
+    category = {
+        "name": "SEO Tools",
+        "description": "Professional SEO analysis and optimization tools for better search rankings",
+        "tools": [
+            {
+                "name": "SEO Audit Tool",
+                "slug": "audit-tool",
+                "description": "Complete SEO analysis with 150+ professional checks",
+                "features": [
+                    "Technical SEO audit",
+                    "Competitor analysis",
+                    "ROI forecasting",
+                ],
+                "is_premium": True,
+                "is_working": True,  # This tool actually works
+            },
+            {
+                "name": "Rank Tracker",
+                "slug": "rank-tracker",
+                "description": "Track keyword rankings and monitor progress",
+                "features": [
+                    "Keyword tracking",
+                    "Position monitoring",
+                    "Historical data",
+                ],
+                "is_premium": True,
+                "is_working": False,
+            },
+            {
+                "name": "Competitor Analysis",
+                "slug": "competitor-analysis",
+                "description": "Analyze competitor strategies and find opportunities",
+                "features": [
+                    "Competitor insights",
+                    "Gap analysis",
+                    "Strategy recommendations",
+                ],
+                "is_premium": True,
+                "is_working": False,
+            },
+        ],
+    }
 
     return render_template(
-        "tools/coming_soon.html",  # We'll use this as a placeholder for now
-        tool={
-            "name": "SEO Tools",
-            "description": "Professional SEO analysis and optimization tools",
-            "is_premium": False,
-            "category": "SEO Tools",
-            "features": [
-                f"✅ {tool['name']}: {tool['description']}" for tool in seo_tools
-            ],
-        },
-        seo_tools=seo_tools,
-        user_has_pro=user_has_pro,
-        user_is_authenticated=current_user.is_authenticated,
+        "tools/seo_category_index.html", category=category, user_has_pro=user_has_pro
     )
 
 
@@ -118,11 +133,8 @@ def seo_audit_tool():
 def analyze_seo():
     """Perform SEO analysis - Premium vs Free differentiation"""
     try:
-        data = request.get_json()
-        if not data:
-            return jsonify({"success": False, "error": "No data provided"}), 400
-
-        url = data.get("url", "").strip()
+        # Get URL from form data instead of JSON
+        url = request.form.get("url", "").strip()
         if not url:
             return jsonify({"success": False, "error": "URL is required"}), 400
 

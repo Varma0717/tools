@@ -70,17 +70,14 @@ class SEOAuditDisplay {
     }
 
     submitForm(url) {
-        const requestData = {
-            url: url,
-            csrf_token: document.querySelector('input[name="csrf_token"]').value
-        };
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+        const formData = new FormData();
+        formData.append('url', url);
+        formData.append('csrf_token', csrfToken);
 
         fetch('/tools/seo/audit-tool/analyze', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData)
+            body: formData
         })
             .then(response => response.json())
             .then(data => {

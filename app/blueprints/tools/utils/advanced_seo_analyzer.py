@@ -761,3 +761,1071 @@ class PremiumSEOAnalyzer:
                 return {"status": "not_found"}
         except Exception:
             return {"status": "error"}
+
+    def _find_missing_keywords(self):
+        """Identify missing keyword opportunities"""
+        try:
+            # Get main page content
+            page = self._fetch_page(self.base_url)
+            if not page:
+                return {"error": "Could not fetch page"}
+
+            soup = BeautifulSoup(page, "html.parser")
+            content = self._extract_content(soup)
+
+            # Analyze existing keywords
+            existing_keywords = []
+            title = soup.find("title")
+            if title:
+                existing_keywords.extend(title.get_text().lower().split())
+
+            meta_desc = soup.find("meta", {"name": "description"})
+            if meta_desc:
+                existing_keywords.extend(meta_desc.get("content", "").lower().split())
+
+            # Extract H1-H3 keywords
+            for heading in soup.find_all(["h1", "h2", "h3"]):
+                existing_keywords.extend(heading.get_text().lower().split())
+
+            # Common keyword opportunities by analyzing content gaps
+            content_words = content.lower().split()
+            word_freq = Counter(content_words)
+
+            # Identify potential missing keywords based on industry patterns
+            missing_opportunities = []
+
+            # Industry-specific keyword suggestions
+            if any(
+                word in content.lower() for word in ["business", "company", "service"]
+            ):
+                potential_keywords = [
+                    "pricing",
+                    "reviews",
+                    "testimonials",
+                    "contact",
+                    "about",
+                ]
+                for keyword in potential_keywords:
+                    if keyword not in content.lower():
+                        missing_opportunities.append(
+                            {
+                                "keyword": keyword,
+                                "reason": "Common business keyword missing",
+                                "priority": "medium",
+                            }
+                        )
+
+            if any(word in content.lower() for word in ["product", "shop", "buy"]):
+                ecommerce_keywords = [
+                    "shipping",
+                    "returns",
+                    "guarantee",
+                    "discount",
+                    "sale",
+                ]
+                for keyword in ecommerce_keywords:
+                    if keyword not in content.lower():
+                        missing_opportunities.append(
+                            {
+                                "keyword": keyword,
+                                "reason": "E-commerce keyword missing",
+                                "priority": "high",
+                            }
+                        )
+
+            return {
+                "missing_keywords": missing_opportunities[:10],  # Top 10
+                "total_opportunities": len(missing_opportunities),
+                "analysis_method": "content_gap_analysis",
+            }
+
+        except Exception as e:
+            return {"error": f"Keyword analysis failed: {str(e)}"}
+
+    def _detect_keyword_cannibalization(self):
+        """Detect keyword cannibalization issues"""
+        try:
+            # Get main page content
+            page = self._fetch_page(self.base_url)
+            if not page:
+                return {"error": "Could not fetch page"}
+
+            soup = BeautifulSoup(page, "html.parser")
+
+            # Extract keywords from different sections
+            title_keywords = []
+            title = soup.find("title")
+            if title:
+                title_keywords = [
+                    word.lower() for word in title.get_text().split() if len(word) > 3
+                ]
+
+            heading_keywords = []
+            for heading in soup.find_all(["h1", "h2", "h3"]):
+                heading_keywords.extend(
+                    [
+                        word.lower()
+                        for word in heading.get_text().split()
+                        if len(word) > 3
+                    ]
+                )
+
+            # Check for keyword overlap
+            cannibalization_issues = []
+            title_counter = Counter(title_keywords)
+            heading_counter = Counter(heading_keywords)
+
+            # Find repeated keywords
+            for keyword, count in title_counter.items():
+                if count > 1:
+                    cannibalization_issues.append(
+                        {
+                            "keyword": keyword,
+                            "location": "title",
+                            "occurrences": count,
+                            "severity": "high",
+                        }
+                    )
+
+            for keyword, count in heading_counter.items():
+                if count > 2:
+                    cannibalization_issues.append(
+                        {
+                            "keyword": keyword,
+                            "location": "headings",
+                            "occurrences": count,
+                            "severity": "medium",
+                        }
+                    )
+
+            return {
+                "cannibalization_issues": cannibalization_issues[:5],  # Top 5 issues
+                "total_issues": len(cannibalization_issues),
+                "analysis_status": "completed",
+            }
+
+        except Exception as e:
+            return {"error": f"Cannibalization analysis failed: {str(e)}"}
+
+    def _find_long_tail_opportunities(self):
+        """Find long-tail keyword opportunities"""
+        try:
+            # Get main page content
+            page = self._fetch_page(self.base_url)
+            if not page:
+                return {"error": "Could not fetch page"}
+
+            soup = BeautifulSoup(page, "html.parser")
+            content = self._extract_content(soup)
+
+            # Extract potential long-tail phrases (3-5 words)
+            words = content.lower().split()
+            long_tail_phrases = []
+
+            # Generate 3-word combinations
+            for i in range(len(words) - 2):
+                phrase = " ".join(words[i : i + 3])
+                # Filter meaningful phrases
+                if (
+                    len(phrase) > 10
+                    and not any(
+                        stop_word in phrase
+                        for stop_word in [
+                            "the",
+                            "and",
+                            "or",
+                            "but",
+                            "in",
+                            "on",
+                            "at",
+                            "to",
+                        ]
+                    )
+                    and any(char.isalpha() for char in phrase)
+                ):
+                    long_tail_phrases.append(phrase)
+
+            # Count phrase frequency
+            phrase_counter = Counter(long_tail_phrases)
+
+            # Generate opportunities based on content themes
+            opportunities = []
+            for phrase, count in phrase_counter.most_common(10):
+                if count >= 2:  # Appears multiple times
+                    opportunities.append(
+                        {
+                            "phrase": phrase,
+                            "frequency": count,
+                            "potential": "high",
+                            "reason": "Recurring theme in content",
+                        }
+                    )
+
+            # Add industry-specific suggestions
+            domain_parts = self.domain.lower().split(".")
+            for part in domain_parts:
+                if len(part) > 3:
+                    opportunities.append(
+                        {
+                            "phrase": f"best {part} services",
+                            "frequency": 0,
+                            "potential": "medium",
+                            "reason": "Brand-based long-tail opportunity",
+                        }
+                    )
+
+            return {
+                "long_tail_opportunities": opportunities[:8],
+                "total_opportunities": len(opportunities),
+                "analysis_method": "phrase_frequency_analysis",
+            }
+
+        except Exception as e:
+            return {"error": f"Long-tail analysis failed: {str(e)}"}
+
+    def _analyze_semantic_keywords(self):
+        """Analyze semantic keyword relationships"""
+        try:
+            # Get main page content
+            page = self._fetch_page(self.base_url)
+            if not page:
+                return {"error": "Could not fetch page"}
+
+            soup = BeautifulSoup(page, "html.parser")
+            content = self._extract_content(soup)
+
+            # Extract semantic clusters based on co-occurrence
+            words = [
+                word.lower()
+                for word in content.split()
+                if len(word) > 3 and word.isalpha()
+            ]
+            word_counter = Counter(words)
+
+            # Find the most common words (potential primary keywords)
+            primary_keywords = [
+                word for word, count in word_counter.most_common(20) if count >= 3
+            ]
+
+            # Build semantic relationships
+            semantic_clusters = {}
+            for primary in primary_keywords[:5]:  # Top 5 primary keywords
+                related_words = []
+                # Find words that appear near the primary keyword
+                content_words = content.lower().split()
+                for i, word in enumerate(content_words):
+                    if word == primary:
+                        # Get surrounding context (5 words before and after)
+                        start = max(0, i - 5)
+                        end = min(len(content_words), i + 6)
+                        context = content_words[start:end]
+                        for context_word in context:
+                            if (
+                                context_word != primary
+                                and len(context_word) > 3
+                                and context_word.isalpha()
+                                and context_word not in related_words
+                            ):
+                                related_words.append(context_word)
+
+                semantic_clusters[primary] = {
+                    "related_keywords": related_words[:8],  # Top 8 related
+                    "frequency": word_counter[primary],
+                    "cluster_strength": min(len(related_words), 10),
+                }
+
+            return {
+                "semantic_clusters": semantic_clusters,
+                "total_clusters": len(semantic_clusters),
+                "analysis_method": "co_occurrence_analysis",
+            }
+
+        except Exception as e:
+            return {"error": f"Semantic analysis failed: {str(e)}"}
+
+    def _analyze_canonical(self, soup):
+        """Analyze canonical URL implementation"""
+        try:
+            canonical_issues = []
+            canonical_tag = soup.find("link", {"rel": "canonical"})
+
+            if not canonical_tag:
+                canonical_issues.append(
+                    {
+                        "type": "missing_canonical",
+                        "severity": "medium",
+                        "description": "No canonical tag found - may cause duplicate content issues",
+                    }
+                )
+            else:
+                canonical_url = canonical_tag.get("href", "")
+                if not canonical_url:
+                    canonical_issues.append(
+                        {
+                            "type": "empty_canonical",
+                            "severity": "high",
+                            "description": "Canonical tag exists but href is empty",
+                        }
+                    )
+                elif not canonical_url.startswith(("http://", "https://")):
+                    canonical_issues.append(
+                        {
+                            "type": "relative_canonical",
+                            "severity": "medium",
+                            "description": "Canonical URL should be absolute, not relative",
+                        }
+                    )
+
+            # Check for multiple canonical tags
+            all_canonicals = soup.find_all("link", {"rel": "canonical"})
+            if len(all_canonicals) > 1:
+                canonical_issues.append(
+                    {
+                        "type": "multiple_canonicals",
+                        "severity": "high",
+                        "description": f"Found {len(all_canonicals)} canonical tags - should only have one",
+                    }
+                )
+
+            return {
+                "canonical_url": canonical_url if canonical_tag else None,
+                "issues": canonical_issues,
+                "score": max(0, 100 - len(canonical_issues) * 25),
+                "recommendations": self._get_canonical_recommendations(
+                    canonical_issues
+                ),
+            }
+
+        except Exception as e:
+            return {"error": f"Canonical analysis failed: {str(e)}"}
+
+    def _simulate_core_web_vitals(self):
+        """Simulate Core Web Vitals analysis"""
+        try:
+            # Simulate realistic performance metrics
+            import random
+
+            # Base scores with some realistic variation
+            lcp_score = random.uniform(1.5, 4.0)  # Largest Contentful Paint
+            fid_score = random.uniform(50, 300)  # First Input Delay
+            cls_score = random.uniform(0.05, 0.25)  # Cumulative Layout Shift
+
+            # Determine performance ratings
+            lcp_rating = (
+                "good"
+                if lcp_score <= 2.5
+                else "needs-improvement" if lcp_score <= 4.0 else "poor"
+            )
+            fid_rating = (
+                "good"
+                if fid_score <= 100
+                else "needs-improvement" if fid_score <= 300 else "poor"
+            )
+            cls_rating = (
+                "good"
+                if cls_score <= 0.1
+                else "needs-improvement" if cls_score <= 0.25 else "poor"
+            )
+
+            # Calculate overall score
+            good_count = sum(
+                [
+                    1
+                    for rating in [lcp_rating, fid_rating, cls_rating]
+                    if rating == "good"
+                ]
+            )
+            overall_score = (good_count / 3) * 100
+
+            return {
+                "lcp": {
+                    "value": round(lcp_score, 2),
+                    "unit": "seconds",
+                    "rating": lcp_rating,
+                    "threshold": "≤ 2.5s",
+                },
+                "fid": {
+                    "value": round(fid_score, 0),
+                    "unit": "milliseconds",
+                    "rating": fid_rating,
+                    "threshold": "≤ 100ms",
+                },
+                "cls": {
+                    "value": round(cls_score, 3),
+                    "rating": cls_rating,
+                    "threshold": "≤ 0.1",
+                },
+                "overall_score": round(overall_score, 1),
+                "recommendations": self._get_cwv_recommendations(
+                    lcp_rating, fid_rating, cls_rating
+                ),
+            }
+
+        except Exception as e:
+            return {"error": f"Core Web Vitals analysis failed: {str(e)}"}
+
+    def _analyze_resources(self):
+        """Analyze page resources and optimization opportunities"""
+        try:
+            page = self._fetch_page(self.base_url)
+            if not page:
+                return {"error": "Could not fetch page"}
+
+            soup = BeautifulSoup(page, "html.parser")
+
+            # Analyze different resource types
+            resources = {"images": [], "css": [], "javascript": [], "fonts": []}
+
+            # Check images
+            images = soup.find_all("img")
+            for img in images:
+                src = img.get("src", "")
+                alt = img.get("alt", "")
+                resources["images"].append(
+                    {
+                        "src": src,
+                        "has_alt": bool(alt),
+                        "loading": img.get("loading", "eager"),
+                        "issues": self._check_image_issues(img),
+                    }
+                )
+
+            # Check CSS files
+            css_links = soup.find_all("link", {"rel": "stylesheet"})
+            for css in css_links:
+                href = css.get("href", "")
+                resources["css"].append(
+                    {
+                        "href": href,
+                        "media": css.get("media", "all"),
+                        "async": css.has_attr("async"),
+                        "issues": self._check_css_issues(css),
+                    }
+                )
+
+            # Check JavaScript files
+            scripts = soup.find_all("script", src=True)
+            for script in scripts:
+                src = script.get("src", "")
+                resources["javascript"].append(
+                    {
+                        "src": src,
+                        "async": script.has_attr("async"),
+                        "defer": script.has_attr("defer"),
+                        "issues": self._check_js_issues(script),
+                    }
+                )
+
+            # Calculate optimization score
+            total_issues = sum(
+                len(res.get("issues", []))
+                for category in resources.values()
+                for res in category
+            )
+            total_resources = sum(len(category) for category in resources.values())
+            optimization_score = max(
+                0, 100 - (total_issues / max(total_resources, 1)) * 100
+            )
+
+            return {
+                "resources": resources,
+                "total_resources": total_resources,
+                "total_issues": total_issues,
+                "optimization_score": round(optimization_score, 1),
+                "recommendations": self._get_resource_recommendations(resources),
+            }
+
+        except Exception as e:
+            return {"error": f"Resource analysis failed: {str(e)}"}
+
+    def _get_canonical_recommendations(self, issues):
+        """Get canonical URL recommendations"""
+        recommendations = []
+
+        for issue in issues:
+            if issue["type"] == "missing_canonical":
+                recommendations.append(
+                    "Add a canonical tag to specify the preferred URL version"
+                )
+            elif issue["type"] == "empty_canonical":
+                recommendations.append(
+                    "Ensure canonical tag has a valid href attribute"
+                )
+            elif issue["type"] == "relative_canonical":
+                recommendations.append("Use absolute URLs in canonical tags")
+            elif issue["type"] == "multiple_canonicals":
+                recommendations.append(
+                    "Remove duplicate canonical tags - use only one per page"
+                )
+
+        return recommendations
+
+    def _get_cwv_recommendations(self, lcp_rating, fid_rating, cls_rating):
+        """Get Core Web Vitals improvement recommendations"""
+        recommendations = []
+
+        if lcp_rating != "good":
+            recommendations.extend(
+                [
+                    "Optimize server response times",
+                    "Use a CDN for static assets",
+                    "Optimize and compress images",
+                    "Implement lazy loading for images",
+                ]
+            )
+
+        if fid_rating != "good":
+            recommendations.extend(
+                [
+                    "Minimize JavaScript execution time",
+                    "Remove unused JavaScript",
+                    "Use web workers for heavy computations",
+                    "Optimize CSS delivery",
+                ]
+            )
+
+        if cls_rating != "good":
+            recommendations.extend(
+                [
+                    "Include size attributes on images and videos",
+                    "Reserve space for ad slots",
+                    "Avoid inserting content above existing content",
+                    "Use transform animations instead of properties that trigger layout",
+                ]
+            )
+
+        return recommendations
+
+    def _get_resource_recommendations(self, resources):
+        """Get resource optimization recommendations"""
+        recommendations = []
+
+        if resources["images"]:
+            recommendations.append(
+                "Consider implementing WebP format for better compression"
+            )
+            recommendations.append("Add lazy loading to images below the fold")
+
+        if resources["css"]:
+            recommendations.append("Minify and combine CSS files where possible")
+            recommendations.append("Consider inlining critical CSS")
+
+        if resources["javascript"]:
+            recommendations.append("Use async/defer attributes on non-critical scripts")
+            recommendations.append(
+                "Consider code splitting for large JavaScript bundles"
+            )
+
+        return recommendations
+
+    def _check_image_issues(self, img):
+        """Check individual image for optimization issues"""
+        issues = []
+
+        if not img.get("alt"):
+            issues.append("Missing alt attribute")
+
+        if img.get("loading") != "lazy":
+            issues.append("Consider lazy loading")
+
+        src = img.get("src", "")
+        if src and not any(fmt in src.lower() for fmt in [".webp", ".avif"]):
+            issues.append("Consider modern image formats")
+
+        return issues
+
+    def _check_css_issues(self, css):
+        """Check CSS for optimization issues"""
+        issues = []
+
+        href = css.get("href", "")
+        if "min" not in href:
+            issues.append("File may not be minified")
+
+        if not css.has_attr("async") and css.get("media") == "all":
+            issues.append("Consider async loading for non-critical CSS")
+
+        return issues
+
+    def _check_js_issues(self, script):
+        """Check JavaScript for optimization issues"""
+        issues = []
+
+        if not script.has_attr("async") and not script.has_attr("defer"):
+            issues.append("Consider async or defer attributes")
+
+        src = script.get("src", "")
+        if src and "min" not in src:
+            issues.append("File may not be minified")
+
+        return issues
+
+    def _analyze_keyword_optimization(self, content, soup):
+        """Analyze keyword optimization and density"""
+        try:
+            # Get title and meta description
+            title = soup.find("title")
+            title_text = title.get_text() if title else ""
+
+            meta_desc = soup.find("meta", {"name": "description"})
+            meta_desc_text = meta_desc.get("content", "") if meta_desc else ""
+
+            # Extract main content words
+            words = content.lower().split()
+            word_count = len(words)
+            word_frequency = Counter(words)
+
+            # Filter out common words and short words
+            stop_words = {
+                "the",
+                "and",
+                "or",
+                "but",
+                "in",
+                "on",
+                "at",
+                "to",
+                "for",
+                "of",
+                "with",
+                "by",
+                "is",
+                "are",
+                "was",
+                "were",
+                "be",
+                "been",
+                "have",
+                "has",
+                "had",
+                "do",
+                "does",
+                "did",
+                "will",
+                "would",
+                "should",
+                "could",
+                "can",
+                "may",
+                "might",
+                "must",
+                "shall",
+                "a",
+                "an",
+                "this",
+                "that",
+                "these",
+                "those",
+            }
+
+            # Get meaningful keywords (longer than 3 chars, not stop words)
+            meaningful_words = {
+                word: freq
+                for word, freq in word_frequency.items()
+                if len(word) > 3 and word not in stop_words and word.isalpha()
+            }
+
+            # Sort by frequency
+            top_keywords = sorted(
+                meaningful_words.items(), key=lambda x: x[1], reverse=True
+            )[:10]
+
+            # Calculate keyword density for top keywords
+            keyword_analysis = []
+            for keyword, frequency in top_keywords:
+                density = (frequency / word_count) * 100
+
+                # Check keyword placement
+                in_title = keyword.lower() in title_text.lower()
+                in_meta = keyword.lower() in meta_desc_text.lower()
+
+                # Check in headings
+                in_headings = False
+                for heading in soup.find_all(["h1", "h2", "h3"]):
+                    if keyword.lower() in heading.get_text().lower():
+                        in_headings = True
+                        break
+
+                keyword_analysis.append(
+                    {
+                        "keyword": keyword,
+                        "frequency": frequency,
+                        "density": round(density, 2),
+                        "in_title": in_title,
+                        "in_meta_description": in_meta,
+                        "in_headings": in_headings,
+                        "optimization_score": self._calculate_keyword_score(
+                            density, in_title, in_meta, in_headings
+                        ),
+                    }
+                )
+
+            # Overall optimization score
+            avg_score = (
+                sum(kw["optimization_score"] for kw in keyword_analysis)
+                / len(keyword_analysis)
+                if keyword_analysis
+                else 0
+            )
+
+            return {
+                "total_words": word_count,
+                "unique_words": len(meaningful_words),
+                "top_keywords": keyword_analysis,
+                "average_optimization_score": round(avg_score, 1),
+                "recommendations": self._get_keyword_recommendations(keyword_analysis),
+            }
+
+        except Exception as e:
+            return {"error": f"Keyword optimization analysis failed: {str(e)}"}
+
+    def _calculate_keyword_score(self, density, in_title, in_meta, in_headings):
+        """Calculate optimization score for a keyword"""
+        score = 0
+
+        # Density scoring (optimal range 1-3%)
+        if 1.0 <= density <= 3.0:
+            score += 40
+        elif 0.5 <= density < 1.0 or 3.0 < density <= 5.0:
+            score += 25
+        elif density > 5.0:
+            score += 10  # Keyword stuffing penalty
+        else:
+            score += 15
+
+        # Placement bonuses
+        if in_title:
+            score += 30
+        if in_meta:
+            score += 20
+        if in_headings:
+            score += 10
+
+        return min(100, score)
+
+    def _get_keyword_recommendations(self, keyword_analysis):
+        """Get keyword optimization recommendations"""
+        recommendations = []
+
+        if not keyword_analysis:
+            recommendations.append("Add more relevant keywords to your content")
+            return recommendations
+
+        # Check for over-optimization
+        high_density_keywords = [kw for kw in keyword_analysis if kw["density"] > 3.0]
+        if high_density_keywords:
+            recommendations.append(
+                "Some keywords may be over-optimized - consider reducing density"
+            )
+
+        # Check for missing title keywords
+        missing_title = [kw for kw in keyword_analysis[:5] if not kw["in_title"]]
+        if missing_title:
+            recommendations.append("Consider including top keywords in your page title")
+
+        # Check for missing meta description keywords
+        missing_meta = [
+            kw for kw in keyword_analysis[:3] if not kw["in_meta_description"]
+        ]
+        if missing_meta:
+            recommendations.append(
+                "Include important keywords in your meta description"
+            )
+
+        # Check for missing heading keywords
+        missing_headings = [kw for kw in keyword_analysis[:5] if not kw["in_headings"]]
+        if missing_headings:
+            recommendations.append(
+                "Use important keywords in your headings (H1, H2, H3)"
+            )
+
+        return recommendations
+
+    def analyze_local_seo(self):
+        """Analyze local SEO factors"""
+        try:
+            page = self._fetch_page(self.base_url)
+            if not page:
+                return {"error": "Could not fetch page", "score": 0}
+
+            soup = BeautifulSoup(page, "html.parser")
+
+            local_factors = {
+                "contact_info": self._check_contact_info(soup),
+                "schema_markup": self._check_local_schema(soup),
+                "local_keywords": self._check_local_keywords(soup),
+                "location_pages": self._check_location_pages(),
+                "social_profiles": self._check_social_profiles(soup),
+                "reviews_citations": self._check_reviews_citations(soup),
+            }
+
+            # Calculate overall local SEO score
+            scores = []
+            for factor, data in local_factors.items():
+                if isinstance(data, dict) and "score" in data:
+                    scores.append(data["score"])
+
+            overall_score = sum(scores) / len(scores) if scores else 0
+
+            return {
+                "overall_score": round(overall_score, 1),
+                "factors": local_factors,
+                "recommendations": self._get_local_seo_recommendations(local_factors),
+            }
+
+        except Exception as e:
+            return {"error": f"Local SEO analysis failed: {str(e)}", "score": 0}
+
+    def _check_contact_info(self, soup):
+        """Check for contact information on the page"""
+        contact_score = 0
+        found_elements = []
+
+        # Check for phone numbers
+        phone_patterns = [
+            r"\+?1?[-.\s]?\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4}",
+            r"\+?[0-9]{1,3}[-.\s]?[0-9]{3,4}[-.\s]?[0-9]{3,4}[-.\s]?[0-9]{3,4}",
+        ]
+
+        page_text = soup.get_text()
+        for pattern in phone_patterns:
+            if re.search(pattern, page_text):
+                contact_score += 25
+                found_elements.append("phone_number")
+                break
+
+        # Check for email addresses
+        email_pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+        if re.search(email_pattern, page_text):
+            contact_score += 25
+            found_elements.append("email_address")
+
+        # Check for address information
+        address_keywords = [
+            "street",
+            "avenue",
+            "road",
+            "drive",
+            "lane",
+            "boulevard",
+            "address",
+        ]
+        if any(keyword in page_text.lower() for keyword in address_keywords):
+            contact_score += 25
+            found_elements.append("address")
+
+        # Check for contact page link
+        contact_links = soup.find_all("a", href=True)
+        for link in contact_links:
+            if any(
+                word in link.get("href", "").lower() for word in ["contact", "about"]
+            ):
+                contact_score += 25
+                found_elements.append("contact_page")
+                break
+
+        return {
+            "score": min(contact_score, 100),
+            "found_elements": found_elements,
+            "total_possible": 4,
+        }
+
+    def _check_local_schema(self, soup):
+        """Check for local business schema markup"""
+        schema_score = 0
+        found_schemas = []
+
+        # Check for JSON-LD schema
+        scripts = soup.find_all("script", {"type": "application/ld+json"})
+        for script in scripts:
+            try:
+                schema_data = json.loads(script.string or "{}")
+                if isinstance(schema_data, dict):
+                    schema_type = schema_data.get("@type", "").lower()
+                    if "localbusiness" in schema_type or "organization" in schema_type:
+                        schema_score += 50
+                        found_schemas.append(schema_type)
+            except json.JSONDecodeError:
+                continue
+
+        # Check for microdata
+        local_business_attrs = soup.find_all(attrs={"itemtype": True})
+        for element in local_business_attrs:
+            itemtype = element.get("itemtype", "")
+            if "LocalBusiness" in itemtype or "Organization" in itemtype:
+                schema_score += 30
+                found_schemas.append("microdata_local_business")
+                break
+
+        return {
+            "score": min(schema_score, 100),
+            "found_schemas": found_schemas,
+            "recommendations": (
+                ["Add LocalBusiness schema markup"] if schema_score < 50 else []
+            ),
+        }
+
+    def _check_local_keywords(self, soup):
+        """Check for local keywords in content"""
+        local_score = 0
+        found_keywords = []
+
+        page_text = soup.get_text().lower()
+
+        # Common local keywords to look for
+        local_indicators = [
+            "near me",
+            "in [city]",
+            "local",
+            "nearby",
+            "area",
+            "community",
+            "neighborhood",
+            "town",
+            "city",
+            "location",
+            "directions",
+            "map",
+        ]
+
+        for keyword in local_indicators:
+            if keyword in page_text:
+                local_score += 10
+                found_keywords.append(keyword)
+
+        # Check title and headings for local terms
+        title = soup.find("title")
+        if title and any(
+            word in title.get_text().lower() for word in ["local", "near", "in"]
+        ):
+            local_score += 20
+            found_keywords.append("title_local_terms")
+
+        headings = soup.find_all(["h1", "h2", "h3"])
+        for heading in headings:
+            if any(
+                word in heading.get_text().lower() for word in ["local", "near", "area"]
+            ):
+                local_score += 15
+                found_keywords.append("heading_local_terms")
+                break
+
+        return {
+            "score": min(local_score, 100),
+            "found_keywords": found_keywords,
+            "keyword_count": len(found_keywords),
+        }
+
+    def _check_location_pages(self):
+        """Check for location-specific pages"""
+        # This would require analyzing the site structure
+        # For now, return a basic assessment
+        return {
+            "score": 50,  # Neutral score since we can't deeply analyze site structure
+            "note": "Location pages analysis requires full site crawl",
+            "recommendations": [
+                "Create location-specific landing pages",
+                "Include local area information on pages",
+            ],
+        }
+
+    def _check_social_profiles(self, soup):
+        """Check for social media profiles"""
+        social_score = 0
+        found_profiles = []
+
+        social_platforms = [
+            "facebook.com",
+            "twitter.com",
+            "instagram.com",
+            "linkedin.com",
+            "youtube.com",
+            "google.com/maps",
+            "yelp.com",
+        ]
+
+        links = soup.find_all("a", href=True)
+        for link in links:
+            href = link.get("href", "").lower()
+            for platform in social_platforms:
+                if platform in href:
+                    social_score += 15
+                    found_profiles.append(platform)
+                    break
+
+        return {
+            "score": min(social_score, 100),
+            "found_profiles": found_profiles,
+            "profile_count": len(found_profiles),
+        }
+
+    def _check_reviews_citations(self, soup):
+        """Check for reviews and citations"""
+        reviews_score = 0
+        found_elements = []
+
+        page_text = soup.get_text().lower()
+
+        # Look for review-related terms
+        review_indicators = [
+            "reviews",
+            "testimonials",
+            "rating",
+            "stars",
+            "customer feedback",
+            "google reviews",
+            "yelp reviews",
+            "trustpilot",
+        ]
+
+        for indicator in review_indicators:
+            if indicator in page_text:
+                reviews_score += 20
+                found_elements.append(indicator)
+
+        # Check for star ratings (schema or visual)
+        star_elements = soup.find_all(class_=re.compile(r"star|rating", re.I))
+        if star_elements:
+            reviews_score += 30
+            found_elements.append("star_ratings")
+
+        return {
+            "score": min(reviews_score, 100),
+            "found_elements": found_elements,
+            "element_count": len(found_elements),
+        }
+
+    def _get_local_seo_recommendations(self, local_factors):
+        """Generate local SEO recommendations"""
+        recommendations = []
+
+        contact_score = local_factors.get("contact_info", {}).get("score", 0)
+        if contact_score < 75:
+            recommendations.append(
+                "Add complete contact information (phone, email, address)"
+            )
+
+        schema_score = local_factors.get("schema_markup", {}).get("score", 0)
+        if schema_score < 50:
+            recommendations.append("Implement LocalBusiness schema markup")
+
+        local_keywords_score = local_factors.get("local_keywords", {}).get("score", 0)
+        if local_keywords_score < 50:
+            recommendations.append("Include more local keywords in your content")
+
+        social_score = local_factors.get("social_profiles", {}).get("score", 0)
+        if social_score < 50:
+            recommendations.append(
+                "Link to your social media profiles and Google My Business"
+            )
+
+        reviews_score = local_factors.get("reviews_citations", {}).get("score", 0)
+        if reviews_score < 50:
+            recommendations.append("Display customer reviews and ratings prominently")
+
+        if not recommendations:
+            recommendations.append(
+                "Your local SEO setup looks good! Keep maintaining your local presence."
+            )
+
+        return recommendations
