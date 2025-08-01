@@ -3,15 +3,36 @@ Background task management using Celery.
 """
 
 import os
-from celery import Celery
 from datetime import datetime
 from flask import current_app
 from app.core.extensions import db, mail
 from flask_mail import Message
 
+try:
+    from celery import Celery
+
+    CELERY_AVAILABLE = True
+except ImportError:
+    CELERY_AVAILABLE = False
+
+    # Create a dummy Celery class for when Celery is not available
+    class Celery:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def task(self, *args, **kwargs):
+            def decorator(func):
+                # Return the function as-is when Celery is not available
+                return func
+
+            return decorator
+
 
 def make_celery(app):
     """Create Celery instance."""
+    if not CELERY_AVAILABLE:
+        return None
+
     celery = Celery(
         app.import_name,
         backend=app.config.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/0"),
@@ -32,7 +53,24 @@ def make_celery(app):
 
 
 # Initialize Celery (will be configured in app factory)
-celery = Celery(__name__)
+if CELERY_AVAILABLE:
+    celery = Celery(__name__)
+else:
+    # Create a dummy celery instance
+    class DummyCelery:
+        def task(self, *args, **kwargs):
+            def decorator(func):
+                # Add a .delay method to functions for compatibility
+                def delay_method(*args, **kwargs):
+                    # Execute immediately when Celery is not available
+                    return func(*args, **kwargs)
+
+                func.delay = delay_method
+                return func
+
+            return decorator
+
+    celery = DummyCelery()
 
 
 @celery.task

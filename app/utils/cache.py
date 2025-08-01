@@ -6,11 +6,93 @@ import functools
 import hashlib
 import json
 import pickle
+import time
 from datetime import datetime, timedelta
 from typing import Any, Optional, Union, Callable
 from flask import current_app, request
-from werkzeug.contrib.cache import SimpleCache, RedisCache
-import redis
+
+
+# Simple in-memory cache implementation
+class SimpleCache:
+    """Simple in-memory cache with expiration."""
+
+    def __init__(self):
+        self._cache = {}
+
+    def get(self, key: str) -> Any:
+        """Get value from cache."""
+        if key in self._cache:
+            value, expires = self._cache[key]
+            if expires is None or time.time() < expires:
+                return value
+            else:
+                del self._cache[key]
+        return None
+
+    def set(self, key: str, value: Any, timeout: int = 300) -> bool:
+        """Set value in cache."""
+        expires = time.time() + timeout if timeout else None
+        self._cache[key] = (value, expires)
+        return True
+
+    def delete(self, key: str) -> bool:
+        """Delete value from cache."""
+        if key in self._cache:
+            del self._cache[key]
+            return True
+        return False
+
+    def clear(self) -> bool:
+        """Clear all cache."""
+        self._cache.clear()
+        return True
+
+
+try:
+    import redis
+
+    REDIS_AVAILABLE = True
+
+    class RedisSimpleCache:
+        """Simple Redis-based cache."""
+
+        def __init__(self, redis_client):
+            self.redis = redis_client
+
+        def get(self, key: str) -> Any:
+            """Get value from Redis cache."""
+            try:
+                value = self.redis.get(key)
+                if value:
+                    return pickle.loads(value)
+            except:
+                pass
+            return None
+
+        def set(self, key: str, value: Any, timeout: int = 300) -> bool:
+            """Set value in Redis cache."""
+            try:
+                serialized = pickle.dumps(value)
+                return self.redis.setex(key, timeout, serialized)
+            except:
+                return False
+
+        def delete(self, key: str) -> bool:
+            """Delete value from Redis cache."""
+            try:
+                return bool(self.redis.delete(key))
+            except:
+                return False
+
+        def clear(self) -> bool:
+            """Clear all cache."""
+            try:
+                return self.redis.flushdb()
+            except:
+                return False
+
+except ImportError:
+    REDIS_AVAILABLE = False
 
 
 class CacheManager:
@@ -25,11 +107,12 @@ class CacheManager:
         """Initialize cache with Flask app."""
         cache_type = app.config.get("CACHE_TYPE", "simple")
 
-        if cache_type == "redis":
+        if cache_type == "redis" and REDIS_AVAILABLE:
             redis_url = app.config.get("REDIS_URL", "redis://localhost:6379/0")
             try:
                 redis_client = redis.from_url(redis_url)
-                self.cache = RedisCache(redis_client)
+                # Simple Redis-based cache implementation
+                self.cache = RedisSimpleCache(redis_client)
             except:
                 # Fallback to simple cache if Redis is not available
                 self.cache = SimpleCache()

@@ -53,7 +53,7 @@
           {% if not stats.is_pro %}
             <div class="text-sm text-gray-600 mb-2">/ {{ stats.usage_limit }} daily limit</div>
             <div class="w-full bg-gray-200 rounded-full h-2">
-              <div class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: {{ ((stats.tools_used / stats.usage_limit) * 100) if stats.usage_limit > 0 else 0 }}%"></div>
+              <div class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: {{ ((stats.tools_used / stats.usage_limit) * 100)|round(1) if stats.usage_limit > 0 else 0 }}%"></div>
             </div>
           {% else %}
             <div class="text-sm text-green-600 font-medium">Unlimited usage</div>
@@ -110,49 +110,97 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Left Column - Main Content -->
         <div class="lg:col-span-2 space-y-8">
-          <!-- Quick Website Analysis -->
+          <!-- Professional Tools Overview -->
           <div class="bg-white rounded-xl shadow-lg p-6">
             <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
-              <i data-lucide="search" class="w-6 h-6 mr-3 text-blue-600"></i>
-              {% if stats.is_pro %}Premium SEO Analysis{% else %}Quick SEO Analysis{% endif %}
+              <i data-lucide="wrench" class="w-6 h-6 mr-3 text-blue-600"></i>
+              Professional SEO Tools
             </h2>
-            {% if stats.is_pro %}
-              <div class="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                <div class="flex items-center text-purple-700">
-                  <i data-lucide="crown" class="w-5 h-5 mr-2"></i>
-                  <span class="font-semibold">Pro Analysis: 1000+ pages, 150+ checks, competitor analysis</span>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <a href="{{ url_for('seo_tools.seo_audit_tool') }}" 
+                 class="group p-4 rounded-lg border-2 border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200">
+                <div class="flex items-center mb-3">
+                  <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 transition-colors">
+                    <i data-lucide="search" class="w-5 h-5 text-blue-600"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-gray-900">SEO Audit Tool</h3>
+                    <p class="text-sm text-gray-600">
+                      {% if stats.is_pro %}200+ Professional Checks{% else %}Basic Overview Only{% endif %}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            {% else %}
-              <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <div class="flex items-center text-blue-700">
-                  <i data-lucide="info" class="w-5 h-5 mr-2"></i>
-                  <span class="text-sm">Free: Homepage analysis with basic recommendations</span>
+                {% if stats.is_pro %}
+                  <div class="text-xs text-green-600 font-medium">✓ Full Access</div>
+                {% else %}
+                  <div class="text-xs text-orange-600">Limited - 1 audit/day</div>
+                {% endif %}
+              </a>
+              
+              <a href="{{ url_for('content_tools.content_tools_index') }}" 
+                 class="group p-4 rounded-lg border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-200">
+                <div class="flex items-center mb-3">
+                  <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-purple-200 transition-colors">
+                    <i data-lucide="file-text" class="w-5 h-5 text-purple-600"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-gray-900">Content Tools</h3>
+                    <p class="text-sm text-gray-600">Content optimization</p>
+                  </div>
                 </div>
-              </div>
-            {% endif %}
-            <div class="flex items-center space-x-4">
-              <input 
-                type="url" 
-                placeholder="Enter website URL (e.g., https://example.com)" 
-                class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
-                id="websiteUrl" 
-              />
-              <button 
-                onclick="analyzeWebsite()" 
-                class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                <i data-lucide="search" class="w-5 h-5 mr-2 inline"></i>
-                {% if stats.is_pro %}Pro Analyze{% else %}Analyze{% endif %}
-              </button>
+                {% if stats.is_pro %}
+                  <div class="text-xs text-green-600 font-medium">✓ Full Access</div>
+                {% else %}
+                  <div class="text-xs text-gray-500">Coming Soon</div>
+                {% endif %}
+              </a>
+              
+              <a href="{{ url_for('keyword_tools.keyword_tools_index') }}" 
+                 class="group p-4 rounded-lg border-2 border-gray-200 hover:border-green-300 hover:shadow-lg transition-all duration-200">
+                <div class="flex items-center mb-3">
+                  <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 transition-colors">
+                    <i data-lucide="key" class="w-5 h-5 text-green-600"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-gray-900">Keyword Research</h3>
+                    <p class="text-sm text-gray-600">Keyword analysis</p>
+                  </div>
+                </div>
+                {% if stats.is_pro %}
+                  <div class="text-xs text-green-600 font-medium">✓ Full Access</div>
+                {% else %}
+                  <div class="text-xs text-gray-500">Coming Soon</div>
+                {% endif %}
+              </a>
+              
+              <a href="{{ url_for('users.account') }}" 
+                 class="group p-4 rounded-lg border-2 border-gray-200 hover:border-orange-300 hover:shadow-lg transition-all duration-200">
+                <div class="flex items-center mb-3">
+                  <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200 transition-colors">
+                    <i data-lucide="settings" class="w-5 h-5 text-orange-600"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-gray-900">Account Settings</h3>
+                    <p class="text-sm text-gray-600">Manage your account</p>
+                  </div>
+                </div>
+                <div class="text-xs text-blue-600">Manage Profile</div>
+              </a>
             </div>
-            <p class="text-sm text-gray-500 mt-3">
-              {% if stats.is_pro %}
-                Get comprehensive SEO insights with competitor analysis, performance metrics, and detailed recommendations
-              {% else %}
-                Get instant SEO insights and comprehensive analysis for any website. <a href="{{ url_for('main.pricing') }}" class="text-blue-600 hover:underline">Upgrade for advanced features</a>
-              {% endif %}
-            </p>
+
+            <!-- Quick Access Actions -->
+            <div class="border-t pt-4">
+              <div class="flex items-center justify-between">
+                <div class="text-sm text-gray-600">
+                  Need to analyze a website? Use our dedicated SEO Audit Tool for comprehensive analysis.
+                </div>
+                <a href="{{ url_for('seo_tools.seo_audit_tool') }}" 
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  Launch SEO Audit
+                </a>
+              </div>
+            </div>
           </div>
 
           <!-- Recent SEO Reports -->
@@ -163,7 +211,7 @@
                 <i data-lucide="bar-chart-3" class="w-6 h-6 mr-3 text-green-600"></i>
                 Recent SEO Reports
               </h2>
-              <a href="{{ url_for('tools.seo_reports_history') }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center">
+              <a href="{{ url_for('seo_tools.seo_reports_history') }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center">
                 View All Reports
                 <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
               </a>
@@ -220,7 +268,7 @@
               </div>
               <h3 class="text-lg font-semibold text-gray-900 mb-2">No SEO Reports Yet</h3>
               <p class="text-gray-600 mb-6">Start analyzing websites to see your SEO reports here</p>
-              <a href="{{ url_for('tools.tools_seo_audit_tool') }}" 
+              <a href="{{ url_for('seo_tools.seo_audit_tool') }}" 
                  class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
                 <i data-lucide="search" class="w-5 h-5 mr-2 inline"></i>
                 Run SEO Audit
@@ -253,7 +301,7 @@
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">PREMIUM</span>
-                  <a href="{{ url_for('tools.tools_seo_audit_tool') }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm">Use Tool →</a>
+                  <a href="{{ url_for('seo_tools.seo_audit_tool') }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm">Use Tool →</a>
                 </div>
               </div>
 
@@ -268,7 +316,7 @@
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">FREE</span>
-                  <a href="{{ url_for('tools.tool_placeholder', tool_slug='schema-validator') }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm">Coming Soon</a>
+                  <a href="{{ url_for('tools.tool_placeholder', tool_path='schema-validator') }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm">Coming Soon</a>
                 </div>
               </div>
 
@@ -284,7 +332,7 @@
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-medium">PRO</span>
-                  <a href="{{ url_for('tools.tool_placeholder', tool_slug='content-gap-analyzer') }}" class="text-purple-600 hover:text-purple-700 font-medium text-sm">Coming Soon</a>
+                  <a href="{{ url_for('tools.tool_placeholder', tool_path='content-gap-analyzer') }}" class="text-purple-600 hover:text-purple-700 font-medium text-sm">Coming Soon</a>
                 </div>
               </div>
 
@@ -298,7 +346,7 @@
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-medium">PRO</span>
-                  <a href="{{ url_for('tools.tool_placeholder', tool_slug='site-speed-analyzer') }}" class="text-purple-600 hover:text-purple-700 font-medium text-sm">Coming Soon</a>
+                  <a href="{{ url_for('tools.tool_placeholder', tool_path='site-speed-analyzer') }}" class="text-purple-600 hover:text-purple-700 font-medium text-sm">Coming Soon</a>
                 </div>
               </div>
               {% else %}
@@ -360,11 +408,11 @@
               Quick Actions
             </h3>
             <div class="space-y-3">
-              <a href="{{ url_for('tools.tools_seo_audit_tool') }}" class="w-full flex items-center p-3 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors text-left">
+              <a href="{{ url_for('seo_tools.seo_audit_tool') }}" class="w-full flex items-center p-3 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors text-left">
                 <i data-lucide="search" class="w-5 h-5 text-blue-600 mr-3"></i>
                 <span class="font-medium">Run SEO Audit</span>
               </a>
-              <a href="{{ url_for('tools.seo_reports_history') }}" class="w-full flex items-center p-3 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors text-left">
+              <a href="{{ url_for('seo_tools.seo_reports_history') }}" class="w-full flex items-center p-3 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors text-left">
                 <i data-lucide="file-text" class="w-5 h-5 text-green-600 mr-3"></i>
                 <span class="font-medium">View All Reports</span>
               </a>
@@ -414,7 +462,7 @@
       const url = document.getElementById('websiteUrl').value.trim()
       if (url) {
         // Redirect to SEO audit tool with URL parameter  
-        window.location.href = `{{ url_for('tools.tools_seo_audit_tool') }}?url=${encodeURIComponent(url)}`
+        window.location.href = `{{ url_for('seo_tools.seo_audit_tool') }}?url=${encodeURIComponent(url)}`
       } else {
         alert('Please enter a valid website URL')
       }

@@ -14,7 +14,7 @@
             <h1 class="text-3xl font-bold text-gray-900">SEO Reports History</h1>
             <p class="text-gray-600 mt-2">View and manage your website SEO audit reports</p>
           </div>
-          <a href="{{ url_for('tools.tools_seo_audit_tool') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+          <a href="{{ url_for('seo_tools.seo_audit_tool') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
             <i data-lucide="plus" class="w-4 h-4 inline mr-2"></i>
             New SEO Audit
           </a>
@@ -113,13 +113,13 @@
           <div class="mt-8 flex justify-center">
             <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
               {% if reports.has_prev %}
-                <a href="{{ url_for('tools.seo_reports_history', page=reports.prev_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"><i data-lucide="chevron-left" class="w-4 h-4"></i></a>
+                <a href="{{ url_for('seo_tools.seo_reports_history', page=reports.prev_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"><i data-lucide="chevron-left" class="w-4 h-4"></i></a>
               {% endif %}
 
               {% for page_num in reports.iter_pages() %}
                 {% if page_num %}
                   {% if page_num != reports.page %}
-                    <a href="{{ url_for('tools.seo_reports_history', page=page_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">{{ page_num }}</a>
+                    <a href="{{ url_for('seo_tools.seo_reports_history', page=page_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">{{ page_num }}</a>
                   {% else %}
                     <span class="relative inline-flex items-center px-4 py-2 border border-blue-500 bg-blue-50 text-sm font-medium text-blue-600">{{ page_num }}</span>
                   {% endif %}
@@ -129,7 +129,7 @@
               {% endfor %}
 
               {% if reports.has_next %}
-                <a href="{{ url_for('tools.seo_reports_history', page=reports.next_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"><i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+                <a href="{{ url_for('seo_tools.seo_reports_history', page=reports.next_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"><i data-lucide="chevron-right" class="w-4 h-4"></i></a>
               {% endif %}
             </nav>
           </div>
@@ -140,7 +140,7 @@
           <i data-lucide="file-text" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
           <h3 class="text-lg font-medium text-gray-900 mb-2">No SEO Reports Yet</h3>
           <p class="text-gray-600 mb-6">Get started by running your first SEO audit</p>
-          <a href="{{ url_for('tools.tools_seo_audit_tool') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">Run SEO Audit</a>
+          <a href="{{ url_for('seo_tools.seo_audit_tool') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">Run SEO Audit</a>
         </div>
       {% endif %}
 

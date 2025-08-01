@@ -45,8 +45,8 @@ def tools_index():
             {
                 "name": "SEO Audit Tool",
                 "slug": "seo/audit-tool",  # Updated to use modular routing
-                "description": "Comprehensive SEO analysis with unlimited page crawling, A+ to F scoring, and professional PDF reports",
-                "is_premium": True,
+                "description": "Free: 1 audit/day with basic overview. Premium: Unlimited with full analysis and advanced features",
+                "is_premium": False,  # Freemium tool - accessible to free users with limitations
                 "category": {"name": "Technical SEO"},
             },
             {
