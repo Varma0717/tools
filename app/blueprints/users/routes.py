@@ -50,22 +50,9 @@ def dashboard():
     if current_user.role != "customer":
         return redirect(url_for("admin.settings"))
 
-    # Get SEO reports for the user
-    from app.models.seo_reports import SEOReport
-    from sqlalchemy import desc
-
-    # Get recent SEO reports (last 5)
-    recent_reports = (
-        SEOReport.query.filter_by(user_id=current_user.id)
-        .order_by(desc(SEOReport.created_at))
-        .limit(5)
-        .all()
-    )
-
-    # Get total reports count
-    total_reports = SEOReport.query.filter_by(user_id=current_user.id).count()
-
-    # Calculate average score from recent reports
+    # SEO functionality removed - coming soon
+    recent_reports = []
+    total_reports = 0
     avg_score = 0
     if recent_reports:
         scores = [
