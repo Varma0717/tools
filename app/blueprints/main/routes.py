@@ -88,10 +88,15 @@ def home():
                 },
             ]
 
-        # FAQs data
+        # FAQs data - prioritize featured FAQs
         faqs = []
         try:
-            faqs = FAQ.query.limit(6).all()
+            # Get featured FAQs first, then regular ones, limit to 6 total
+            faqs = (
+                FAQ.query.order_by(FAQ.featured.desc(), FAQ.order_position.asc())
+                .limit(6)
+                .all()
+            )
         except Exception as e:
             print(f"⚠️  FAQs query failed, using static data: {e}")
             faqs = [

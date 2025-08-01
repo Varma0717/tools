@@ -221,20 +221,20 @@
               <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
                 <div class="flex items-center justify-between">
                   <div class="flex-1">
-                    <h4 class="font-semibold text-gray-900 mb-1">{{ report.domain }}</h4>
+                    <h4 class="font-semibold text-gray-900 mb-1">{{ report.website_url.split('://')[1].split('/')[0] if '://' in report.website_url else report.website_url.split('/')[0] }}</h4>
                     <p class="text-sm text-gray-600 mb-2">{{ report.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
                     <div class="flex items-center space-x-4 text-sm">
                       <div class="flex items-center">
                         <i data-lucide="layers" class="w-4 h-4 mr-1 text-blue-500"></i>
-                        <span>{{ report.pages_analyzed }} pages</span>
+                        <span>{{ report.audit_data.pages_crawled if report.audit_data and report.audit_data.pages_crawled else 'N/A' }} pages</span>
                       </div>
                       <div class="flex items-center">
                         <i data-lucide="alert-circle" class="w-4 h-4 mr-1 text-orange-500"></i>
-                        <span>{{ report.issues_found }} issues</span>
+                        <span>{{ report.audit_data.total_issues if report.audit_data and report.audit_data.total_issues else 'N/A' }} issues</span>
                       </div>
                       <div class="flex items-center">
                         <i data-lucide="clock" class="w-4 h-4 mr-1 text-gray-500"></i>
-                        <span>{{ "%.1f"|format(report.audit_duration) }}s</span>
+                        <span>{{ report.audit_data.audit_duration if report.audit_data and report.audit_data.audit_duration else 'N/A' }}s</span>
                       </div>
                     </div>
                   </div>
@@ -244,14 +244,22 @@
                     </div>
                     <div class="text-xs text-gray-500">SEO Score</div>
                     <div class="mt-2 space-x-2">
-                      <a href="{{ url_for('tools.view_seo_report', report_id=report.id) }}" 
+                      <a href="{{ url_for('seo_tools.view_report', report_id=report.id) }}" 
                          class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs transition-colors">
                         View
                       </a>
-                      <a href="{{ url_for('tools.download_seo_report_pdf', report_id=report.id) }}" 
+                      {% if stats.is_pro %}
+                      <a href="{{ url_for('seo_tools.download_report_pdf', report_id=report.id) }}" 
                          class="inline-block bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs transition-colors">
                         PDF
                       </a>
+                      {% else %}
+                      <a href="{{ url_for('main.pricing') }}" 
+                         title="Upgrade to Pro for PDF downloads"
+                         class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-xs transition-colors">
+                        Upgrade
+                      </a>
+                      {% endif %}
                     </div>
                   </div>
                 </div>

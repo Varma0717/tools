@@ -21,7 +21,46 @@
         </div>
       </div>
 
-      {% if not user_is_pro and reports.items %}
+      <!-- Statistics Header -->
+      {% if reports %}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Total Reports</p>
+                <p class="text-2xl font-bold text-gray-900">{{ total_reports }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                <i data-lucide="trending-up" class="w-5 h-5 text-green-600"></i>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Average Score</p>
+                <p class="text-2xl font-bold text-gray-900">{{ "%.1f"|format(avg_score) }}<span class="text-lg text-gray-500">/100</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                <i data-lucide="{% if user_has_pro %}crown{% else %}clock{% endif %}" class="w-5 h-5 {% if user_has_pro %}text-purple-600{% else %}text-orange-600{% endif %}"></i>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Plan Status</p>
+                <p class="text-2xl font-bold text-gray-900">{% if user_has_pro %}Pro{% else %}Free{% endif %}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if not user_has_pro and reports %}
         <!-- Pro Upgrade Notice for Free Users -->
         <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-lg shadow-lg p-6 mb-8">
           <div class="flex items-center justify-between text-white">
@@ -45,20 +84,22 @@
         </div>
       {% endif %}
 
-      {% if reports.items %}
+      {% if reports %}
         <!-- Reports Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {% for report in reports.items %}
+          {% for report in reports %}
             <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
               <div class="p-6">
                 <!-- Header -->
                 <div class="flex items-start justify-between mb-4">
                   <div class="flex-1">
-                    <h3 class="font-semibold text-gray-900 truncate" title="{{ report.website_url }}">{{ report.domain }}</h3>
+                    <h3 class="font-semibold text-gray-900 truncate" title="{{ report.website_url }}">{{ report.website_url.split('://')[1].split('/')[0] if '://' in report.website_url else report.website_url.split('/')[0] }}</h3>
                     <p class="text-sm text-gray-500 truncate">{{ report.website_url }}</p>
                   </div>
                   <div class="flex items-center ml-2">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ report.score_color }}-100 text-{{ report.score_color }}-800">{{ report.score_grade }}</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if report.overall_score >= 90 %}bg-green-100 text-green-800{% elif report.overall_score >= 70 %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %}">
+                      {% if report.overall_score >= 90 %}A{% elif report.overall_score >= 80 %}B{% elif report.overall_score >= 70 %}C{% elif report.overall_score >= 60 %}D{% else %}F{% endif %}
+                    </span>
                   </div>
                 </div>
 
@@ -69,7 +110,7 @@
                     <span>{{ report.overall_score }}/100</span>
                   </div>
                   <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-{{ report.score_color }}-500 h-2 rounded-full" style="width: {{ report.overall_score }}%"></div>
+                    <div class="{% if report.overall_score >= 80 %}bg-green-500{% elif report.overall_score >= 60 %}bg-yellow-500{% else %}bg-red-500{% endif %} h-2 rounded-full" style="width: {{ report.overall_score }}%"></div>
                   </div>
                 </div>
 
@@ -77,11 +118,11 @@
                 <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
                   <div>
                     <span class="text-gray-500">Pages:</span>
-                    <span class="font-medium ml-1">{{ report.pages_analyzed }}</span>
+                    <span class="font-medium ml-1">{{ report.audit_data.pages_crawled if report.audit_data and report.audit_data.pages_crawled else 'N/A' }}</span>
                   </div>
                   <div>
                     <span class="text-gray-500">Issues:</span>
-                    <span class="font-medium ml-1">{{ report.issues_found }}</span>
+                    <span class="font-medium ml-1">{{ report.audit_data.total_issues if report.audit_data and report.audit_data.total_issues else 'N/A' }}</span>
                   </div>
                 </div>
 
@@ -90,15 +131,15 @@
 
                 <!-- Actions -->
                 <div class="flex space-x-2">
-                  <a href="{{ url_for('tools.view_seo_report', report_id=report.id) }}" class="flex-1 bg-blue-600 text-white text-center py-2 px-3 rounded text-sm hover:bg-blue-700 transition-colors">
-                    {% if user_is_pro %}
+                  <a href="{{ url_for('seo_tools.view_report', report_id=report.id) }}" class="flex-1 bg-blue-600 text-white text-center py-2 px-3 rounded text-sm hover:bg-blue-700 transition-colors">
+                    {% if user_has_pro %}
                       View Full Report
                     {% else %}
                       View Limited
                     {% endif %}
                   </a>
-                  {% if user_is_pro %}
-                    <a href="{{ url_for('tools.download_seo_report_pdf', report_id=report.id) }}" class="bg-green-600 text-white py-2 px-3 rounded text-sm hover:bg-green-700 transition-colors"><i data-lucide="download" class="w-4 h-4"></i></a>
+                  {% if user_has_pro %}
+                    <a href="{{ url_for('seo_tools.download_report_pdf', report_id=report.id) }}" class="bg-green-600 text-white py-2 px-3 rounded text-sm hover:bg-green-700 transition-colors"><i data-lucide="download" class="w-4 h-4"></i></a>
                   {% else %}
                     <a href="{{ url_for('main.pricing') }}" class="bg-orange-500 text-white py-2 px-3 rounded text-sm hover:bg-orange-600 transition-colors" title="Upgrade to Pro for PDF downloads"><i data-lucide="crown" class="w-4 h-4"></i></a>
                   {% endif %}
@@ -107,52 +148,25 @@
             </div>
           {% endfor %}
         </div>
-
-        <!-- Pagination -->
-        {% if reports.pages > 1 %}
-          <div class="mt-8 flex justify-center">
-            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-              {% if reports.has_prev %}
-                <a href="{{ url_for('seo_tools.seo_reports_history', page=reports.prev_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"><i data-lucide="chevron-left" class="w-4 h-4"></i></a>
-              {% endif %}
-
-              {% for page_num in reports.iter_pages() %}
-                {% if page_num %}
-                  {% if page_num != reports.page %}
-                    <a href="{{ url_for('seo_tools.seo_reports_history', page=page_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">{{ page_num }}</a>
-                  {% else %}
-                    <span class="relative inline-flex items-center px-4 py-2 border border-blue-500 bg-blue-50 text-sm font-medium text-blue-600">{{ page_num }}</span>
-                  {% endif %}
-                {% else %}
-                  <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">…</span>
-                {% endif %}
-              {% endfor %}
-
-              {% if reports.has_next %}
-                <a href="{{ url_for('seo_tools.seo_reports_history', page=reports.next_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"><i data-lucide="chevron-right" class="w-4 h-4"></i></a>
-              {% endif %}
-            </nav>
-          </div>
-        {% endif %}
       {% else %}
         <!-- Empty State -->
         <div class="text-center py-12">
           <i data-lucide="file-text" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
           <h3 class="text-lg font-medium text-gray-900 mb-2">No SEO Reports Yet</h3>
           <p class="text-gray-600 mb-6">Get started by running your first SEO audit</p>
-          <a href="{{ url_for('seo_tools.seo_audit_tool') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">Run SEO Audit</a>
+          <a href="{{ url_for('tools.seo_audit_tool') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">Run SEO Audit</a>
         </div>
       {% endif %}
 
       <!-- Usage Info for Free Users -->
-      {% if not current_user.is_premium %}
+      {% if not user_has_pro %}
         <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <div class="flex items-center">
             <i data-lucide="info" class="w-5 h-5 text-yellow-600 mr-2"></i>
             <div class="flex-1">
               <h4 class="font-medium text-yellow-800">Free Plan Limits</h4>
               <p class="text-sm text-yellow-700">
-                You can run 3 SEO audits per month.
+                You can run {{ usage_limit }} SEO audits per month. You have used {{ usage_used }} so far.
                 <a href="{{ url_for('main.pricing') }}" class="underline hover:no-underline">Upgrade to Premium</a> for unlimited audits and advanced features.
               </p>
             </div>

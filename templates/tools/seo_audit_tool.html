@@ -54,6 +54,129 @@
         </div>
       </div>
 
+      <!-- User Statistics Section -->
+      {% if user_is_authenticated %}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <!-- Total Audits -->
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <i data-lucide="search" class="w-6 h-6 text-blue-600"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500">Total Audits</p>
+                <p class="text-2xl font-bold text-gray-900">{{ user_stats.total_audits }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Average Score -->
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <i data-lucide="trending-up" class="w-6 h-6 text-green-600"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500">Average Score</p>
+                <p class="text-2xl font-bold text-gray-900">
+                  {{ user_stats.avg_score }}<span class="text-lg text-gray-500">/100</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Usage Status -->
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-12 h-12 {% if is_premium %}
+                    
+                    bg-purple-100
+
+                  {% else %}
+                    
+                    bg-orange-100
+
+                  {% endif %} rounded-lg flex items-center justify-center">
+                  <i data-lucide="{% if is_premium %}
+                      
+                      crown
+
+                    {% else %}
+                      
+                      clock
+
+                    {% endif %}"
+                    class="w-6 h-6 {% if is_premium %}
+                      
+                      text-purple-600
+
+                    {% else %}
+                      
+                      text-orange-600
+
+                    {% endif %}">
+
+                  </i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500">
+                  {% if is_premium %}
+                    Plan Status
+                  {% else %}
+                    Usage This Month
+                  {% endif %}
+                </p>
+                <p class="text-2xl font-bold text-gray-900">
+                  {% if is_premium %}
+                    Pro
+                  {% else %}
+                    {{ usage_info.usage_count }}/{{ usage_info.limit }}
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Reports -->
+        {% if recent_reports|length > 0 %}
+          <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                <i data-lucide="history" class="w-6 h-6 mr-3 text-blue-600"></i>
+                Recent Audits
+              </h2>
+              <a href="{{ url_for('seo_tools.seo_reports_history') }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm">View All Reports →</a>
+            </div>
+            <div class="space-y-4">
+              {% for report in recent_reports %}
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 w-10 h-10 bg-{{ report.score_color }}-100 rounded-lg flex items-center justify-center mr-4">
+                      <span class="text-{{ report.score_color }}-600 font-bold">{{ report.score_grade }}</span>
+                    </div>
+                    <div>
+                      <p class="font-medium text-gray-900">{{ report.domain }}</p>
+                      <p class="text-sm text-gray-500">{{ report.pages_analyzed }} pages • {{ report.issues_found }} issues • {{ report.created_at.strftime('%b %d, %Y') }}</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-3">
+                    <span class="text-2xl font-bold text-{{ report.score_color }}-600">{{ report.overall_score }}</span>
+                    <a href="{{ url_for('seo_tools.view_report', report_id=report.id) }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View →</a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+
       <!-- SEO Audit Form -->
       <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
         <form id="seoAuditForm" class="space-y-6">
@@ -181,7 +304,7 @@
 
         <!-- Additional Actions -->
         <div class="mt-8 text-center">
-          <button onclick="window.location.reload()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+          <button onclick="resetAuditTool()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
             <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-2"></i>
             Analyze Another Website
           </button>
@@ -249,5 +372,42 @@
         lucide.createIcons()
       }
     })
+    
+    // Reset audit tool function
+    function resetAuditTool() {
+      // Clear any stored results
+      if (typeof Storage !== 'undefined') {
+        localStorage.removeItem('seo_audit_cache')
+        sessionStorage.removeItem('current_audit')
+      }
+    
+      // Reset form
+      const urlInput = document.getElementById('website-url')
+      if (urlInput) {
+        urlInput.value = ''
+        urlInput.focus()
+      }
+    
+      // Hide results
+      const resultsSection = document.getElementById('audit-results')
+      if (resultsSection) {
+        resultsSection.style.display = 'none'
+      }
+    
+      // Reset any progress indicators
+      const progressBar = document.querySelector('.progress-bar')
+      if (progressBar) {
+        progressBar.style.width = '0%'
+      }
+    
+      // Scroll to top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    
+      // Clean URL if it has parameters
+      let cleanUrl = window.location.href.split('?')[0]
+      if (cleanUrl !== window.location.href) {
+        window.history.replaceState({}, document.title, cleanUrl)
+      }
+    }
   </script>
 {% endblock %}

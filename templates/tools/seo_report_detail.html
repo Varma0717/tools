@@ -20,8 +20,8 @@
                class="text-gray-600 hover:text-gray-800">
               <i data-lucide="arrow-left" class="w-5 h-5"></i>
             </a>
-            {% if user_is_pro %}
-              <a href="{{ url_for('tools.download_seo_report_pdf', report_id=report.id) }}" 
+            {% if user_has_pro %}
+              <a href="{{ url_for('seo_tools.download_report_pdf', report_id=report.id) }}" 
                  class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
                 <i data-lucide="download" class="w-4 h-4 inline mr-2"></i>
                 Download PDF
@@ -78,7 +78,7 @@
         </div>
       </div>
 
-      {% if not user_is_pro %}
+      {% if not user_has_pro %}
       <!-- Pro Upgrade Notice for Free Users -->
       <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-lg shadow-lg p-6 mb-8">
         <div class="flex items-center justify-between text-white">
@@ -132,31 +132,31 @@
                     class="report-tab border-blue-500 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
               Overview
             </button>
-            <button onclick="{% if user_is_pro %}switchReportTab('technical'){% else %}showUpgradeModal(){% endif %}" 
-                    class="report-tab border-transparent {% if user_is_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
+            <button onclick="{% if user_has_pro %}switchReportTab('technical'){% else %}showUpgradeModal(){% endif %}" 
+                    class="report-tab border-transparent {% if user_has_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
               Technical SEO
-              {% if not user_is_pro %}
+              {% if not user_has_pro %}
                 <i data-lucide="lock" class="w-4 h-4 ml-1"></i>
               {% endif %}
             </button>
-            <button onclick="{% if user_is_pro %}switchReportTab('content'){% else %}showUpgradeModal(){% endif %}" 
-                    class="report-tab border-transparent {% if user_is_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
+            <button onclick="{% if user_has_pro %}switchReportTab('content'){% else %}showUpgradeModal(){% endif %}" 
+                    class="report-tab border-transparent {% if user_has_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
               Content Analysis
-              {% if not user_is_pro %}
+              {% if not user_has_pro %}
                 <i data-lucide="lock" class="w-4 h-4 ml-1"></i>
               {% endif %}
             </button>
-            <button onclick="{% if user_is_pro %}switchReportTab('recommendations'){% else %}showUpgradeModal(){% endif %}" 
-                    class="report-tab border-transparent {% if user_is_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
+            <button onclick="{% if user_has_pro %}switchReportTab('recommendations'){% else %}showUpgradeModal(){% endif %}" 
+                    class="report-tab border-transparent {% if user_has_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
               Recommendations
-              {% if not user_is_pro %}
+              {% if not user_has_pro %}
                 <i data-lucide="lock" class="w-4 h-4 ml-1"></i>
               {% endif %}
             </button>
-            <button onclick="{% if user_is_pro %}switchReportTab('pages'){% else %}showUpgradeModal(){% endif %}" 
-                    class="report-tab border-transparent {% if user_is_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
+            <button onclick="{% if user_has_pro %}switchReportTab('pages'){% else %}showUpgradeModal(){% endif %}" 
+                    class="report-tab border-transparent {% if user_has_pro %}text-gray-500 hover:text-gray-700 hover:border-gray-300{% else %}text-gray-400{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
               Pages
-              {% if not user_is_pro %}
+              {% if not user_has_pro %}
                 <i data-lucide="lock" class="w-4 h-4 ml-1"></i>
               {% endif %}
             </button>

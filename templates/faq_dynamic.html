@@ -65,21 +65,14 @@
     <section class="pb-16">
       <div class="max-w-4xl mx-auto px-6">
         <div class="flex flex-wrap justify-center gap-4 mb-12">
-          {% set category_config = {
-            'getting-started': {'name': 'Getting Started', 'icon': 'play-circle', 'color': 'blue'},
-            'tools-features': {'name': 'Tools & Features', 'icon': 'settings', 'color': 'green'},
-            'billing-pricing': {'name': 'Billing & Pricing', 'icon': 'credit-card', 'color': 'purple'},
-            'technical-support': {'name': 'Technical Support', 'icon': 'wrench', 'color': 'red'},
-            'seo-best-practices': {'name': 'SEO Best Practices', 'icon': 'trending-up', 'color': 'yellow'}
-          } %}
-          
+          {% set category_config = { 'getting-started': { name: 'Getting Started', icon: 'play-circle', color: 'blue' }, 'tools-features': { name: 'Tools & Features', icon: 'settings', color: 'green' }, 'billing-pricing': { name: 'Billing & Pricing', icon: 'credit-card', color: 'purple' }, 'technical-support': { name: 'Technical Support', icon: 'wrench', color: 'red' }, 'seo-best-practices': { name: 'SEO Best Practices', icon: 'trending-up', color: 'yellow' } } %}
+
           {% for category_slug, config in category_config.items() %}
             {% if category_slug in faq_categories %}
-              <button onclick="scrollToCategory('{{ category_slug }}')" 
-                      class="px-6 py-3 bg-white border border-gray-200 rounded-xl hover:border-{{ config.color }}-300 hover:shadow-md transition-all duration-200 flex items-center space-x-2 group">
+              <button onclick="scrollToCategory('{{ category_slug }}')" class="px-6 py-3 bg-white border border-gray-200 rounded-xl hover:border-{{ config.color }}-300 hover:shadow-md transition-all duration-200 flex items-center space-x-2 group">
                 <i data-lucide="{{ config.icon }}" class="w-5 h-5 text-{{ config.color }}-600 group-hover:text-{{ config.color }}-700"></i>
                 <span class="font-medium text-gray-700 group-hover:text-{{ config.color }}-700">{{ config.name }}</span>
-                <span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{{ faq_categories[category_slug]|length }}</span>
+                <span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{{ faq_categories.category_slug|length }}</span>
               </button>
             {% endif %}
           {% endfor %}
@@ -90,17 +83,11 @@
     <!-- Dynamic FAQ Sections -->
     <section class="py-16 bg-white">
       <div class="max-w-4xl mx-auto px-6">
-        {% set category_config = {
-          'getting-started': {'name': 'Getting Started', 'icon': 'play-circle', 'color': 'blue'},
-          'tools-features': {'name': 'Tools & Features', 'icon': 'settings', 'color': 'green'},
-          'billing-pricing': {'name': 'Billing & Pricing', 'icon': 'credit-card', 'color': 'purple'},
-          'technical-support': {'name': 'Technical Support', 'icon': 'wrench', 'color': 'red'},
-          'seo-best-practices': {'name': 'SEO Best Practices', 'icon': 'trending-up', 'color': 'yellow'}
-        } %}
+        {% set category_config = { 'getting-started': { name: 'Getting Started', icon: 'play-circle', color: 'blue' }, 'tools-features': { name: 'Tools & Features', icon: 'settings', color: 'green' }, 'billing-pricing': { name: 'Billing & Pricing', icon: 'credit-card', color: 'purple' }, 'technical-support': { name: 'Technical Support', icon: 'wrench', color: 'red' }, 'seo-best-practices': { name: 'SEO Best Practices', icon: 'trending-up', color: 'yellow' } } %}
 
         {% for category_slug, faqs_in_category in faq_categories.items() %}
-          {% set config = category_config.get(category_slug, {'name': category_slug.replace('-', ' ').title(), 'icon': 'help-circle', 'color': 'gray'}) %}
-          
+          {% set config = category_config.get(category_slug, { name: category_slug.replace('-', ' ').title(), icon: 'help-circle', color: 'gray' }) %}
+
           <div id="{{ category_slug }}" class="mb-16">
             <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
               <i data-lucide="{{ config.icon }}" class="w-8 h-8 text-{{ config.color }}-600 mr-3"></i>
@@ -134,7 +121,7 @@
           <i data-lucide="help-circle" class="w-16 h-16 text-blue-600 mx-auto mb-6"></i>
           <h3 class="text-2xl font-bold text-gray-900 mb-4">Still Have Questions?</h3>
           <p class="text-gray-600 mb-8 max-w-2xl mx-auto">Can't find the answer you're looking for? Our support team is here to help you succeed with your SEO journey.</p>
-          
+
           <div class="flex flex-wrap justify-center gap-4">
             <a href="/contact" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
               <i data-lucide="mail" class="w-5 h-5 mr-2"></i>
@@ -152,33 +139,33 @@
 
   <script>
     // FAQ search functionality
-    document.getElementById('faq-search').addEventListener('input', function(e) {
-      const searchTerm = e.target.value.toLowerCase();
-      const faqItems = document.querySelectorAll('.faq-item');
-      
+    document.getElementById('faq-search').addEventListener('input', function (e) {
+      const searchTerm = e.target.value.toLowerCase()
+      const faqItems = document.querySelectorAll('.faq-item')
+    
       faqItems.forEach((item) => {
-        const question = item.querySelector('h3').textContent.toLowerCase();
-        const answer = item.querySelector('p').textContent.toLowerCase();
-        
+        const question = item.querySelector('h3').textContent.toLowerCase()
+        const answer = item.querySelector('p').textContent.toLowerCase()
+    
         if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-          item.style.display = 'block';
+          item.style.display = 'block'
         } else {
-          item.style.display = searchTerm === '' ? 'block' : 'none';
+          item.style.display = searchTerm === '' ? 'block' : 'none'
         }
-      });
-    });
-
+      })
+    })
+    
     // Smooth scroll to category
     function scrollToCategory(categoryId) {
       document.getElementById(categoryId).scrollIntoView({
         behavior: 'smooth',
         block: 'start'
-      });
+      })
     }
-
+    
     // Initialize Lucide icons
     if (typeof lucide !== 'undefined') {
-      lucide.createIcons();
+      lucide.createIcons()
     }
   </script>
 {% endblock %}

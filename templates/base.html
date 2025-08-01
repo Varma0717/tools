@@ -576,21 +576,33 @@
     
     <!-- Floating Refresh Button -->
     <div id="floating-refresh" class="fixed bottom-6 right-6 z-50" style="z-index: 9999;">
-        <button onclick="hardRefresh()" 
-                class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-300"
-                style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: block;"
-                title="Refresh Page (Clear Cache)"
-                aria-label="Refresh Page">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-            </svg>
-        </button>
+        <div class="flex flex-col space-y-2">
+            <!-- Smart Refresh Button (Default) -->
+            <button onclick="smartRefresh()" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-300 group"
+                    title="Smart Refresh (Preserves data, cleans URL)"
+                    aria-label="Smart Refresh">
+                <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+            </button>
+            
+            <!-- Hard Refresh Button (Hold Shift + Click) -->
+            <button onclick="event.shiftKey ? hardRefresh() : smartRefresh()" 
+                    class="bg-gray-600 hover:bg-gray-700 text-white p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-gray-300 opacity-75 hover:opacity-100"
+                    title="Hold Shift + Click for Hard Refresh (Clears all cache)"
+                    aria-label="Alternative Refresh">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+            </button>
+        </div>
     </div>
     
     <script>
     function hardRefresh() {
-        // Clear all caches and force refresh
+        // Clear all caches and force refresh without URL parameters
         if ('caches' in window) {
             caches.keys().then(function(names) {
                 names.forEach(function(name) {
@@ -599,9 +611,75 @@
             });
         }
         
-        // Force hard refresh by adding timestamp
-        window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + '_t=' + new Date().getTime();
+        // Clear browser cache and storage
+        if (typeof Storage !== "undefined") {
+            try {
+                // Clear session storage for current tab
+                sessionStorage.clear();
+                
+                // Clear specific localStorage items (preserve user preferences)
+                const keysToRemove = ['seo_audit_cache', 'temp_data', 'cached_results'];
+                keysToRemove.forEach(key => {
+                    localStorage.removeItem(key);
+                });
+            } catch(e) {
+                console.log('Storage clear failed:', e);
+            }
+        }
+        
+        // Clean URL by removing timestamp parameters
+        let cleanUrl = window.location.href;
+        cleanUrl = cleanUrl.replace(/[?&]_t=\d+/g, '');
+        cleanUrl = cleanUrl.replace(/[?&]timestamp=\d+/g, '');
+        cleanUrl = cleanUrl.replace(/[?&]cache=\d+/g, '');
+        
+        // Remove trailing ? or & if they exist
+        cleanUrl = cleanUrl.replace(/[?&]$/, '');
+        
+        // Force reload with clean URL using location.replace to avoid history entry
+        if (cleanUrl !== window.location.href) {
+            window.location.replace(cleanUrl);
+        } else {
+            // Use reload(true) for hard refresh without changing URL
+            window.location.reload(true);
+        }
     }
+    
+    // Enhanced refresh function for specific use cases
+    function smartRefresh() {
+        // Gentle refresh that preserves form data and scroll position
+        const scrollPos = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Store scroll position
+        sessionStorage.setItem('scroll_position', scrollPos);
+        
+        // Clean URL and reload
+        let cleanUrl = window.location.href.replace(/[?&]_t=\d+/g, '');
+        cleanUrl = cleanUrl.replace(/[?&]$/, '');
+        
+        if (cleanUrl !== window.location.href) {
+            window.location.replace(cleanUrl);
+        } else {
+            window.location.reload();
+        }
+    }
+    
+    // Restore scroll position after page load
+    window.addEventListener('load', function() {
+        const savedScrollPos = sessionStorage.getItem('scroll_position');
+        if (savedScrollPos) {
+            window.scrollTo(0, parseInt(savedScrollPos));
+            sessionStorage.removeItem('scroll_position');
+        }
+    });
+    
+    // Add keyboard shortcut for refresh (Ctrl+R override)
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+            e.preventDefault();
+            smartRefresh();
+        }
+    });
     </script>
     
     <!-- Scripts -->

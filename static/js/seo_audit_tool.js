@@ -2,6 +2,57 @@
  * SEO Audit Tool JavaScript - Complete functionality for displaying comprehensive SEO results
  */
 
+// URL Utility Functions
+const URLUtils = {
+    /**
+     * Clean URL by removing timestamp and cache-busting parameters
+     * @param {string} url - The URL to clean
+     * @returns {string} - Clean URL without timestamp parameters
+     */
+    cleanUrl: function (url) {
+        if (!url) return url;
+
+        // Remove common cache-busting parameters
+        let cleanUrl = url.replace(/[?&]_t=\d+/g, '');
+        cleanUrl = cleanUrl.replace(/[?&]timestamp=\d+/g, '');
+        cleanUrl = cleanUrl.replace(/[?&]cache=\d+/g, '');
+        cleanUrl = cleanUrl.replace(/[?&]v=\d+/g, '');
+
+        // Remove trailing ? or & if they exist
+        cleanUrl = cleanUrl.replace(/[?&]$/, '');
+
+        return cleanUrl;
+    },
+
+    /**
+     * Update browser URL without timestamp parameters
+     * @param {string} newUrl - The new URL to set
+     * @param {boolean} replace - Whether to replace current history entry
+     */
+    updateUrl: function (newUrl, replace = true) {
+        const cleanUrl = this.cleanUrl(newUrl);
+        if (cleanUrl !== window.location.href) {
+            if (replace) {
+                window.history.replaceState({}, document.title, cleanUrl);
+            } else {
+                window.history.pushState({}, document.title, cleanUrl);
+            }
+        }
+    },
+
+    /**
+     * Smart refresh that cleans URL and preserves user experience
+     */
+    smartRefresh: function () {
+        const cleanUrl = this.cleanUrl(window.location.href);
+        if (cleanUrl !== window.location.href) {
+            window.location.replace(cleanUrl);
+        } else {
+            window.location.reload();
+        }
+    }
+};
+
 class SEOAuditDisplay {
     constructor() {
         this.form = document.getElementById('seoAuditForm');
@@ -12,6 +63,9 @@ class SEOAuditDisplay {
     }
 
     handleUrlParameter() {
+        // Clean the current URL first
+        URLUtils.updateUrl(window.location.href);
+
         // Check if there's a URL parameter from dashboard or other sources
         const urlParams = new URLSearchParams(window.location.search);
         const prefilledUrl = urlParams.get('url');
@@ -813,33 +867,64 @@ class SEOAuditDisplay {
     displayRecommendations(results) {
         const recommendations = results.recommendations || [];
 
-        // Group recommendations by priority and category
-        const grouped = this.groupRecommendations(recommendations);
+        // Handle new categorized format from enhanced analyzer
+        let grouped = {};
+        let totalRecommendations = 0;
+
+        if (typeof recommendations === 'object' && !Array.isArray(recommendations)) {
+            // New categorized format
+            if (recommendations.critical && recommendations.critical.length > 0) {
+                grouped['critical'] = recommendations.critical;
+                totalRecommendations += recommendations.critical.length;
+            }
+            if (recommendations.high_impact && recommendations.high_impact.length > 0) {
+                grouped['high'] = recommendations.high_impact;
+                totalRecommendations += recommendations.high_impact.length;
+            }
+            if (recommendations.medium_impact && recommendations.medium_impact.length > 0) {
+                grouped['medium'] = recommendations.medium_impact;
+                totalRecommendations += recommendations.medium_impact.length;
+            }
+            if (recommendations.low_impact && recommendations.low_impact.length > 0) {
+                grouped['low'] = recommendations.low_impact;
+                totalRecommendations += recommendations.low_impact.length;
+            }
+        } else {
+            // Legacy array format
+            grouped = this.groupRecommendations(Array.isArray(recommendations) ? recommendations : []);
+            totalRecommendations = Array.isArray(recommendations) ? recommendations.length : 0;
+        }
 
         const html = `
             <div class="space-y-6">
                 ${Object.entries(grouped).map(([priority, items]) => `
                     <div class="bg-white p-6 rounded-lg border border-gray-200">
                         <h4 class="text-lg font-semibold mb-4 flex items-center">
-                            <i data-lucide="alert-${priority === 'high' ? 'triangle' : priority === 'medium' ? 'circle' : 'info'}" 
-                               class="w-5 h-5 mr-2 text-${priority === 'high' ? 'red' : priority === 'medium' ? 'yellow' : 'blue'}-600"></i>
-                            ${priority.charAt(0).toUpperCase() + priority.slice(1)} Priority Issues
+                            <i data-lucide="alert-${priority === 'critical' || priority === 'high' ? 'triangle' : priority === 'medium' ? 'circle' : 'info'}" 
+                               class="w-5 h-5 mr-2 text-${priority === 'critical' ? 'red' : priority === 'high' ? 'red' : priority === 'medium' ? 'yellow' : 'blue'}-600"></i>
+                            ${priority === 'critical' ? 'Critical' : priority.charAt(0).toUpperCase() + priority.slice(1)} Priority Issues (${items.length})
                         </h4>
                         <div class="space-y-4">
                             ${items.map(rec => `
-                                <div class="border-l-4 border-${rec.type === 'error' ? 'red' : rec.type === 'warning' ? 'yellow' : 'blue'}-500 pl-4">
-                                    <h5 class="font-medium text-${rec.type === 'error' ? 'red' : rec.type === 'warning' ? 'yellow' : 'blue'}-800">
-                                        ${rec.category}
+                                <div class="border-l-4 border-${priority === 'critical' || priority === 'high' ? 'red' : priority === 'medium' ? 'yellow' : 'blue'}-500 pl-4">
+                                    <h5 class="font-medium text-${priority === 'critical' || priority === 'high' ? 'red' : priority === 'medium' ? 'yellow' : 'blue'}-800">
+                                        ${rec.type || rec.title || 'SEO Issue'}
                                     </h5>
-                                    <p class="text-gray-700">${rec.message}</p>
-                                    ${rec.details ? `
+                                    <p class="text-gray-700 mb-2">${rec.title || rec.message || rec.issue || 'No description available'}</p>
+                                    ${rec.solution || rec.fix ? `
+                                        <div class="bg-blue-50 p-3 rounded text-sm">
+                                            <strong class="text-blue-800">Solution:</strong> 
+                                            <span class="text-blue-700">${rec.solution || rec.fix}</span>
+                                        </div>
+                                    ` : ''}
+                                    ${rec.impact ? `
                                         <div class="mt-2 text-sm text-gray-600">
-                                            ${typeof rec.details === 'object' ?
-                    Object.entries(rec.details).map(([key, value]) =>
-                        `<span class="inline-block mr-4">${key}: ${value}</span>`
-                    ).join('') :
-                    rec.details
-                }
+                                            <strong>Impact:</strong> ${rec.impact}
+                                        </div>
+                                    ` : ''}
+                                    ${rec.estimated_effort ? `
+                                        <div class="mt-1 text-sm text-gray-600">
+                                            <strong>Effort:</strong> ${rec.estimated_effort}
                                         </div>
                                     ` : ''}
                                 </div>
@@ -848,7 +933,7 @@ class SEOAuditDisplay {
                     </div>
                 `).join('')}
                 
-                ${recommendations.length === 0 ? `
+                ${totalRecommendations === 0 ? `
                     <div class="bg-green-50 border border-green-200 p-6 rounded-lg text-center">
                         <i data-lucide="check-circle" class="w-12 h-12 text-green-600 mx-auto mb-3"></i>
                         <h4 class="text-lg font-semibold text-green-800 mb-2">Great Job!</h4>
@@ -939,17 +1024,48 @@ class SEOAuditDisplay {
     // Helper methods
     countIssues(results) {
         const recommendations = results.recommendations || [];
-        return recommendations.filter(rec => rec.type === 'error' || rec.type === 'warning').length;
+
+        // Handle new categorized format
+        if (typeof recommendations === 'object' && !Array.isArray(recommendations)) {
+            let totalIssues = 0;
+            if (recommendations.critical) totalIssues += recommendations.critical.length;
+            if (recommendations.high_impact) totalIssues += recommendations.high_impact.length;
+            if (recommendations.medium_impact) totalIssues += recommendations.medium_impact.length;
+            if (recommendations.low_impact) totalIssues += recommendations.low_impact.length;
+            return totalIssues;
+        }
+
+        // Handle legacy array format
+        return Array.isArray(recommendations) ?
+            recommendations.filter(rec => rec.type === 'error' || rec.type === 'warning').length : 0;
     }
 
     countCriticalIssues(results) {
         const recommendations = results.recommendations || [];
-        return recommendations.filter(rec => rec.priority === 'high' || rec.type === 'error').length;
+
+        // Handle new categorized format
+        if (typeof recommendations === 'object' && !Array.isArray(recommendations)) {
+            return (recommendations.critical ? recommendations.critical.length : 0) +
+                (recommendations.high_impact ? recommendations.high_impact.length : 0);
+        }
+
+        // Handle legacy array format
+        return Array.isArray(recommendations) ?
+            recommendations.filter(rec => rec.priority === 'high' || rec.type === 'error').length : 0;
     }
 
     countWarningIssues(results) {
         const recommendations = results.recommendations || [];
-        return recommendations.filter(rec => rec.priority === 'medium' || rec.type === 'warning').length;
+
+        // Handle new categorized format
+        if (typeof recommendations === 'object' && !Array.isArray(recommendations)) {
+            return (recommendations.medium_impact ? recommendations.medium_impact.length : 0) +
+                (recommendations.low_impact ? recommendations.low_impact.length : 0);
+        }
+
+        // Handle legacy array format
+        return Array.isArray(recommendations) ?
+            recommendations.filter(rec => rec.priority === 'medium' || rec.type === 'warning').length : 0;
     }
 
     getScoreGrade(score) {
@@ -978,7 +1094,7 @@ class SEOAuditDisplay {
             },
             {
                 label: 'Performance',
-                score: this.calculatePerformanceScore(pages),
+                score: this.calculatePerformanceScore(results),
                 color: 'purple'
             },
             {
@@ -1002,55 +1118,86 @@ class SEOAuditDisplay {
     }
 
     calculateTechnicalScore(technical) {
+        // Use the new data structure from enhanced analyzer
+        const details = technical.details || {};
         let score = 0;
         let factors = 0;
 
-        if (technical.https_usage) {
-            score += technical.https_usage.https_percentage || 0;
+        // HTTPS coverage
+        if (details.https_coverage !== undefined) {
+            score += details.https_coverage || 0;
             factors++;
         }
-        if (technical.canonical_tags) {
-            score += technical.canonical_tags.canonical_percentage || 0;
+        
+        // Canonical coverage
+        if (details.canonical_coverage !== undefined) {
+            score += details.canonical_coverage || 0;
             factors++;
         }
-        if (technical.structured_data) {
-            score += technical.structured_data.schema_percentage || 0;
+        
+        // Schema coverage
+        if (details.schema_coverage !== undefined) {
+            score += details.schema_coverage || 0;
             factors++;
+        }
+
+        // If we have the score directly from the API, use it
+        if (technical.score !== undefined) {
+            return technical.score;
         }
 
         return factors > 0 ? Math.round(score / factors) : 0;
     }
 
     calculateContentScore(pages) {
-        const stats = pages.aggregate_stats || {};
+        // Use the new data structure from enhanced analyzer
+        const details = pages.details || {};
+        
+        // If we have the score directly from the API, use it
+        if (pages.score !== undefined) {
+            return pages.score;
+        }
+        
         let score = 100;
 
         // Deduct points for missing elements
-        if (stats.pages_missing_title > 0) score -= 20;
-        if (stats.pages_missing_meta_description > 0) score -= 15;
-        if (stats.pages_missing_h1 > 0) score -= 10;
+        if (details.missing_titles > 0) score -= 20;
+        if (details.missing_meta_descriptions > 0) score -= 15;
 
         // Adjust for title and meta lengths
-        const avgTitleLen = stats.avg_title_length || 0;
+        const avgTitleLen = details.avg_title_length || 0;
         if (avgTitleLen < 30 || avgTitleLen > 60) score -= 10;
 
-        const avgMetaLen = stats.avg_meta_description_length || 0;
+        const avgMetaLen = details.avg_meta_description_length || 0;
         if (avgMetaLen < 120 || avgMetaLen > 160) score -= 10;
+
+        // Alt text coverage
+        const altCoverage = details.alt_text_coverage || 0;
+        if (altCoverage < 90) score -= 15;
 
         return Math.max(0, score);
     }
 
-    calculatePerformanceScore(pages) {
-        const stats = pages.aggregate_stats || {};
+    calculatePerformanceScore(results) {
+        // Use the new data structure from enhanced analyzer
+        const performance = results.site_wide_issues || {};
+        const details = performance.details || {};
+        
+        // If we have the score directly from the API, use it
+        if (performance.score !== undefined) {
+            return performance.score;
+        }
+        
         let score = 100;
 
-        const avgPageSize = stats.avg_page_size || 0;
+        const avgPageSize = details.avg_page_size || 0;
         if (avgPageSize > 1000) score -= 20;
         else if (avgPageSize > 500) score -= 10;
 
-        const avgLoadTime = stats.avg_load_time || 0;
+        const avgLoadTime = details.avg_load_time || 0;
         if (avgLoadTime > 3) score -= 30;
-        else if (avgLoadTime > 2) score -= 15;
+        else if (avgLoadTime > 2) score -= 20;
+        else if (avgLoadTime > 1) score -= 10;
 
         return Math.max(0, score);
     }
@@ -1133,6 +1280,11 @@ class SEOAuditDisplay {
     }
 
     groupRecommendations(recommendations) {
+        // Handle array format only (legacy support)
+        if (!Array.isArray(recommendations)) {
+            return {};
+        }
+
         return recommendations.reduce((acc, rec) => {
             const priority = rec.priority || 'low';
             if (!acc[priority]) acc[priority] = [];
