@@ -120,7 +120,7 @@ from routes.api import api_bp
 
 app.register_blueprint(contact_bp)
 app.register_blueprint(api_bp)
-app.register_blueprint(seo_bp, url_prefix='/seo')
+app.register_blueprint(seo_bp, url_prefix="/seo")
 
 
 # ========================
