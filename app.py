@@ -11,6 +11,7 @@ from flask_dance.contrib.google import make_google_blueprint, google
 from utils.extensions import db, login_manager, mail, migrate
 from users.routes import users_bp
 from admin.routes import admin_bp
+from admin.enhanced_routes import enhanced_admin_bp
 from tools.routes import tools_bp, register_tool_blueprints
 from tools.routes.sitemap import sitemap_bp
 from models.newsletter import Subscriber
@@ -89,6 +90,7 @@ app.register_blueprint(google_bp, url_prefix="/login")
 # Register Blueprints
 app.register_blueprint(users_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(enhanced_admin_bp)
 app.register_blueprint(tools_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(sitemap_bp)
