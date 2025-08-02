@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Robots.txt Generator - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Generate a perfect robots.txt file to control how search engines crawl your website.{% endblock %}
+{% block meta_keywords %}robots.txt generator, disallow bots, crawl control, SEO robot file{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+      <h1 class="text-3xl font-bold text-center text-gray-900 mb-4">Robots.txt Generator</h1>
+      <p class="text-center text-sm text-gray-600 mb-6">Customize how search engine bots access your website.</p>
+
+      <form id="robotsForm" class="space-y-4">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+
+        <div>
+          <label class="text-sm font-semibold block">User-agent:</label>
+          <input type="text" id="agent" placeholder="e.g. * or Googlebot" value="*" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold block">Allow Paths:</label>
+          <textarea id="allow" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono" placeholder="/about/&#10;/products/"></textarea>
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold block">Disallow Paths:</label>
+          <textarea id="disallow" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono" placeholder="/admin/&#10;/private/"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-semibold block">Crawl-delay (in seconds):</label>
+            <input type="number" id="crawl_delay" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+          </div>
+
+          <div>
+            <label class="text-sm font-semibold block">Sitemap URL:</label>
+            <input type="url" id="sitemap" placeholder="https://example.com/sitemap.xml" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+          </div>
+        </div>
+
+        <button type="submit" class="bg-[#DAAC40] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#b89627] w-full sm:w-auto">Generate File</button>
+      </form>
+
+      <div id="loader" class="mt-6 text-center hidden text-sm text-gray-500">Generating robots.txt…</div>
+
+      <div id="resultsSection" class="mt-6 hidden">
+        <h2 class="text-md font-semibold text-[#DAAC40] mb-2">Generated robots.txt:</h2>
+        <textarea id="resultOutput" class="w-full border border-green-300 bg-green-50 rounded-md px-3 py-2 text-sm font-mono" rows="10" readonly></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("robotsForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const csrf = document.getElementById("csrf_token").value;
+  const agent = document.getElementById("agent").value;
+  const allow = document.getElementById("allow").value;
+  const disallow = document.getElementById("disallow").value;
+  const sitemap = document.getElementById("sitemap").value;
+  const crawl_delay = document.getElementById("crawl_delay").value;
+
+  const loader = document.getElementById("loader");
+  const output = document.getElementById("resultOutput");
+  const section = document.getElementById("resultsSection");
+
+  loader.classList.remove("hidden");
+  section.classList.add("hidden");
+  output.value = "";
+
+  fetch("/tools/robots-generator/ajax", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-CSRFToken": csrf
+    },
+    body: new URLSearchParams({ agent, allow, disallow, sitemap, crawl_delay, csrf_token: csrf })
+  })
+  .then(res => res.json())
+  .then(data => {
+    loader.classList.add("hidden");
+    if (data.error) {
+      output.value = "❌ " + data.error;
+    } else {
+      output.value = data.result;
+    }
+    section.classList.remove("hidden");
+  })
+  .catch(() => {
+    loader.classList.add("hidden");
+    output.value = "❌ Something went wrong.";
+    section.classList.remove("hidden");
+  });
+});
+</script>
+{% endblock %}

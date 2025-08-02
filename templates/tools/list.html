@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}Explore SEO Tools by Category - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Discover a comprehensive collection of SEO tools for easy access. Boost your website's performance, keyword rankings, and traffic with the right SEO tools tailored to your needs{% endblock %}
+
+{% block meta_keywords %}SEO Tools{% endblock %}
+
+{% block content %}
+
+<div class="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+  <h1 class="text-4xl md:text-5xl font-extrabold text-center text-gray-900 mb-12 tracking-tight">
+
+    <span class="text-[#DAAC40]">Explore</span> 250+ SEO Tools by Category
+
+  </h1>
+
+
+
+  {% set categories = tools|groupby('category') %}
+
+  <div class="space-y-10">
+
+    {% for category, grouped in categories %}
+
+    <div x-data="{ open: true }" class="bg-white shadow-lg rounded-2xl border border-gray-100 overflow-hidden">
+
+      <!-- Collapsible Category Header -->
+
+      <button @click="open = !open"
+
+              class="w-full flex justify-between items-center px-8 py-5 bg-gradient-to-r from-gray-50 via-white to-gray-50 hover:from-[#DAAC40]/10 transition text-xl font-semibold text-gray-900">
+
+        <span class="flex items-center gap-3">
+
+          <!-- Example Lucide icon by category name, switch as you wish -->
+
+          <i data-lucide="folder" class="lucide w-6 h-6 text-[#DAAC40]"></i>
+
+          {{ category }}
+
+        </span>
+
+        <i :class="open ? 'lucide-chevron-up text-[#DAAC40]' : 'lucide-chevron-down text-gray-400'"
+
+           class="lucide w-6 h-6 transition"></i>
+
+      </button>
+
+      <!-- Tool List -->
+
+      <div x-show="open" x-transition class="p-8 grid gap-7 sm:grid-cols-2 lg:grid-cols-3 bg-white">
+
+        {% for tool in grouped %}
+
+        <a href="{{ url_for(tool.endpoint) }}"
+
+           class="group block rounded-xl bg-gray-50 border border-gray-100 shadow hover:shadow-xl hover:border-[#DAAC40] hover:-translate-y-1 transition transform p-6 h-full">
+
+          <div class="flex items-center mb-3 gap-3">
+
+            <!-- Choose an icon based on tool or keep 'wrench' as default -->
+
+            <i data-lucide="wrench" class="lucide w-7 h-7 text-[#DAAC40] group-hover:scale-110 transition"></i>
+
+            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-[#DAAC40] transition">{{ tool.name }}</h3>
+
+          </div>
+
+          <p class="text-gray-600 text-sm">{{ tool.description }}</p>
+
+        </a>
+
+        {% endfor %}
+
+      </div>
+
+    </div>
+
+    {% endfor %}
+
+  </div>
+
+</div>
+
+
+
+<script>
+
+  // Refresh Lucide icons after Alpine transitions
+
+  document.addEventListener('alpine:init', () => {
+
+    window.lucide && window.lucide.createIcons();
+
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+    window.lucide && window.lucide.createIcons();
+
+  });
+
+</script>
+
+{% endblock %}
+

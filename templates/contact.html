@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Contact Us — Super SEO Toolkit{% endblock %}
+
+{% block content %}
+<style>
+  .contact-glow {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(56px);
+    opacity: .24;
+    border-radius: 50%;
+    animation: blow 8s ease-in-out infinite alternate;
+  }
+  @keyframes blow {
+    0% {transform: scale(1);}
+    100% {transform: scale(1.10);}
+  }
+  .contact-glow.one {top: 15%; left: 5%; width: 380px; height: 220px; background: #DAAC40;}
+  .contact-glow.two {bottom: 15%; right: 5%; width: 300px; height: 160px; background: #7f5aff;}
+</style>
+<div class="contact-glow one"></div>
+<div class="contact-glow two"></div>
+
+<div class="relative max-w-5xl mx-auto px-6 py-16 z-10">
+  <div class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-100 p-10 relative overflow-hidden">
+    <div class="absolute right-6 top-8 pointer-events-none opacity-40">
+      <i data-lucide="sparkle" class="lucide w-16 h-16 text-[#DAAC40] animate-spin-slow"></i>
+    </div>
+    <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">
+      <span class="inline-block drop-shadow-glow">Contact the Super SEO Toolkit Team</span>
+    </h1>
+    <p class="mb-8 text-gray-600 text-lg">Questions, feedback, partnership inquiries? Our SEO experts respond within 24h. Fill out the form below!</p>
+    <div class="grid md:grid-cols-2 gap-10">
+      <!-- Form -->
+      <form method="POST" class="space-y-6 relative z-10" id="contactForm" autocomplete="off">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" style="display:none">
+        <div>
+          <label for="name" class="block text-sm font-semibold text-gray-800 mb-1">Full Name</label>
+          <input name="name" id="name" required placeholder="Your Name"
+                 class="w-full px-5 py-3 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900 transition-all duration-150 outline-none text-base" />
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-semibold text-gray-800 mb-1">Email Address</label>
+          <input name="email" id="email" required type="email" placeholder="you@email.com"
+                 class="w-full px-5 py-3 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900 transition-all duration-150 outline-none text-base" />
+        </div>
+        <div>
+          <label for="message" class="block text-sm font-semibold text-gray-800 mb-1">Your Message</label>
+          <textarea name="message" id="message" required rows="5" placeholder="Type your message here..."
+                 class="w-full px-5 py-3 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900 transition-all duration-150 outline-none text-base resize-none"></textarea>
+        </div>
+        {% if recaptcha_site_key %}
+  <div class="g-recaptcha my-2" data-sitekey="{{ recaptcha_site_key }}"></div>
+{% endif %}
+        <button type="submit"
+                class="w-full bg-[#DAAC40] text-gray-900 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#b89627] transition focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/50 text-lg tracking-wide group">
+          <span class="relative flex items-center justify-center gap-2">
+            <i data-lucide="mail" class="lucide w-5 h-5 group-hover:scale-110 transition-transform"></i>
+            Send Message
+          </span>
+        </button>
+      </form>
+      <!-- Info & Map -->
+      <div class="flex flex-col gap-6">
+        <div class="bg-[#FAF7EC] border border-[#f5e8b3] rounded-2xl p-6 shadow flex flex-col gap-3">
+          <div class="flex items-center gap-3 text-gray-800"><i data-lucide="mail" class="lucide w-5 h-5 text-[#DAAC40]"></i> support@superseotoolkit.com</div>
+          <div class="flex items-center gap-3 text-gray-800"><i data-lucide="map-pin" class="lucide w-5 h-5 text-[#DAAC40]"></i> Hyderabad, India</div>
+          <div class="flex items-center gap-3 text-gray-800"><i data-lucide="clock" class="lucide w-5 h-5 text-[#DAAC40]"></i> Mon–Fri: 9am–6pm IST</div>
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-[#eee9d2] shadow-inner">
+          <iframe
+            src="https://www.openstreetmap.org/export/embed.html?bbox=78.3857%2C17.3850%2C78.4916%2C17.5145&amp;layer=mapnik"
+            class="w-full"
+            style="height:210px; min-height:180px;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endblock %}

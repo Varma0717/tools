@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Website Speed Test - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Check website load time, page size, and resource stats using our custom speed tester.{% endblock %}
+{% block meta_keywords %}website speed test, page load tester, check site speed, performance checker{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-2xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+      <h1 class="text-3xl font-bold text-center text-gray-900 mb-4">Website Speed Test</h1>
+      <p class="text-center text-sm text-gray-600 mb-6">Enter a URL to test how fast your website loads and performs.</p>
+
+      <form id="speedForm" class="space-y-4">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+        <input type="url" id="inputUrl" placeholder="https://example.com" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+        <button type="submit" class="bg-[#DAAC40] text-white font-semibold px-6 py-2 rounded-md hover:bg-[#b89627] transition">Test Speed</button>
+      </form>
+
+      <div id="loader" class="mt-6 hidden text-sm text-gray-500 text-center">Testing website…</div>
+
+      <div id="resultsSection" class="mt-6 hidden text-sm font-mono text-gray-800 space-y-3">
+        <div><strong>URL:</strong> <span id="resultUrl"></span></div>
+        <div><strong>Load Time:</strong> <span id="resultTime"></span> ms</div>
+        <div><strong>Page Size:</strong> <span id="resultSize"></span> KB</div>
+        <div><strong>Total Resources:</strong> <span id="resultCount"></span></div>
+        <div><strong>Slow Resources:</strong>
+          <ul id="resultSlow" class="list-disc pl-6 text-red-600"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("speedForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const url = document.getElementById("inputUrl").value;
+  const csrf = document.getElementById("csrf_token").value;
+  const loader = document.getElementById("loader");
+  const section = document.getElementById("resultsSection");
+
+  loader.classList.remove("hidden");
+  section.classList.add("hidden");
+
+  fetch("/tools/speed-test/ajax", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-CSRFToken": csrf
+    },
+    body: new URLSearchParams({ url, csrf_token: csrf })
+  })
+  .then(res => res.json())
+  .then(data => {
+    loader.classList.add("hidden");
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+    document.getElementById("resultUrl").textContent = data.url;
+    document.getElementById("resultTime").textContent = data.load_time_ms;
+    document.getElementById("resultSize").textContent = data.page_size_kb;
+    document.getElementById("resultCount").textContent = data.resource_count;
+    const slowList = document.getElementById("resultSlow");
+    slowList.innerHTML = "";
+    data.slow_resources.forEach(([link, time]) => {
+      slowList.innerHTML += `<li>${link} – ${time} ms</li>`;
+    });
+    section.classList.remove("hidden");
+  })
+  .catch(() => {
+    loader.classList.add("hidden");
+    alert("Something went wrong. Try again.");
+  });
+});
+</script>
+{% endblock %}

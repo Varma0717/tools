@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% block title %}Register | Super SEO Toolkit{% endblock %}
+
+{% block content %}
+<!-- ANIMATED GLOWING BACKGROUND BLUR -->
+<style>
+  body {
+    background: linear-gradient(120deg, #fffbe6 0%, #f9fafb 50%, #f6f6f8 100%);
+  }
+  .register-glow {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(68px);
+    opacity: .28;
+    border-radius: 50%;
+    animation: blow 6s ease-in-out infinite alternate;
+  }
+  .register-glow.left {
+    top: 7%;
+    left: 0;
+    width: 350px;
+    height: 240px;
+    background: #DAAC40;
+  }
+  .register-glow.right {
+    bottom: 8%;
+    right: 0;
+    width: 250px;
+    height: 200px;
+    background: #7f5aff;
+  }
+</style>
+<div class="register-glow left"></div>
+<div class="register-glow right"></div>
+
+<div class="min-h-screen flex items-center justify-center px-4 py-10 relative z-10">
+  <div class="w-full max-w-lg mx-auto relative z-20">
+    <div class="relative bg-white/90 backdrop-blur-2xl border border-gray-100 rounded-3xl shadow-2xl p-10 overflow-hidden">
+      <div class="flex flex-col items-center mb-7">
+        <i data-lucide="user-plus" class="lucide w-14 h-14 text-[#DAAC40] mb-4 animate-fade-in"></i>
+        <h2 class="text-4xl font-extrabold text-center text-gray-900 mb-2 tracking-tight">Create your SEO Account</h2>
+        <p class="text-center text-gray-500 mb-2 text-base">Unlock 250+ advanced SEO & AI tools free. Start optimizing now!</p>
+      </div>
+      <form method="POST" class="space-y-6" id="registerForm" autocomplete="on">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Username -->
+          <div>
+            <label for="username" class="block text-sm font-semibold text-gray-800 mb-1">Username</label>
+            <div class="relative">
+              <i data-lucide="user" class="lucide w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input name="username" id="username" required placeholder="Username"
+                class="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none bg-white text-gray-900 transition-all" />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-semibold text-gray-800 mb-1">Email</label>
+            <div class="relative">
+              <i data-lucide="mail" class="lucide w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input name="email" id="email" required type="email" placeholder="Email"
+                class="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none bg-white text-gray-900 transition-all" />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div x-data="{ show: false }">
+            <label for="password" class="block text-sm font-semibold text-gray-800 mb-1">Password</label>
+            <div class="relative">
+              <i data-lucide="key" class="lucide w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input id="password" name="password"
+                :type="show ? 'text' : 'password'"
+                required
+                placeholder="Password"
+                class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none bg-white text-gray-900 transition-all"
+                autocomplete="new-password"
+              />
+              <button type="button" @click="show = !show" tabindex="-1"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#DAAC40] focus:outline-none">
+                <i :data-lucide="show ? 'eye-off' : 'eye'" class="lucide w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div x-data="{ show: false }">
+            <label for="confirm" class="block text-sm font-semibold text-gray-800 mb-1">Confirm Password</label>
+            <div class="relative">
+              <i data-lucide="shield-check" class="lucide w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input id="confirm" name="confirm"
+                :type="show ? 'text' : 'password'"
+                required
+                placeholder="Confirm Password"
+                class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none bg-white text-gray-900 transition-all"
+                autocomplete="new-password"
+              />
+              <button type="button" @click="show = !show" tabindex="-1"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#DAAC40] focus:outline-none">
+                <i :data-lucide="show ? 'eye-off' : 'eye'" class="lucide w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="passwordError" class="text-red-600 text-sm hidden mt-1">❌ Passwords must match and be strong (8+ chars, uppercase, digit).</div>
+
+        {% if recaptcha_site_key %}
+        <div class="g-recaptcha my-2" data-sitekey="{{ recaptcha_site_key }}"></div>
+        {% endif %}
+
+        <button type="submit"
+          class="w-full bg-[#DAAC40] text-gray-900 py-3 rounded-xl font-bold shadow-lg hover:bg-[#b89627] transition-all focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/40 flex items-center justify-center gap-2">
+          <i data-lucide="user-plus" class="lucide w-5 h-5"></i> Register for Free
+        </button>
+
+        <div class="flex items-center my-6">
+          <span class="flex-grow border-t border-gray-200"></span>
+          <span class="mx-3 text-xs text-gray-400">OR</span>
+          <span class="flex-grow border-t border-gray-200"></span>
+        </div>
+
+        <a href="{{ url_for('auth.google_login') }}"
+           class="w-full flex items-center justify-center border border-gray-300 py-2 px-4 rounded-xl text-sm font-medium bg-white hover:bg-gray-50 shadow transition mb-2">
+          <img src="/static/img/icons8-google.svg" alt="Google" class="w-5 h-5 mr-2"> Continue with Google
+        </a>
+      </form>
+
+      <div class="text-center mt-4">
+        <p class="text-sm text-gray-600">Already have an account?
+          <a href="{{ url_for('users.login') }}" class="text-[#DAAC40] hover:underline font-semibold">Login</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Shake Animation & Script -->
+<style>
+@keyframes shake {
+  0% { transform: translateX(0);}
+  20% { transform: translateX(-6px);}
+  40% { transform: translateX(6px);}
+  60% { transform: translateX(-4px);}
+  80% { transform: translateX(4px);}
+  100% { transform: translateX(0);}
+}
+.animate-shake { animation: shake 0.4s; }
+</style>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  window.lucide && window.lucide.createIcons();
+
+  // Password validation
+  const form = document.getElementById('registerForm');
+  const pwd = document.getElementById('password');
+  const confirm = document.getElementById('confirm');
+  const error = document.getElementById('passwordError');
+
+  function checkStrong(val) {
+    return val.length >= 8 && /[A-Z]/.test(val) && /\d/.test(val);
+  }
+
+  function validate() {
+    if (pwd.value !== confirm.value || !checkStrong(pwd.value)) {
+      error.classList.remove('hidden');
+      error.classList.add('animate-shake');
+      setTimeout(() => error.classList.remove('animate-shake'), 500);
+      return false;
+    } else {
+      error.classList.add('hidden');
+      return true;
+    }
+  }
+
+  pwd.addEventListener('input', validate);
+  confirm.addEventListener('input', validate);
+
+  form.addEventListener('submit', function (e) {
+    if (!validate()) {
+      e.preventDefault();
+    }
+  });
+});
+</script>
+{% endblock %}

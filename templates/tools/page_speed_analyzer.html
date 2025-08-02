@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}Page Speed Analyzer - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Analyze your website's load speed, page size, image count, broken links, and more with our custom crawler. No API dependency.{% endblock %}
+
+{% block meta_keywords %}Page Speed Analyzer{% endblock %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto px-4 py-10">
+
+  <div class="bg-white shadow-xl rounded-2xl p-8 mb-10 border border-gray-100 relative">
+
+    <div class="flex items-center gap-4 mb-3">
+
+      <i data-lucide="gauge-circle" class="lucide w-9 h-9 text-[#DAAC40]"></i>
+
+      <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#DAAC40] to-yellow-100 bg-clip-text text-transparent">Page Speed Analyzer</h1>
+
+    </div>
+
+    <p class="text-gray-600 mb-8">
+
+      Measure your page size, load time, scripts, and more using our own crawler. <b>Fully API-independent!</b>
+
+    </p>
+
+
+
+    <form id="speedForm" class="space-y-4" autocomplete="off">
+
+      <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+      <label class="block text-sm font-medium text-gray-700 mb-1">Website URL</label>
+
+      <input type="text" name="url" id="inputUrl"
+
+        class="w-full px-4 py-3 rounded-xl border-gray-200 shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900"
+
+        placeholder="https://example.com" required>
+
+      <button type="submit"
+
+        class="mt-3 w-full flex justify-center items-center gap-2 bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 font-bold rounded-xl px-6 py-3 transition-all duration-150 shadow-lg text-lg">
+
+        <i data-lucide="zap" class="lucide w-5 h-5"></i>
+
+        Analyze Speed
+
+      </button>
+
+    </form>
+
+
+
+    <div id="loader" class="flex flex-col items-center py-8" style="display:none;">
+
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#DAAC40] border-t-transparent"></div>
+
+      <span class="mt-3 text-sm text-gray-500 font-medium">Analyzing page speed…</span>
+
+    </div>
+
+
+
+    <div id="resultsSection" class="py-6" style="display:none;"></div>
+
+
+
+    <div class="mt-10 pt-6 border-t border-gray-200">
+
+      <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>We crawl your page and calculate load time and size directly.</li>
+
+        <li>We scan for broken images/scripts and cache issues.</li>
+
+        <li>No dependency on external APIs — fast and reliable.</li>
+
+      </ul>
+
+      <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Know how fast your page loads and what’s slowing it down.</li>
+
+        <li>Fix unoptimized resources, broken links, and missing cache headers.</li>
+
+        <li>Boost your SEO score and user experience effortlessly.</li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<template id="speed-template">
+
+  <div class="bg-white border border-[#DAAC40] rounded-xl shadow-lg p-6 animate-fade-in">
+
+    <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+
+      <i data-lucide="bar-chart-2" class="lucide w-5 h-5 text-[#DAAC40]"></i>
+
+      Speed Analysis Report
+
+    </h3>
+
+    <ul class="text-gray-800 text-sm space-y-2">
+
+      <li><b>Page Size:</b> <span id="size"></span> KB</li>
+
+      <li><b>Total Load Time:</b> <span id="loadTime"></span> ms</li>
+
+      <li><b>Images Found:</b> <span id="imgCount"></span></li>
+
+      <li><b>Largest Image:</b> <span id="largestImg"></span> KB</li>
+
+      <li><b>Scripts:</b> <span id="scripts"></span></li>
+
+      <li><b>Stylesheets:</b> <span id="css"></span></li>
+
+      <li><b>Broken Resources:</b> <span id="broken"></span></li>
+
+      <li><b>Missing Cache Headers:</b> <span id="noCache"></span></li>
+
+    </ul>
+
+  </div>
+
+</template>
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const form = document.getElementById('speedForm');
+
+  const loader = document.getElementById('loader');
+
+  const resultsSection = document.getElementById('resultsSection');
+
+  const template = document.getElementById('speed-template');
+
+
+
+  form.addEventListener("submit", function (e) {
+
+    e.preventDefault();
+
+    resultsSection.style.display = "none";
+
+    loader.style.display = "flex";
+
+    const url = document.getElementById("inputUrl").value;
+
+    const csrfToken = document.getElementById("csrf_token").value;
+
+
+
+    fetch('/tools/page-speed-analyzer/ajax', {
+
+      method: "POST",
+
+      headers: {
+
+        "Content-Type": "application/json",
+
+        "X-CSRFToken": csrfToken
+
+      },
+
+      body: JSON.stringify({ url })
+
+    })
+
+    .then(res => res.json())
+
+    .then(data => {
+
+      loader.style.display = "none";
+
+      resultsSection.style.display = "block";
+
+
+
+      if (!data.success) {
+
+        resultsSection.innerHTML = `<div class="text-center text-red-500 py-6 text-lg">${data.error}</div>`;
+
+        return;
+
+      }
+
+
+
+      const result = data.data;
+
+      const node = template.content.cloneNode(true);
+
+      node.getElementById("size").textContent = result.page_size_kb;
+
+      node.getElementById("loadTime").textContent = result.load_time;
+
+      node.getElementById("imgCount").textContent = result.images;
+
+      node.getElementById("largestImg").textContent = `${result.largest_image.size_kb} (${result.largest_image.src})`;
+
+      node.getElementById("scripts").textContent = result.scripts;
+
+      node.getElementById("css").textContent = result.css;
+
+      node.getElementById("broken").textContent = result.broken.length;
+
+      node.getElementById("noCache").textContent = result.no_cache.length;
+
+
+
+      resultsSection.innerHTML = '';
+
+      resultsSection.appendChild(node);
+
+      if (window.lucide) lucide.createIcons();
+
+    })
+
+    .catch(() => {
+
+      loader.style.display = "none";
+
+      resultsSection.style.display = "block";
+
+      resultsSection.innerHTML = `<div class="text-center text-red-500 py-6 text-lg">Unexpected error. Try again.</div>`;
+
+    });
+
+  });
+
+});
+
+</script>
+
+<style>
+
+@keyframes fade-in {
+
+  from { opacity: 0; transform: translateY(40px); }
+
+  to { opacity: 1; transform: translateY(0); }
+
+}
+
+.animate-fade-in {
+
+  animation: fade-in .7s cubic-bezier(.6,0,.3,1);
+
+}
+
+</style>
+
+{% endblock %}
+

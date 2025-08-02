@@ -1,0 +1,21 @@
+<div>
+    <h2 class="text-xl font-semibold mb-4">Your Downloads</h2>
+
+    {% if current_user.downloads %}
+        <ul class="space-y-4">
+            {% for file in current_user.downloads %}
+                <li class="p-4 border rounded hover:bg-gray-50 flex justify-between items-center">
+                    <div>
+                        <p class="font-medium text-gray-800">{{ file.file_name }}</p>
+                        <p class="text-sm text-gray-500">Added on {{ file.created_at.strftime('%Y-%m-%d') }}</p>
+                    </div>
+                    <a href="{{ file.download_url }}" target="_blank" class="text-blue-600 font-semibold hover:underline">
+                        Download
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-gray-500">No downloads available at the moment.</p>
+    {% endif %}
+</div>

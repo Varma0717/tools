@@ -1,0 +1,133 @@
+<header class="sticky top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-xl shadow-[0_4px_24px_0_rgba(34,36,38,0.07)] border-b border-gray-100 transition-all"
+        x-data="{ open: false }">
+
+  <!-- Glowing animated element behind logo -->
+  <div class="absolute left-0 top-0 h-20 w-40 pointer-events-none z-0">
+    <span class="absolute inset-0 rounded-full blur-2xl opacity-40 bg-[#DAAC40] animate-pulse"></span>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-8 py-3 flex items-center justify-between relative z-10">
+
+    <!-- Mobile: Centered Logo -->
+    <div class="flex-1 flex md:justify-start justify-center">
+      <a href="/" class="flex items-center gap-2 group mx-auto md:mx-0" aria-label="Super SEO Toolkit Home">
+        <span class="inline-flex items-center justify-center rounded-full bg-[#DAAC40]/10 border border-[#DAAC40] px-4 py-2 font-bold text-lg tracking-tight text-[#DAAC40] group-hover:scale-105 transition shadow-lg relative">
+          <i data-lucide="zap" class="lucide w-6 h-6 mr-1 text-[#DAAC40] animate-pulse"></i>
+          <span class="sr-only">Super SEO Toolkit</span>
+          <img src="{{ url_for('static', filename='/favicon.png') }}" alt="Super SEO Toolkit Logo" class="w-6 h-6 mr-1 hidden" loading="lazy">
+          Super SEO Toolkit
+        </span>
+      </a>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex items-center gap-6 font-medium ml-8" aria-label="Main navigation">
+      <a href="/" class="nav-link">Home</a>
+      <a href="{{ url_for('tools.list_tools') }}" class="nav-link">Tools</a>
+	  <a href="{{ url_for('about_us') }}" class="nav-link">About Us</a>
+      <a href="{{ url_for('pricing') }}" class="nav-link">Pricing</a> 
+      <a href="{{ url_for('blog.blog_index') }}" class="nav-link">Blog</a>
+      <a href="{{ url_for('contact.contact') }}" class="nav-link">Contact</a>
+      
+      {% if current_user.is_authenticated %}
+        {% if current_user.role == 'admin' %}
+          <a href="{{ url_for('admin.panel') }}" class="nav-link text-[#DAAC40] font-semibold hover:underline">Admin</a>
+        {% else %}
+          <a href="{{ url_for('users.account') }}" class="nav-link text-[#DAAC40] font-semibold hover:underline">Dashboard</a>
+        {% endif %}
+        <form method="POST" action="{{ url_for('users.logout') }}" class="inline ml-2">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="nav-link text-gray-500 hover:text-red-500 font-semibold">Logout</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('users.login') }}" class="nav-link text-gray-600">Login</a>
+        <a href="{{ url_for('users.register') }}"
+           class="ml-2 px-4 py-2 rounded-xl bg-[#DAAC40] text-gray-900 font-bold shadow hover:bg-[#b89627] transition flex items-center gap-2">
+          <i data-lucide="user-plus" class="lucide w-5 h-5"></i> Register
+        </a>
+      {% endif %}
+    </nav>
+
+    <!-- Mobile Hamburger (right) -->
+    <button @click="open = !open"
+            type="button"
+            class="md:hidden flex items-center text-gray-700 hover:text-[#DAAC40] focus:outline-none transition relative z-20 ml-3"
+            aria-label="Open menu"
+            :aria-expanded="open">
+      <i data-lucide="menu" x-show="!open" class="lucide w-8 h-8"></i>
+      <i data-lucide="x" x-show="open" x-cloak class="lucide w-8 h-8"></i>
+    </button>
+  </div>
+
+  <!-- Mobile Dropdown (slide down, animated) -->
+  <div x-show="open"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0 -translate-y-4"
+       x-transition:enter-end="opacity-100 translate-y-0"
+       x-transition:leave="transition ease-in duration-200"
+       x-transition:leave-start="opacity-100 translate-y-0"
+       x-transition:leave-end="opacity-0 -translate-y-4"
+       class="md:hidden absolute left-0 w-full bg-white/95 backdrop-blur-lg shadow-xl border-b border-[#DAAC40]/20 z-40 origin-top"
+       @click.away="open = false">
+    <div class="flex flex-col items-center gap-2 py-6">
+      <a href="/" class="mobile-nav-link">Home</a>
+      <a href="{{ url_for('tools.list_tools') }}" class="mobile-nav-link">Tools</a>
+		<a href="{{ url_for('about_us') }}" class="nav-link">About Us</a>
+    <!--  <a href="{{ url_for('pricing') }}" class="mobile-nav-link">Pricing</a> -->
+      <a href="{{ url_for('blog.blog_index') }}" class="mobile-nav-link">Blog</a>
+      <a href="{{ url_for('contact.contact') }}" class="mobile-nav-link">Contact</a>
+      {% if current_user.is_authenticated %}
+        {% if current_user.role == 'admin' %}
+          <a href="{{ url_for('admin.panel') }}" class="mobile-nav-link text-[#DAAC40] font-semibold">Admin</a>
+        {% else %}
+          <a href="{{ url_for('users.account') }}" class="mobile-nav-link text-[#DAAC40] font-semibold">Dashboard</a>
+        {% endif %}
+        <form method="POST" action="{{ url_for('users.logout') }}" class="w-full flex justify-center mt-2">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="mobile-nav-link text-red-500">Logout</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('users.login') }}" class="mobile-nav-link text-gray-700">Login</a>
+        <a href="{{ url_for('users.register') }}" class="mobile-nav-link text-[#DAAC40] font-bold">Register</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <style>
+    .nav-link {
+      @apply text-gray-700 hover:text-[#DAAC40] transition relative px-1 py-0.5;
+    }
+    .nav-link:after {
+      content: '';
+      display: block;
+      margin: 0 auto;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #DAAC40, #fffbe6);
+      transition: width .2s;
+    }
+    .nav-link:hover:after, .nav-link:focus:after {
+      width: 100%;
+    }
+    .mobile-nav-link {
+      @apply text-base text-gray-700 hover:text-[#DAAC40] font-semibold transition block px-4 py-3 w-full text-center rounded-lg;
+      transition: background 0.15s;
+    }
+    .mobile-nav-link:active {
+      background: #f8f4e8;
+    }
+    @media (max-width: 768px) {
+      header .flex { flex-wrap: nowrap; }
+      .nav-link { font-size: 1rem; }
+      .mobile-nav-link { font-size: 1.125rem; }
+      header { font-size: 1rem; }
+      header .flex-1 { flex: 1 1 0%; }
+    }
+  </style>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.lucide) window.lucide.createIcons();
+    });
+  </script>
+</header>

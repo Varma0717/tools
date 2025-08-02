@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Image Dimension Checker - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Instantly check image size, width, height, and format. Upload and analyze image dimensions for SEO, web design, and performance optimization.{% endblock %}
+
+{% block meta_keywords %}Image Dimension Checker{% endblock %}
+
+{% block content %}
+
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-[90vh]">
+
+  <div class="max-w-2xl mx-auto px-4">
+
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+
+      <!-- Glow Effect -->
+
+      <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+
+
+
+      <div class="relative z-10 text-center">
+
+        <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="mx-auto w-[50px] mb-3">
+
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Image Dimension Checker</h1>
+
+        <p class="text-sm text-gray-600 mb-6">Upload any image to instantly see its width, height, and format. Perfect for SEO and web performance.</p>
+
+      </div>
+
+
+
+      <form id="imageForm" class="space-y-4" enctype="multipart/form-data">
+
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+
+
+        <div>
+
+          <label for="image" class="block text-sm font-medium text-gray-700">Choose Image</label>
+
+          <input type="file" id="image" name="image" accept="image/*" required
+
+                 class="mt-1 w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#DAAC40]">
+
+        </div>
+
+
+
+        <button type="submit" class="w-full bg-[#DAAC40] text-white py-2 rounded-md hover:bg-[#c69735] transition">
+
+          Check Image
+
+        </button>
+
+      </form>
+
+
+
+      <!-- Loader -->
+
+      <div id="loader" class="mt-6 hidden text-center">
+
+        <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+
+          <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+
+        </svg>
+
+        <p class="text-sm text-gray-500 mt-2">Analyzing image...</p>
+
+      </div>
+
+
+
+      <!-- Results -->
+
+      <div id="results" class="mt-6 hidden">
+
+        <div class="flex items-center gap-4">
+
+          <img id="previewImage" class="w-24 h-24 object-contain bg-gray-100 border border-gray-300 rounded shadow" alt="Image Preview" />
+
+          <ul class="text-sm space-y-1">
+
+            <li><strong>Width:</strong> <span id="imgWidth"></span> px</li>
+
+            <li><strong>Height:</strong> <span id="imgHeight"></span> px</li>
+
+            <li><strong>Format:</strong> <span id="imgFormat"></span></li>
+
+          </ul>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Info Section -->
+
+      <div class="mt-10 pt-6 border-t border-gray-200">
+
+        <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+        <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+
+          <li>Upload any image in JPG, PNG, WEBP, BMP, or TIFF format.</li>
+
+          <li>We’ll instantly detect its dimensions and file format.</li>
+
+          <li>No image is stored — everything runs client-side + server memory only.</li>
+
+        </ul>
+
+
+
+        <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+        <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+
+          <li>Perfect image sizing for SEO, Core Web Vitals, and Google rankings.</li>
+
+          <li>Resize or optimize based on exact dimensions.</li>
+
+          <li>No login, no ads, 100% free and fast.</li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- AJAX Script -->
+
+<script>
+
+document.getElementById('imageForm').addEventListener('submit', function(e) {
+
+  e.preventDefault();
+
+  const loader = document.getElementById('loader');
+
+  const results = document.getElementById('results');
+
+  const csrf = document.getElementById('csrf_token').value;
+
+  const fileInput = document.getElementById('image');
+
+  const previewImage = document.getElementById('previewImage');
+
+
+
+  if (!fileInput.files.length) return alert("Please select an image.");
+
+
+
+  const file = fileInput.files[0];
+
+  const formData = new FormData();
+
+  formData.append('image', file);
+
+
+
+  loader.classList.remove('hidden');
+
+  results.classList.add('hidden');
+
+
+
+  fetch('/tools/image-dimension-checker/ajax', {
+
+    method: 'POST',
+
+    headers: { 'X-CSRFToken': csrf },
+
+    body: formData
+
+  })
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    if (data.success) {
+
+      document.getElementById('imgWidth').textContent = data.dimensions[0];
+
+      document.getElementById('imgHeight').textContent = data.dimensions[1];
+
+      document.getElementById('imgFormat').textContent = data.format;
+
+      previewImage.src = URL.createObjectURL(file);
+
+      results.classList.remove('hidden');
+
+    } else {
+
+      alert(data.error || 'An error occurred.');
+
+    }
+
+  })
+
+  .catch(() => alert('An unexpected error occurred.'))
+
+  .finally(() => loader.classList.add('hidden'));
+
+});
+
+</script>
+
+{% endblock %}
+

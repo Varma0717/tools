@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Cookie Policy | Super SEO Toolkit{% endblock %}
+
+{% block content %}
+<section class="py-16 bg-white text-gray-900">
+  <div class="max-w-3xl mx-auto px-6">
+    <h1 class="text-4xl font-bold mb-6">Cookie Policy</h1>
+    <p class="mb-4 text-gray-700">Effective Date: {{ (now() | date('Y-m-d')) if now else '2025-06-21' }}</p>
+
+    <p class="mb-6">
+      This Cookie Policy explains how <strong>Super SEO Toolkit</strong> (<a href="https://superseotoolkit.com" class="text-[#DAAC40] underline">superseotoolkit.com</a>) uses cookies and similar technologies to improve your experience.
+    </p>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">What Are Cookies?</h2>
+    <p class="mb-4">
+      Cookies are small text files placed on your device to remember your preferences, enable certain features, and help us analyze website traffic.
+    </p>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">How We Use Cookies</h2>
+    <ul class="mb-6 ml-6 list-disc text-gray-700">
+      <li>To remember your login and preferences</li>
+      <li>For analytics and performance (e.g., Google Analytics)</li>
+      <li>To display relevant ads (e.g., Google AdSense)</li>
+      <li>To enable secure login with Google or account dashboard</li>
+    </ul>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">Your Choices</h2>
+    <ul class="mb-6 ml-6 list-disc text-gray-700">
+      <li>You can disable cookies in your browser settings, but some features may not work as intended.</li>
+      <li>By using this site, you consent to our use of cookies as described.</li>
+    </ul>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">Third-Party Cookies</h2>
+    <p class="mb-4">
+      Third parties such as Google Analytics and AdSense may set cookies. We have no control over these third-party cookies. Please refer to their policies for more information.
+    </p>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">Contact</h2>
+    <p>
+      For any questions about our cookie policy, email <a href="mailto:contact@superseotoolkit.com" class="text-[#DAAC40] underline">contact@superseotoolkit.com</a>.
+    </p>
+  </div>
+</section>
+{% endblock %}

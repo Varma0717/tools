@@ -1,0 +1,294 @@
+{# templates/tools/schema_markup_tester.html #}
+
+{% extends "base.html" %}
+
+{% block title %}Schema Markup Tester - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Validate, extract, and test your JSON-LD schema markup from any page or code. Free, fast, and unlimited checks.{% endblock %}
+
+{% block meta_keywords %}Schema Markup Tester{% endblock %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto px-4 py-10">
+
+  <div class="bg-white shadow-xl rounded-2xl p-8 mb-10 border border-gray-100 relative">
+
+    <div class="flex items-center gap-4 mb-3">
+
+      <i data-lucide="braces" class="lucide w-9 h-9 text-[#DAAC40]"></i>
+
+      <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#DAAC40] to-yellow-100 bg-clip-text text-transparent">Schema Markup Tester</h1>
+
+    </div>
+
+    <p class="text-gray-600 mb-8">
+
+      Extract and validate <b>JSON-LD</b> structured data from any page, or paste your code below. <b>No login required!</b>
+
+    </p>
+
+    <form id="schemaForm" class="space-y-4" autocomplete="off">
+
+      <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+      <label class="block text-sm font-medium text-gray-700 mb-1">Page URL <span class="text-xs text-gray-400">(optional)</span></label>
+
+      <input type="url" name="url" id="inputUrl"
+
+        class="w-full px-4 py-3 rounded-xl border-gray-200 shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900"
+
+        placeholder="e.g. https://yourdomain.com">
+
+      <label class="block text-sm font-medium text-gray-700 mb-1 mt-3">Or Paste Your Schema Markup <span class="text-xs text-gray-400">(optional)</span></label>
+
+      <textarea name="code" id="inputCode"
+
+        rows="7"
+
+        class="w-full px-4 py-3 rounded-xl border-gray-200 shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900 resize-none"
+
+        placeholder='Paste JSON-LD code here...'></textarea>
+
+      <button type="submit"
+
+        class="mt-3 w-full flex justify-center items-center gap-2 bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 font-bold rounded-xl px-6 py-3 transition-all duration-150 shadow-lg text-lg">
+
+        <i data-lucide="check-circle-2" class="lucide w-5 h-5"></i>
+
+        Test Markup
+
+      </button>
+
+    </form>
+
+    <!-- Loader/Spinner -->
+
+    <div id="loader" class="flex flex-col items-center py-8" style="display:none;">
+
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#DAAC40] border-t-transparent"></div>
+
+      <span class="mt-3 text-sm text-gray-500 font-medium">Testing schema...</span>
+
+    </div>
+
+    <!-- Results -->
+
+    <div id="resultsSection" class="py-6" style="display:none;"></div>
+
+
+
+    <div class="mt-10 pt-6 border-t border-gray-200">
+
+      <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Enter a page URL to auto-extract all JSON-LD blocks, or paste your code.</li>
+
+        <li>Each schema is checked for valid JSON syntax.</li>
+
+        <li>Instant results for all types of structured data (FAQ, HowTo, Article, etc).</li>
+
+      </ul>
+
+      <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Spot errors before deploying schema to your site.</li>
+
+        <li>No login, unlimited checks, privacy-safe.</li>
+
+        <li>Works for SEO, rich snippets, and all JSON-LD.</li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+<template id="schema-template">
+
+  <div class="bg-white border border-[#DAAC40] rounded-xl shadow-lg p-6 animate-fade-in">
+
+    <div class="flex items-center gap-2 mb-2">
+
+      <i data-lucide="file-check-2" class="lucide w-6 h-6 text-[#DAAC40]"></i>
+
+      <span class="text-lg font-semibold text-gray-900">Validation Results</span>
+
+    </div>
+
+    <div id="schemaResult"></div>
+
+    <div id="schemaCodeBox" class="bg-gray-50 border rounded-lg p-3 text-xs font-mono mt-4 overflow-x-auto"></div>
+
+    <button type="button" onclick="copySchemaCode()" class="bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 px-4 py-2 rounded shadow font-semibold flex items-center gap-2 mb-2 mt-2">
+
+      <i data-lucide="copy" class="lucide w-4 h-4"></i> Copy Schema
+
+    </button>
+
+    <div class="text-xs text-gray-500 mt-1">Validate before publishing your schema markup!</div>
+
+  </div>
+
+</template>
+
+<style>
+
+@keyframes fade-in { from { opacity:0; transform:translateY(40px);} to { opacity:1; transform:translateY(0);}
+
+}
+
+.animate-fade-in { animation: fade-in .7s cubic-bezier(.6,0,.3,1);}
+
+</style>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const form = document.getElementById('schemaForm');
+
+  const loader = document.getElementById('loader');
+
+  const resultsSection = document.getElementById('resultsSection');
+
+  const template = document.getElementById('schema-template');
+
+
+
+  form?.addEventListener('submit', function (e) {
+
+    e.preventDefault();
+
+    resultsSection.style.display = "none";
+
+    loader.style.display = "flex";
+
+    const url = document.getElementById('inputUrl').value;
+
+    const code = document.getElementById('inputCode').value;
+
+    const csrfToken = document.getElementById('csrf_token').value;
+
+
+
+    fetch('/tools/schema-markup-tester/ajax', {
+
+      method: 'POST',
+
+      headers: {
+
+        'Content-Type': 'application/json',
+
+        'X-CSRFToken': csrfToken,
+
+      },
+
+      body: JSON.stringify({ url, code })
+
+    })
+
+    .then(r => r.json())
+
+    .then(data => {
+
+      loader.style.display = "none";
+
+      resultsSection.style.display = "block";
+
+      if (data.error) {
+
+        resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">${data.error}</div>`;
+
+        return;
+
+      }
+
+      if (data.warning) {
+
+        resultsSection.innerHTML = `<div class="text-center text-yellow-500 py-8 text-lg">${data.warning}</div>`;
+
+        return;
+
+      }
+
+      if (data.results && data.results.length > 0) {
+
+        const node = template.content.cloneNode(true);
+
+        let resultHtml = "";
+
+        let codeDisplay = "";
+
+        data.results.forEach((result, idx) => {
+
+          resultHtml += `
+
+            <div class="mb-2">
+
+              <span class="font-semibold">Schema #${idx+1}:</span>
+
+              <span class="${result.valid ? 'text-green-700' : 'text-red-700'} ml-2">${result.msg}</span>
+
+            </div>
+
+          `;
+
+          codeDisplay += `<div class="mb-3"><pre>${result.code}</pre></div>`;
+
+        });
+
+        node.getElementById("schemaResult").innerHTML = resultHtml;
+
+        node.getElementById("schemaCodeBox").innerHTML = codeDisplay;
+
+        resultsSection.innerHTML = '';
+
+        resultsSection.appendChild(node);
+
+        window.currentSchemaCode = data.results[0].code || '';
+
+        if (window.lucide) lucide.createIcons();
+
+      }
+
+    })
+
+    .catch(() => {
+
+      loader.style.display = "none";
+
+      resultsSection.style.display = "block";
+
+      resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">Error: Could not validate schema. Try again.</div>`;
+
+    });
+
+  });
+
+  if (window.lucide) lucide.createIcons();
+
+});
+
+
+
+function copySchemaCode() {
+
+  if (window.currentSchemaCode) {
+
+    navigator.clipboard.writeText(window.currentSchemaCode);
+
+  }
+
+}
+
+</script>
+
+{% endblock %}
+

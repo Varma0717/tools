@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}Crawlability & Indexability Tester - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Test if a webpage is crawlable and indexable by search engines. Check robots.txt, meta robots, HTTP headers and status.{% endblock %}
+
+{% block meta_keywords %}Crawlability Checker{% endblock %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto px-4 py-10">
+
+  <div class="bg-white shadow-xl rounded-2xl p-8 mb-10 border border-gray-100 relative">
+
+    <div class="flex items-center gap-4 mb-3">
+
+      <i data-lucide="search-check" class="lucide w-9 h-9 text-[#DAAC40]"></i>
+
+      <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#DAAC40] to-yellow-100 bg-clip-text text-transparent">Crawlability Tester</h1>
+
+    </div>
+
+    <p class="text-gray-600 mb-8">
+
+      Test whether a webpage is crawlable and indexable by search engines like Google. <b>No login required!</b>
+
+    </p>
+
+    <form id="crawlForm" class="space-y-4" autocomplete="off">
+
+      <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+      <label class="block text-sm font-medium text-gray-700 mb-1">Page URL</label>
+
+      <input type="text" name="url" id="inputUrl"
+
+        class="w-full px-4 py-3 rounded-xl border-gray-200 shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900"
+
+        placeholder="e.g. https://yourwebsite.com/page" required>
+
+      <button type="submit"
+
+        class="mt-3 w-full flex justify-center items-center gap-2 bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 font-bold rounded-xl px-6 py-3 transition-all duration-150 shadow-lg text-lg">
+
+        <i data-lucide="search" class="lucide w-5 h-5"></i>
+
+        Test Crawlability
+
+      </button>
+
+    </form>
+
+
+
+    <!-- Loader -->
+
+    <div id="loader" class="flex flex-col items-center py-8" style="display:none;">
+
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#DAAC40] border-t-transparent"></div>
+
+      <span class="mt-3 text-sm text-gray-500 font-medium">Checking crawlability… Please wait.</span>
+
+    </div>
+
+
+
+    <!-- Results -->
+
+    <div id="resultsSection" class="py-6" style="display:none;"></div>
+
+
+
+    <div class="mt-10 pt-6 border-t border-gray-200">
+
+      <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Analyzes HTTP status, meta robots, X-Robots-Tag, and robots.txt rules.</li>
+
+        <li>Flags any barriers preventing search engines from crawling your page.</li>
+
+        <li>Helps ensure full indexability for better SEO rankings.</li>
+
+      </ul>
+
+      <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Fix crawl-blocking issues instantly.</li>
+
+        <li>Ensure Google can index your most important pages.</li>
+
+        <li>Improve SEO with real-time, actionable checks.</li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<template id="crawl-template">
+
+  <div class="bg-white border border-[#DAAC40] rounded-xl shadow-lg p-6 animate-fade-in">
+
+    <div class="flex items-center gap-2 mb-2">
+
+      <i data-lucide="shield-check" class="lucide w-6 h-6 text-[#DAAC40]"></i>
+
+      <span class="text-lg font-semibold text-gray-900">Crawlability Report</span>
+
+    </div>
+
+    <table class="min-w-full text-sm border mb-4">
+
+      <tbody id="crawlTable"></tbody>
+
+    </table>
+
+    <button type="button" onclick="copyCrawl()" class="bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 px-4 py-2 rounded shadow font-semibold flex items-center gap-2 mb-2">
+
+      <i data-lucide="copy" class="lucide w-4 h-4"></i> Copy Report
+
+    </button>
+
+    <div class="text-xs text-gray-500 mt-1">Ensure all checks show "OK" for a fully crawlable and indexable page.</div>
+
+  </div>
+
+</template>
+
+
+
+<style>
+
+@keyframes fade-in { from { opacity:0; transform:translateY(40px);} to { opacity:1; transform:translateY(0); }}
+
+.animate-fade-in { animation: fade-in .7s cubic-bezier(.6,0,.3,1); }
+
+</style>
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const form = document.getElementById('crawlForm');
+
+  const loader = document.getElementById('loader');
+
+  const resultsSection = document.getElementById('resultsSection');
+
+  const template = document.getElementById('crawl-template');
+
+
+
+  form?.addEventListener('submit', function (e) {
+
+    e.preventDefault();
+
+    resultsSection.style.display = "none";
+
+    loader.style.display = "flex";
+
+
+
+    const url = document.getElementById('inputUrl').value;
+
+    const csrfToken = document.getElementById('csrf_token').value;
+
+
+
+    fetch('/tools/crawlability-tester/ajax', {
+
+      method: 'POST',
+
+      headers: {
+
+        'Content-Type': 'application/json',
+
+        'X-CSRFToken': csrfToken,
+
+      },
+
+      body: JSON.stringify({ url })
+
+    })
+
+    .then(r => r.json())
+
+    .then(data => {
+
+      loader.style.display = "none";
+
+      resultsSection.style.display = "block";
+
+      if (data.error) {
+
+        resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">${data.error}</div>`;
+
+        return;
+
+      }
+
+      const node = template.content.cloneNode(true);
+
+      const table = node.getElementById('crawlTable');
+
+      table.innerHTML = data.results.map(
+
+        item => `<tr><td class="p-2 font-semibold text-gray-700 align-top border border-gray-100">${item.check}</td><td class="p-2 text-gray-800 border border-gray-100">${item.status}</td><td class="p-2 text-gray-700 border border-gray-100">${item.details || '—'}</td></tr>`
+
+      ).join('');
+
+      resultsSection.innerHTML = '';
+
+      resultsSection.appendChild(node);
+
+      window.currentCrawlData = data.results.map(i => `${i.check}: ${i.status} — ${i.details || ''}`).join('\n');
+
+      if (window.lucide) lucide.createIcons();
+
+    })
+
+    .catch(() => {
+
+      loader.style.display = "none";
+
+      resultsSection.style.display = "block";
+
+      resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">Error: Could not fetch results. Try again.</div>`;
+
+    });
+
+  });
+
+  if (window.lucide) lucide.createIcons();
+
+});
+
+
+
+function copyCrawl() {
+
+  if (window.currentCrawlData) {
+
+    navigator.clipboard.writeText(window.currentCrawlData);
+
+  }
+
+}
+
+</script>
+
+{% endblock %}
+

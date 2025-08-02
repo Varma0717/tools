@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}Meta Tag Generator - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Generate SEO-optimized meta tags with ease. Auto-fetch title, description, and keywords or write your own. Perfect for webmasters and marketers.{% endblock %}
+
+{% block meta_keywords %}Meta Tag Generator{% endblock %}
+
+{% block content %}
+
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+
+  <div class="max-w-2xl mx-auto px-4">
+
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+
+      <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+
+
+
+      <div class="relative z-10 text-center">
+
+        <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="mx-auto w-[50px] mb-3">
+
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Meta Tag Generator</h1>
+
+        <p class="text-sm text-gray-600 mb-6">Enter your page details or paste a URL to auto-fetch. Then copy the optimized meta tags for your HTML.</p>
+
+      </div>
+
+
+
+      <form id="metaForm" class="space-y-5">
+
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+
+
+        <div>
+
+          <label for="url" class="block text-sm font-medium text-gray-700">Website URL <span class="text-xs text-gray-400">(optional)</span></label>
+
+          <input type="url" id="url" name="url" placeholder="https://example.com"
+
+                 class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+
+        </div>
+
+
+
+        <div>
+
+          <label for="title" class="block text-sm font-medium text-gray-700">Page Title</label>
+
+          <input type="text" id="title" name="title" maxlength="70"
+
+                 class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+
+        </div>
+
+
+
+        <div>
+
+          <label for="description" class="block text-sm font-medium text-gray-700">Meta Description</label>
+
+          <textarea id="description" name="description" maxlength="160"
+
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none"
+
+                    rows="3"></textarea>
+
+        </div>
+
+
+
+        <div>
+
+          <label for="keywords" class="block text-sm font-medium text-gray-700">Meta Keywords</label>
+
+          <input type="text" id="keywords" name="keywords" placeholder="seo, web tools, analyzer"
+
+                 class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+
+        </div>
+
+
+
+        <button type="submit"
+
+                class="w-full bg-[#DAAC40] text-white py-2 rounded-md hover:bg-[#c69735] transition font-bold">
+
+          Generate Meta Tags
+
+        </button>
+
+      </form>
+
+
+
+      <!-- Loader -->
+
+      <div id="loader" class="mt-6 hidden text-center">
+
+        <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+
+          <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+
+        </svg>
+
+        <p class="text-sm text-gray-500 mt-2">Generating your tags...</p>
+
+      </div>
+
+
+
+      <!-- Results -->
+
+      <div id="results" class="mt-6 hidden">
+
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Your Generated Meta Tags</h2>
+
+        <div class="bg-gray-100 rounded-md p-4 text-sm font-mono text-gray-800 overflow-x-auto">
+
+<pre id="metaOutput">&lt;!-- Your tags will appear here --&gt;</pre>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Guide -->
+
+      <div class="mt-10 pt-6 border-t border-gray-200">
+
+        <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+        <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+
+          <li>Paste a URL to auto-fill title, description, and keywords if available.</li>
+
+          <li>You can also manually fill any or all fields yourself.</li>
+
+          <li>Hit "Generate" and copy the HTML-ready meta tags for your site.</li>
+
+        </ul>
+
+
+
+        <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+        <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+
+          <li>Improve SEO rankings and snippet previews in Google.</li>
+
+          <li>Better visibility across social media and browsers.</li>
+
+          <li>Ideal for WordPress, HTML, Shopify, and more.</li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  const form = document.getElementById('metaForm');
+
+  const csrf = document.getElementById('csrf_token').value;
+
+  const loader = document.getElementById('loader');
+
+  const results = document.getElementById('results');
+
+  const output = document.getElementById('metaOutput');
+
+
+
+  form.addEventListener('submit', function (e) {
+
+    e.preventDefault();
+
+    loader.classList.remove('hidden');
+
+    results.classList.add('hidden');
+
+    output.textContent = '';
+
+
+
+    const data = {
+
+      url: document.getElementById('url').value.trim(),
+
+      title: document.getElementById('title').value.trim(),
+
+      description: document.getElementById('description').value.trim(),
+
+      keywords: document.getElementById('keywords').value.trim()
+
+    };
+
+
+
+    fetch('/tools/meta-tag-generator/ajax', {
+
+      method: 'POST',
+
+      headers: {
+
+        'Content-Type': 'application/json',
+
+        'X-CSRFToken': csrf
+
+      },
+
+      body: JSON.stringify(data)
+
+    })
+
+    .then(res => res.json())
+
+    .then(data => {
+
+      if (data.success) {
+
+        const t = data.tags;
+
+        let metaTags = '';
+
+        if (t.title) metaTags += `<title>${t.title}</title>\n`;
+
+        if (t.description) metaTags += `<meta name="description" content="${t.description}">\n`;
+
+        if (t.keywords) metaTags += `<meta name="keywords" content="${t.keywords}">`;
+
+        output.textContent = metaTags;
+
+        results.classList.remove('hidden');
+
+      } else {
+
+        alert(data.error || "Something went wrong.");
+
+      }
+
+    })
+
+    .catch(() => alert("An unexpected error occurred."))
+
+    .finally(() => loader.classList.add('hidden'));
+
+  });
+
+});
+
+</script>
+
+{% endblock %}
+

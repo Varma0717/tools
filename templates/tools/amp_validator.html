@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  AMP Validator - Super SEO Toolkit
+{% endblock %}
+
+{% block meta_description %}
+  Validate your AMP (Accelerated Mobile Pages) instantly for SEO and Google News. Check tags, scripts, and best practices!
+{% endblock %}
+
+{% block meta_keywords %}
+  AMP Validator, AMP Page Checker
+{% endblock %}
+
+{% block content %}
+  <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+    <div class="max-w-5xl mx-auto px-4">
+      <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+        <div class="relative z-10 text-center">
+          <img src="/static/favicon.png" alt="Logo" class="mx-auto w-[50px] mb-3" />
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">AMP Validator</h1>
+        </div>
+
+        <p class="text-lg text-gray-600 mb-8">
+          Instantly check if your web page is AMP-compliant for mobile-first SEO and Google News.
+          <span class="block mt-2 text-sm text-gray-400">Verify tags, scripts, and boilerplate in one click. <b>Free and unlimited!</b></span>
+        </p>
+
+        <p class="text-base text-gray-600 mb-4">Enter your AMP URL to validate if it's set up correctly for search and speed. This tool checks AMP HTML tag, core scripts, and best practices. Fast, accurate, and secure!</p>
+
+        <form method="POST" class="mb-8 space-y-4" id="ampForm">
+          {{ form.hidden_tag() }}
+
+          <div class="flex flex-col sm:flex-row gap-4">
+            {{ form.url(class_='flex-1 p-3 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900', placeholder='Enter AMP page URL (e.g. https://yoursite.com/amp)') }}
+
+            <button type="submit" class="bg-[#DAAC40] text-gray-900 px-8 py-3 rounded-xl font-bold shadow-md hover:bg-[#b89627] transition focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/50">Validate AMP</button>
+          </div>
+        </form>
+        <div id="loader" class="flex flex-col items-center py-8" style="display:none;">
+          <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#DAAC40] border-t-transparent"></div>
+
+          <span class="mt-3 text-sm text-gray-500 font-medium">Validating AMP page…</span>
+        </div>
+        {% if result %}
+          <div id="resultsSection" class="py-6">
+            {% if result.valid %}
+              <div class="flex items-center gap-2 bg-green-50 border border-green-300 text-green-900 p-4 rounded-xl shadow mb-4">
+                <i data-lucide="check-circle" class="lucide w-6 h-6 text-green-600"></i>
+
+                <span class="font-semibold">AMP Valid:</span> {{ result.msg }}
+              </div>
+            {% else %}
+              <div class="flex items-center gap-2 bg-red-50 border border-red-300 text-red-900 p-4 rounded-xl shadow mb-4">
+                <i data-lucide="alert-triangle" class="lucide w-6 h-6 text-red-600"></i>
+
+                <span class="font-semibold">AMP Invalid:</span> {{ result.msg }}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div class="mt-10 pt-6 border-t border-gray-200">
+          <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+          <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+            <li>Enter any AMP page URL to check for required AMP tags, scripts, and boilerplate.</li>
+
+            <li>Results shown instantly with clear status and errors if found.</li>
+
+            <li>Free and unlimited checks for all your sites.</li>
+          </ul>
+
+          <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+          <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+            <li>Instantly know if your AMP setup is correct for Google and speed.</li>
+
+            <li>Helps boost eligibility for Google News and mobile search features.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+  </section>
+
+  <script>
+    // OPTIONAL: Add loader show/hide if you use AJAX for form submission
+  </script>
+{% endblock %}

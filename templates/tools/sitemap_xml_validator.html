@@ -1,0 +1,300 @@
+{# templates/tools/sitemap_xml_validator.html #}
+
+{% extends "base.html" %}
+
+{% block title %}Sitemap XML Validator & Generator - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Validate, fetch, or generate sitemap.xml for your site. Check structure, URLs, and fix errors instantly.{% endblock %}
+
+{% block meta_keywords %}Sitemap XML Generator{% endblock %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto px-4 py-10">
+
+  <div class="bg-white shadow-xl rounded-2xl p-8 mb-10 border border-gray-100 relative">
+
+    <div class="flex items-center gap-4 mb-3">
+
+      <i data-lucide="list" class="lucide w-9 h-9 text-[#DAAC40]"></i>
+
+      <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#DAAC40] to-yellow-100 bg-clip-text text-transparent">Sitemap XML Validator</h1>
+
+    </div>
+
+    <p class="text-gray-600 mb-8">
+
+      Validate your sitemap.xml or auto-generate a sample. Fetch live or paste below. <b>No login required!</b>
+
+    </p>
+
+    <form id="sitemapForm" class="space-y-4" autocomplete="off">
+
+      <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+      <label class="block text-sm font-medium text-gray-700 mb-1">Website URL <span class="text-xs text-gray-400">(optional, fetches /sitemap.xml)</span></label>
+
+      <input type="url" name="url" id="inputUrl"
+
+        class="w-full px-4 py-3 rounded-xl border-gray-200 shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900"
+
+        placeholder="e.g. https://yourdomain.com">
+
+      <label class="block text-sm font-medium text-gray-700 mb-1 mt-3">Sitemap XML Content <span class="text-xs text-gray-400">(optional)</span></label>
+
+      <textarea name="sitemap_xml" id="inputXml"
+
+        rows="7"
+
+        class="w-full px-4 py-3 rounded-xl border-gray-200 shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900 resize-none"
+
+        placeholder="Paste your sitemap.xml content here..."></textarea>
+
+      <button type="submit"
+
+        class="mt-3 w-full flex justify-center items-center gap-2 bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 font-bold rounded-xl px-6 py-3 transition-all duration-150 shadow-lg text-lg">
+
+        <i data-lucide="search-check" class="lucide w-5 h-5"></i>
+
+        Validate or Generate
+
+      </button>
+
+    </form>
+
+    <!-- Loader/Spinner -->
+
+    <div id="loader" class="flex flex-col items-center py-8" style="display:none;">
+
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#DAAC40] border-t-transparent"></div>
+
+      <span class="mt-3 text-sm text-gray-500 font-medium">Checking sitemap...</span>
+
+    </div>
+
+    <!-- Results -->
+
+    <div id="resultsSection" class="py-6" style="display:none;"></div>
+
+
+
+    <div class="mt-10 pt-6 border-t border-gray-200">
+
+      <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Paste sitemap.xml or enter your website URL to fetch it.</li>
+
+        <li>Tool checks for errors, structure, URL count, and type.</li>
+
+        <li>Generates a valid template if nothing is provided.</li>
+
+      </ul>
+
+      <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Instantly find and fix sitemap errors for SEO.</li>
+
+        <li>No login, unlimited free checks, privacy-safe.</li>
+
+        <li>Generate valid XML to copy and use anywhere.</li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+<template id="sitemap-template">
+
+  <div class="bg-white border border-[#DAAC40] rounded-xl shadow-lg p-6 animate-fade-in">
+
+    <div class="flex items-center gap-2 mb-2">
+
+      <i data-lucide="file-check-2" class="lucide w-6 h-6 text-[#DAAC40]"></i>
+
+      <span class="text-lg font-semibold text-gray-900">Sitemap Validation Results</span>
+
+    </div>
+
+    <div id="sitemapResult"></div>
+
+    <div id="sitemapXmlBox" class="bg-gray-50 border rounded-lg p-3 text-xs font-mono mt-4 overflow-x-auto"></div>
+
+    <button type="button" onclick="copySitemapXml()" class="bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 px-4 py-2 rounded shadow font-semibold flex items-center gap-2 mb-2 mt-2">
+
+      <i data-lucide="copy" class="lucide w-4 h-4"></i> Copy XML
+
+    </button>
+
+    <div class="text-xs text-gray-500 mt-1">Ensure your sitemap is valid and up-to-date for best SEO.</div>
+
+  </div>
+
+</template>
+
+<style>
+
+@keyframes fade-in { from { opacity:0; transform:translateY(40px);} to { opacity:1; transform:translateY(0);}
+
+}
+
+.animate-fade-in { animation: fade-in .7s cubic-bezier(.6,0,.3,1);}
+
+</style>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const form = document.getElementById('sitemapForm');
+
+  const loader = document.getElementById('loader');
+
+  const resultsSection = document.getElementById('resultsSection');
+
+  const template = document.getElementById('sitemap-template');
+
+
+
+  form?.addEventListener('submit', function (e) {
+
+    e.preventDefault();
+
+    resultsSection.style.display = "none";
+
+    loader.style.display = "flex";
+
+    const url = document.getElementById('inputUrl').value;
+
+    const sitemap_xml = document.getElementById('inputXml').value;
+
+    const csrfToken = document.getElementById('csrf_token').value;
+
+
+
+    fetch('/tools/sitemap-xml-validator/ajax', {
+
+      method: 'POST',
+
+      headers: {
+
+        'Content-Type': 'application/json',
+
+        'X-CSRFToken': csrfToken,
+
+      },
+
+      body: JSON.stringify({ url, sitemap_xml })
+
+    })
+
+    .then(r => r.json())
+
+    .then(data => {
+
+      loader.style.display = "none";
+
+      resultsSection.style.display = "block";
+
+      const node = template.content.cloneNode(true);
+
+      let resultHtml = "";
+
+      let xmlDisplay = "";
+
+
+
+      if (data.error) {
+
+        resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">${data.error}</div>`;
+
+        return;
+
+      }
+
+      if (data.generated) {
+
+        resultHtml = `<div class="text-green-800 font-semibold mb-2">Sample sitemap.xml generated below. Customize and use!</div>`;
+
+        xmlDisplay = `<pre>${data.generated}</pre>`;
+
+        window.currentSitemapXml = data.generated;
+
+      } else if (data.valid) {
+
+        resultHtml = `<div class="text-green-700 font-semibold mb-2">Sitemap is valid (${data.type === 'urlset' ? 'URL Set' : 'Sitemap Index'}), ${data.count} ${data.type === 'urlset' ? 'URLs' : 'Sitemaps'} found.</div>`;
+
+        if (data.type === 'urlset') {
+
+          resultHtml += `<ul class="text-xs mb-3">${data.urls.map(url => `<li class="text-gray-700 truncate">${url}</li>`).join('')}</ul>`;
+
+        } else if (data.type === 'sitemapindex') {
+
+          resultHtml += `<ul class="text-xs mb-3">${data.sitemaps.map(sm => `<li class="text-gray-700 truncate">${sm}</li>`).join('')}</ul>`;
+
+        }
+
+        xmlDisplay = `<pre>${data.fetched_xml}</pre>`;
+
+        window.currentSitemapXml = data.fetched_xml;
+
+      } else {
+
+        resultHtml = `<div class="text-red-700 font-semibold mb-2">Invalid sitemap: ${data.error}</div>`;
+
+        xmlDisplay = "";
+
+        window.currentSitemapXml = "";
+
+      }
+
+      node.getElementById("sitemapResult").innerHTML = resultHtml;
+
+      node.getElementById("sitemapXmlBox").innerHTML = xmlDisplay;
+
+      resultsSection.innerHTML = '';
+
+      resultsSection.appendChild(node);
+
+      if (window.lucide) lucide.createIcons();
+
+    })
+
+    .catch(() => {
+
+      loader.style.display = "none";
+
+      resultsSection.style.display = "block";
+
+      resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">Error: Could not validate sitemap. Try again.</div>`;
+
+    });
+
+  });
+
+  if (window.lucide) lucide.createIcons();
+
+});
+
+
+
+function copySitemapXml() {
+
+  if (window.currentSitemapXml) {
+
+    navigator.clipboard.writeText(window.currentSitemapXml);
+
+  }
+
+}
+
+</script>
+
+{% endblock %}
+

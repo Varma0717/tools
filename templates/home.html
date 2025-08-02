@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% block title %}Super SEO Toolkit | Free SEO Tools, AI Audit & Optimization Platform{% endblock %}
+{% block meta_description %}Super SEO Toolkit: The #1 AI-powered SEO platform for audits, optimization, ranking, keyword research & backlinks. 250+ expert tools to grow your traffic & visibility in Google. Try free!{% endblock %}
+{% block content %}
+
+<!-- GLOWING ANIMATED BACKGROUND -->
+<style>
+  body {
+    background: radial-gradient(ellipse at top left, #fffbe6 0%, #f6f6f8 80%), linear-gradient(135deg, #DAAC42 0%, #f1eaff 100%);
+    min-height: 100vh;
+    position: relative;
+  }
+  .glow-blur {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(64px);
+    opacity: .40;
+    border-radius: 50%;
+    animation: blow 6s ease-in-out infinite alternate;
+  }
+  @keyframes blow {
+    0% {transform: scale(1);}
+    100% {transform: scale(1.07);}
+  }
+  .glow-blur.one {top: 20%; left: 8%; width: 500px; height: 300px; background: #DAAC42;}
+  .glow-blur.two {bottom: 10%; right: 8%; width: 400px; height: 220px; background: #7f5aff;}
+</style>
+<div class="glow-blur one"></div>
+<div class="glow-blur two"></div>
+<!-- END GLOW -->
+
+<!-- HERO -->
+<section class="bg-gradient-to-tr from-white via-[#f6f6f8] to-white py-28 border-b border-gray-100 relative z-10">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <div class="flex flex-col items-center gap-3 mb-7">
+      <span class="inline-block rounded-full px-5 py-1 text-xs font-bold bg-[#DAAC40]/10 text-[#DAAC40] tracking-widest shadow-sm animate-fade-in-up uppercase">
+        #1 AI SEO Toolkit
+      </span>
+      <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-3 animate-fade-in-up">
+        Rank Higher with <span class="text-[#DAAC40] drop-shadow-glow">Super SEO Toolkit</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto mb-8 animate-fade-in-up delay-100">
+        250+ free AI-powered SEO tools for audits, keyword research, backlinks & content optimization. Grow organic traffic, boost your Google rankings, and unlock advanced SEO analytics—fast.
+      </p>
+      <a href="{{ url_for('tools.list_tools') }}"
+         class="inline-block bg-[#DAAC40] text-gray-900 font-semibold px-8 py-3 rounded-xl shadow-lg hover:bg-[#b89627] focus:ring-4 focus:ring-[#DAAC40]/30 transition-all duration-300 animate-bounce">
+        Explore All SEO Tools &rarr;
+      </a>
+    </div>
+    <div class="flex justify-center mt-12">
+      <img class="rounded-2xl shadow-xl border border-gray-100 max-w-full w-[700px] animate-fade-in-up delay-200" alt="super seo toolkit"
+        src="{{ url_for('static', filename='img/super_seo_dashboard_1.jpg') }}"
+      >
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS / VALUE PROPS (with subtle gradient hover) -->
+<section class="py-20 bg-white relative z-10">
+  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 text-center">
+    <div class="bg-gray-50 rounded-2xl p-8 shadow hover:shadow-xl border border-gray-100 hover:border-[#DAAC40] transition-all duration-200 flex flex-col items-center group">
+      <i data-lucide="activity" class="lucide lucide-activity w-12 h-12 mb-3 text-[#DAAC40] group-hover:scale-110 transition-transform"></i>
+      <h3 class="text-lg font-semibold mb-2 text-gray-900">Live SEO Insights</h3>
+      <p class="text-gray-500 text-base">Instantly audit your website, monitor rankings, and access actionable analytics to outsmart the competition.</p>
+    </div>
+    <div class="bg-gray-50 rounded-2xl p-8 shadow hover:shadow-xl border border-gray-100 hover:border-[#DAAC40] transition-all duration-200 flex flex-col items-center group">
+      <i data-lucide="sparkle" class="lucide lucide-sparkle w-12 h-12 mb-3 text-[#DAAC40] group-hover:scale-110 transition-transform"></i>
+      <h3 class="text-lg font-semibold mb-2 text-gray-900">AI-Driven SEO Tools</h3>
+      <p class="text-gray-500 text-base">Fix on-page issues, improve Core Web Vitals, and optimize content with AI recommendations tailored for Google’s latest algorithms.</p>
+    </div>
+    <div class="bg-gray-50 rounded-2xl p-8 shadow hover:shadow-xl border border-gray-100 hover:border-[#DAAC40] transition-all duration-200 flex flex-col items-center group">
+      <i data-lucide="layout-dashboard" class="lucide lucide-layout-dashboard w-12 h-12 mb-3 text-[#DAAC40] group-hover:scale-110 transition-transform"></i>
+      <h3 class="text-lg font-semibold mb-2 text-gray-900">All-in-One Dashboard</h3>
+      <p class="text-gray-500 text-base">Effortless workflow, exportable PDF/Excel reports, dark mode, and mobile-friendly—manage all your SEO in one place.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT / TRUST BUILDING -->
+<section class="py-20 bg-gradient-to-b from-white via-gray-50 to-gray-100 relative z-10">
+  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
+    <div>
+      <h2 class="text-4xl font-bold mb-6 text-gray-900">Why Choose Super SEO Toolkit?</h2>
+      <p class="text-lg leading-relaxed text-gray-600 mb-5">
+        Super SEO Toolkit empowers marketers, site owners, developers, and agencies to <b>analyze, optimize, and dominate search rankings</b> using the latest AI and cloud-powered tools—no coding needed.
+      </p>
+      <ul class="space-y-2 text-base text-gray-700">
+        <li><span class="font-bold text-[#DAAC40]">•</span> 250+ cutting-edge SEO tools, grouped by keyword, backlink, content, technical, and more</li>
+        <li><span class="font-bold text-[#DAAC40]">•</span> Works with any platform: WordPress, Shopify, Wix, Magento, React, HTML</li>
+        <li><span class="font-bold text-[#DAAC40]">•</span> Fast, accurate, and beginner-friendly—no steep learning curve</li>
+        <li><span class="font-bold text-[#DAAC40]">•</span> 100% ad-safe, Google-friendly, and always up-to-date</li>
+      </ul>
+    </div>
+    <div class="flex justify-center mt-12">
+      <img class="rounded-2xl shadow-xl border border-gray-100 max-w-full w-[700px] animate-fade-in-up delay-200" alt="super seo toolkit"
+        src="{{ url_for('static', filename='img/seo_dashboard.jpg') }}"
+      >
+    </div>
+  </div>
+</section>
+
+<!-- TOOL CATEGORIES (SEO-optimized headings) -->
+<section class="py-20 bg-white border-t border-b border-gray-100 text-center relative z-10">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-4xl font-bold mb-10 text-gray-900">Most Popular SEO Tool Categories</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-7">
+      {% if categories %}
+        {% for cat in categories %}
+        <a href="{{ url_for('tools.category_page', category_slug=cat.slug) }}"
+           class="group bg-gray-50 border border-gray-100 hover:border-[#DAAC40] p-6 rounded-2xl shadow hover:shadow-xl transition-all flex flex-col items-center">
+          <i data-lucide="{{ cat.icon or 'settings' }}" class="lucide w-10 h-10 mb-3 text-[#DAAC40] group-hover:scale-110"></i>
+          <span class="font-semibold text-gray-900 group-hover:text-[#DAAC40] text-base">{{ cat.name }}</span>
+        </a>
+        {% endfor %}
+      {% else %}
+        <div class="col-span-full text-gray-400">No categories found.</div>
+      {% endif %}
+    </div>
+    <a href="{{ url_for('tools.list_tools') }}"
+       class="mt-12 inline-block bg-[#DAAC40] text-gray-900 px-8 py-3 text-lg rounded-xl font-semibold shadow hover:bg-[#b89627] focus:ring-4 focus:ring-[#DAAC40]/30 transition mt-7">
+      Browse All SEO Tools &rarr;
+    </a>
+  </div>
+</section>
+
+<!-- BLOG PREVIEW -->
+<section class="py-20 bg-gradient-to-b from-white via-gray-50 to-gray-100">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+    <h2 class="text-4xl font-bold mb-6 text-gray-900">SEO Tips, Case Studies & News</h2>
+    <p class="mb-12 text-gray-500">Latest SEO guides, Google ranking tactics, AI news, and marketing strategies.</p>
+    <div class="grid md:grid-cols-3 gap-8 text-left">
+      {% if recent_posts %}
+        {% for post in recent_posts %}
+        <a href="{{ url_for('blog.view_post', slug=post.slug) }}"
+           class="bg-white rounded-2xl shadow hover:shadow-xl border border-gray-100 transition-all p-6 group flex flex-col h-full">
+          <div class="overflow-hidden rounded-xl mb-4">
+            <img src="{{ url_for('static', filename='images/' ~ post.image) }}"
+                 alt="{{ post.title }}"
+                 class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500" />
+          </div>
+          <h3 class="text-xl font-semibold mb-2 group-hover:text-[#DAAC40] text-gray-900">{{ post.title }}</h3>
+          <p class="text-sm text-gray-500">{{ post.summary[:120] }}...</p>
+        </a>
+        {% endfor %}
+      {% else %}
+        <div class="col-span-full text-gray-400">No blog posts yet.</div>
+      {% endif %}
+    </div>
+    <a href="{{ url_for('blog.blog_index') }}"
+       class="mt-10 inline-block border border-[#DAAC40] text-[#DAAC40] px-6 py-3 rounded-xl hover:bg-[#DAAC40] hover:text-gray-900 transition font-semibold shadow">
+      Visit Blog &rarr;
+    </a>
+  </div>
+</section>
+
+
+<!-- TESTIMONIALS -->
+<section class="py-20 bg-white text-center text-gray-900 border-b border-t border-gray-100">
+  <div class="max-w-5xl mx-auto px-6">
+    <h2 class="text-4xl font-bold mb-10">Trusted by SEO Experts Worldwide</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      {% if testimonials %}
+        {% for testimonial in testimonials %}
+        <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-md border border-gray-100 transition flex flex-col items-center">
+          <i data-lucide="quote" class="lucide w-8 h-8 mb-2 text-[#DAAC40]"></i>
+          <p class="text-base italic text-gray-700 mb-3 text-center">"{{ testimonial.message }}"</p>
+          <div class="mt-2 font-semibold text-gray-900">{{ testimonial.name }}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-span-full text-gray-400">No testimonials available yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="py-20 bg-gradient-to-b from-white via-gray-50 to-gray-100">
+  <div class="max-w-4xl mx-auto px-6">
+    <h2 class="text-4xl font-bold mb-10 text-center text-gray-900">Frequently Asked SEO Questions</h2>
+    <div class="space-y-6">
+      {% if faqs %}
+        {% for faq in faqs %}
+        <div x-data="{ open: false }" class="border-b pb-4">
+          <button @click="open = !open"
+                  class="w-full text-left text-lg font-semibold flex justify-between items-center text-gray-800 hover:text-[#DAAC40] transition">
+            {{ faq.question }}
+            <i :class="open ? 'lucide-chevron-up text-[#DAAC40]' : 'lucide-chevron-down text-gray-400'" class="lucide w-5 h-5 transition"></i>
+          </button>
+          <div x-show="open" x-transition class="mt-2 text-base text-gray-600">
+            {{ faq.answer }}
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-center text-gray-400">No FAQs found yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT US -->
+<section class="py-20 bg-white">
+  <div class="max-w-4xl mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center mb-10 text-gray-900">Contact the Super SEO Toolkit Team</h2>
+    <form action="{{ url_for('contact.contact') }}" method="POST" class="space-y-6 bg-gray-50 rounded-2xl shadow-lg p-8 border border-gray-100">
+      <div class="grid md:grid-cols-2 gap-4">
+        <input type="text" name="name" placeholder="Your Name" required
+               class="w-full px-4 py-3 rounded-lg bg-white text-gray-900 border border-gray-200 focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+        <input type="email" name="email" placeholder="Your Email" required
+               class="w-full px-4 py-3 rounded-lg bg-white text-gray-900 border border-gray-200 focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+      </div>
+      <textarea name="message" rows="5" placeholder="Your Message" required
+                class="w-full px-4 py-3 rounded-lg bg-white text-gray-900 border border-gray-200 focus:ring-2 focus:ring-[#DAAC40] focus:outline-none"></textarea>
+      <button type="submit"
+              class="bg-[#DAAC40] text-gray-900 font-semibold px-8 py-3 rounded-xl hover:bg-[#b89627] focus:ring-4 focus:ring-[#DAAC40]/30 transition">
+        Send Message
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="py-20 bg-gradient-to-r from-white via-gray-50 to-gray-100 text-gray-900" x-data="newsletterForm" x-init="showPopup = false">
+  <div class="max-w-3xl mx-auto text-center px-6">
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">Weekly SEO Insights — Free</h2>
+    <p class="mb-8 text-gray-500 text-base md:text-lg">Join 20,000+ marketers for exclusive tips, Google algorithm updates, and SEO trends in your inbox.</p>
+    <form @submit.prevent="subscribe()" class="flex flex-col sm:flex-row items-center gap-4 max-w-xl mx-auto">
+      <input type="email" x-model="email" placeholder="Enter your email"
+             class="w-full px-4 py-3 rounded-lg bg-white text-gray-900 border border-gray-200 focus:ring-2 focus:ring-[#DAAC40] focus:outline-none"
+             required>
+      <button type="submit"
+              class="bg-[#DAAC40] text-gray-900 font-semibold px-6 py-3 rounded-lg hover:bg-[#b89627] focus:ring-4 focus:ring-[#DAAC40]/30 transition">
+        Subscribe
+      </button>
+    </form>
+  </div>
+  <!-- Popup Modal -->
+  <div x-show="showPopup" x-transition.opacity x-cloak
+       class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-60">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center relative"
+         @click.outside="showPopup = false">
+      <button @click="showPopup = false" class="absolute top-2 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+      <i data-lucide="check-circle" class="lucide w-12 h-12 mx-auto text-[#DAAC40] mb-4"></i>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2" x-text="popupTitle"></h3>
+      <p class="text-gray-600" x-text="popupMessage"></p>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('newsletterForm', () => ({
+    email: '',
+    showPopup: false,
+    popupTitle: '',
+    popupMessage: '',
+    subscribe() {
+      fetch('/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: this.email })
+      })
+      .then(res => res.json())
+      .then(data => {
+        this.popupTitle = "You're Subscribed!";
+        this.popupMessage = data.message || "Thanks for joining our newsletter.";
+        this.showPopup = true;
+        this.email = '';
+      })
+      .catch(() => {
+        this.popupTitle = "Oops!";
+        this.popupMessage = "Something went wrong. Please try again.";
+        this.showPopup = true;
+      });
+    }
+  }));
+});
+window.addEventListener('DOMContentLoaded', () => {
+  if (window.lucide) window.lucide.createIcons();
+});
+</script>
+{% endblock %}

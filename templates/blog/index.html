@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}SEO & AI Blog — Super SEO Toolkit{% endblock %}
+{% block meta_description %}Explore expert SEO & AI insights, tips, and case studies from Super SEO Toolkit's official blog. Boost your rankings with fresh, actionable strategies!{% endblock %}
+{% block meta_keywords %}
+  SEO tools blog, SEO tools, digital marketing, website optimization, Super SEO Toolkit
+{% endblock %}
+
+{% block content %}
+<!-- Glowing Animated Background -->
+<style>
+  .blog-glow-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blog-glow-blur {
+    position: absolute;
+    width: 400px; height: 280px; border-radius: 50%;
+    filter: blur(72px); opacity: .38;
+    z-index: 0; animation: blog-blow 7s infinite alternate;
+  }
+  .blog-glow-blur.one { top: 8%; left: 0; background: #DAAC40; }
+  .blog-glow-blur.two { bottom: 2%; right: 10%; background: #7f5aff; }
+  @keyframes blog-blow { 0% {transform: scale(1);} 100% {transform: scale(1.09);} }
+</style>
+<div class="blog-glow-bg">
+  <div class="blog-glow-blur one"></div>
+  <div class="blog-glow-blur two"></div>
+</div>
+<!-- End Glow -->
+
+<section class="relative py-20 bg-gradient-to-b from-white via-[#f9f7f1] to-white min-h-screen">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3 animate-fade-in-up">
+      Super SEO Toolkit Blog
+    </h1>
+    <p class="text-lg text-gray-600 mb-12 animate-fade-in-up delay-100">
+      Actionable SEO &amp; AI insights, Google ranking tactics, and expert growth strategies—fresh, weekly.
+    </p>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-9 relative z-10">
+      {% for post in posts %}
+      <a href="{{ url_for('blog.view_post', slug=post.slug) }}"
+         class="group block rounded-2xl border border-gray-100 bg-white/80 backdrop-blur-xl shadow-xl
+                hover:shadow-2xl hover:border-[#DAAC40] transition-all duration-300 overflow-hidden flex flex-col h-full relative
+                hover:scale-[1.025] hover:z-20"
+         style="transition-property: box-shadow, border-color, transform;"
+         aria-label="Read article: {{ post.title }}">
+        <div class="h-52 overflow-hidden relative rounded-t-2xl">
+          <img src="{{ url_for('static', filename='images/' ~ post.image) }}"
+     alt="{{ post.title }}"
+     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 rounded-t-2xl"
+     loading="lazy" />
+          <span class="absolute top-4 left-4 bg-[#DAAC40]/90 text-gray-900 px-3 py-1 rounded-full text-xs font-bold uppercase shadow flex items-center gap-1">
+            <i data-lucide="tag" class="lucide w-3 h-3" aria-hidden="true"></i>
+            {{ post.category or "SEO" }}
+          </span>
+        </div>
+        <div class="p-7 flex flex-col flex-grow">
+          <h2 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-[#DAAC40]
+                     transition-colors duration-300 line-clamp-2">{{ post.title }}</h2>
+          <p class="text-gray-700 text-base flex-grow line-clamp-3">
+            {{ post.summary or (post.content|striptags|truncate(120)) }}
+          </p>
+          <div class="flex items-center mt-6 justify-between">
+            <div class="flex items-center gap-2">
+              <img src="{{ url_for('static', filename='images/' ~ post.author_img) }}"
+              alt="Author: {{ post.author }}"
+              class="w-7 h-7 rounded-full border border-gray-200" />
+              <span class="text-sm font-medium text-gray-700">{{ post.author or "Super SEO Toolkit" }}</span>
+            </div>
+            <span class="text-xs text-gray-400">
+              {{ post.date or post.created_at.strftime('%b %d, %Y') }}
+            </span>
+          </div>
+        </div>
+      </a>
+      {% else %}
+        <div class="col-span-full py-24 text-gray-400 text-lg">
+          No blog posts found yet. Please check back soon!
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Simple fade-in animation for header and paragraph
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.animate-fade-in-up').forEach(el => {
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(20px)';
+      setTimeout(() => {
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        el.style.opacity = 1;
+        el.style.transform = 'translateY(0)';
+      }, 100);
+    });
+  });
+</script>
+{% endblock %}

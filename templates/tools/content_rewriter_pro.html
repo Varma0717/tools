@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Content Rewriter Pro - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Use AI to professionally rewrite content for clarity, SEO, and engagement. Human-like rewriting guaranteed.{% endblock %}
+{% block meta_keywords %}content rewriter, pro rewriter, seo content rewrite, ai content rewording, content improvement{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-md mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+      <div class="absolute -top-16 -left-16 w-48 h-48 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+      <div class="relative z-10 text-center">
+        <img src="/static/favicon.png" alt="Logo" class="mx-auto w-[50px] mb-3" />
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Content Rewriter Pro</h1>
+        <p class="text-sm text-gray-600 mb-6">Paste your content and rewrite it professionally for SEO and readability.</p>
+
+        <form id="rewriterForm" class="space-y-4" autocomplete="off">
+          <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+          <textarea
+            id="inputText"
+            name="text"
+            rows="6"
+            required
+            placeholder="Paste your content here..."
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DAAC40] text-gray-700"
+          ></textarea>
+          <button
+            type="submit"
+            class="bg-[#DAAC40] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#b89627] transition focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/50"
+          >
+            Rewrite Content
+          </button>
+        </form>
+
+        <div id="loader" class="mt-6 text-center hidden">
+          <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+            <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          <p class="text-sm text-gray-500 mt-2">Rewriting… Please wait.</p>
+        </div>
+
+        <div id="resultsSection" class="mt-6 hidden text-left text-gray-800 space-y-3">
+          <h2 class="text-md font-semibold mb-1 text-[#DAAC40]">Rewritten Content:</h2>
+          <div id="resultText" class="text-sm bg-gray-50 p-4 rounded-md border border-gray-200 whitespace-pre-wrap"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const form = document.getElementById('rewriterForm');
+  const loader = document.getElementById('loader');
+  const resultsSection = document.getElementById('resultsSection');
+  const resultText = document.getElementById('resultText');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    loader.classList.remove('hidden');
+    resultsSection.classList.add('hidden');
+    resultText.textContent = "";
+
+    const csrfToken = document.getElementById('csrf_token').value;
+    const text = document.getElementById('inputText').value.trim();
+
+    fetch('/tools/content-rewriter-pro/ajax', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': csrfToken,
+      },
+      body: new URLSearchParams({ text, csrf_token: csrfToken })
+    })
+    .then(res => res.json())
+    .then(data => {
+      loader.classList.add('hidden');
+      if (data.error) {
+        resultText.textContent = data.error;
+        resultText.classList.add('text-red-600');
+      } else {
+        resultText.textContent = data.result;
+        resultText.classList.remove('text-red-600');
+        resultsSection.classList.remove('hidden');
+      }
+    })
+    .catch(() => {
+      loader.classList.add('hidden');
+      resultText.textContent = "Network error. Please try again.";
+      resultText.classList.add('text-red-600');
+      resultsSection.classList.remove('hidden');
+    });
+  });
+});
+</script>
+{% endblock %}

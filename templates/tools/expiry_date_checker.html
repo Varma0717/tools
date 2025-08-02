@@ -1,0 +1,244 @@
+{# templates/tools/expiry_date_checker.html #}
+
+{% extends "base.html" %}
+
+{% block title %}Domain Expiry Date Checker - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Check domain WHOIS expiry date instantly. Find when any domain is set to expire using WHOIS lookup.{% endblock %}
+
+{% block meta_keywords %}Domain Expiry Date Checker{% endblock %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto px-4 py-10">
+
+  <div class="bg-white shadow-xl rounded-2xl p-8 mb-10 border border-gray-100 relative">
+
+    <div class="flex items-center gap-4 mb-3">
+
+      <i data-lucide="clock" class="lucide w-9 h-9 text-[#DAAC40]"></i>
+
+      <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#DAAC40] to-yellow-100 bg-clip-text text-transparent">
+
+        Domain Expiry Date Checker
+
+      </h1>
+
+    </div>
+
+    <p class="text-gray-600 mb-8">
+
+      Enter any domain URL to discover its WHOIS expiry date. <b>No login required!</b>
+
+    </p>
+
+    <form id="expiryForm" class="space-y-4" autocomplete="off">
+
+      <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+      <label class="block text-sm font-medium text-gray-700 mb-1">Domain URL</label>
+
+      <input type="url" name="url" id="inputUrl"
+
+        class="w-full px-4 py-3 rounded-xl border-gray-200 shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900"
+
+        placeholder="e.g. https://example.com" required>
+
+      <button type="submit"
+
+        class="mt-3 w-full flex justify-center items-center gap-2 bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 font-bold rounded-xl px-6 py-3 transition-all duration-150 shadow-lg text-lg">
+
+        <i data-lucide="calendar" class="lucide w-5 h-5"></i>
+
+        Check Expiry Date
+
+      </button>
+
+    </form>
+
+    <div id="loader" class="flex flex-col items-center py-8" style="display:none;">
+
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#DAAC40] border-t-transparent"></div>
+
+      <span class="mt-3 text-sm text-gray-500 font-medium">Fetching expiry date…</span>
+
+    </div>
+
+    <div id="resultsSection" class="py-6" style="display:none;"></div>
+
+
+
+    <div class="mt-10 pt-6 border-t border-gray-200">
+
+      <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Uses python-whois to fetch the domain�s WHOIS expiry date.</li>
+
+        <li>Supports most TLDs; returns earliest expiry if multiple found.</li>
+
+        <li>Perfect for monitoring renewals and avoiding lapses.</li>
+
+      </ul>
+
+      <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Quickly check expiry before buying or renewing.</li>
+
+        <li>No API keys needed; runs entirely server-side.</li>
+
+        <li>Helps manage domain portfolios and SEO assets.</li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<template id="expiry-template">
+
+  <div class="bg-white border border-[#DAAC40] rounded-xl shadow-lg p-6 animate-fade-in">
+
+    <div class="flex items-center gap-2 mb-2">
+
+      <i data-lucide="clock" class="lucide w-6 h-6 text-[#DAAC40]"></i>
+
+      <span class="text-lg font-semibold text-gray-900">Expiry Date</span>
+
+    </div>
+
+    <div id="expiryResult" class="text-sm text-gray-700 mb-4"></div>
+
+    <button type="button" onclick="copyExpiry()" class="bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 px-4 py-2 rounded shadow font-semibold flex items-center gap-2">
+
+      <i data-lucide="copy" class="lucide w-4 h-4"></i> Copy Info
+
+    </button>
+
+    <div class="text-xs text-gray-500 mt-1">Keep track of domain expiry to avoid downtime.</div>
+
+  </div>
+
+</template>
+
+
+
+<style>
+
+@keyframes fade-in { from { opacity:0; transform:translateY(40px);} to { opacity:1; transform:translateY(0);} }
+
+.animate-fade-in { animation: fade-in .7s cubic-bezier(.6,0,.3,1); }
+
+</style>
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+  const form = document.getElementById('expiryForm');
+
+  const loader = document.getElementById('loader');
+
+  const resultsSection = document.getElementById('resultsSection');
+
+  const template = document.getElementById('expiry-template');
+
+
+
+  form?.addEventListener('submit', function(e){
+
+    e.preventDefault();
+
+    loader.style.display = 'flex';
+
+    resultsSection.style.display = 'none';
+
+    const url = document.getElementById('inputUrl').value;
+
+    const csrfToken = document.getElementById('csrf_token').value;
+
+
+
+    fetch('/tools/expiry-date-checker/ajax', {
+
+      method: 'POST',
+
+      headers: {'Content-Type':'application/json','X-CSRFToken':csrfToken},
+
+      body: JSON.stringify({ url })
+
+    })
+
+    .then(r=>r.json())
+
+    .then(data=>{
+
+      loader.style.display = 'none';
+
+      resultsSection.style.display = 'block';
+
+      if(data.error){
+
+        resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">${data.error}</div>`;
+
+        return;
+
+      }
+
+      const node = template.content.cloneNode(true);
+
+      node.getElementById('expiryResult').innerHTML = `
+
+        <div><b>Domain:</b> ${data.domain}</div>
+
+        <div><b>Expiry Date:</b> ${data.expiry}</div>
+
+      `;
+
+      window.currentExpiry = `Domain: ${data.domain}\\nExpiry: ${data.expiry}`;
+
+      resultsSection.innerHTML = '';
+
+      resultsSection.appendChild(node);
+
+      if(window.lucide) lucide.createIcons();
+
+    })
+
+    .catch(()=>{
+
+      loader.style.display = 'none';
+
+      resultsSection.style.display = 'block';
+
+      resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">Error: Could not fetch expiry date. Try again.</div>`;
+
+    });
+
+  });
+
+  if(window.lucide) lucide.createIcons();
+
+});
+
+
+
+function copyExpiry(){
+
+  if(window.currentExpiry) navigator.clipboard.writeText(window.currentExpiry);
+
+}
+
+</script>
+
+{% endblock %}
+

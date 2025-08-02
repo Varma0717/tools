@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Anchor Text Checker - Super SEO Toolkit
+{% endblock %}
+
+{% block meta_description %}
+  Analyze anchor texts from any page! Instantly see the most used anchor texts and their frequencies. Great for SEO & link audits.
+{% endblock %}
+
+{% block meta_keywords %}
+  Anchor Text Checker
+{% endblock %}
+
+{% block content %}
+  <div class="max-w-2xl mx-auto px-4 py-10">
+    <div class="bg-white shadow-xl rounded-2xl p-8 mb-10 border border-gray-100 relative">
+      <div class="flex items-center gap-4 mb-3">
+        <i data-lucide="link-2" class="lucide w-8 h-8 text-[#DAAC40]"></i>
+
+        <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#DAAC40] to-yellow-100 bg-clip-text text-transparent">Anchor Text Checker</h1>
+      </div>
+
+      <p class="text-gray-600 mb-6">Enter any web page URL and instantly see the top anchor texts and their usage count. Perfect for SEO audits, competitor research, and link optimization.</p>
+
+      <form id="anchorForm" autocomplete="off" class="space-y-5">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+
+        <label class="block text-sm font-medium text-gray-700 mb-2">Website URL</label>
+
+        <input type="url" id="url" name="url" class="block w-full rounded-xl border-gray-200 shadow-sm focus:ring-2 focus:ring-[#DAAC40] text-gray-800 text-base px-4 py-3 mb-2" placeholder="https://example.com/page" required />
+
+        <button type="submit" class="w-full flex justify-center items-center gap-2 bg-[#DAAC40] hover:bg-[#ce9e1b] text-white font-bold rounded-xl px-6 py-3 transition-all duration-200 shadow-lg text-lg"><i data-lucide="search" class="lucide w-6 h-6"></i> Check Anchor Texts</button>
+      </form>
+    </div>
+
+    <!-- Loader/Spinner -->
+
+    <div id="loader" class="flex flex-col items-center py-8" style="display:none;">
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#DAAC40] border-t-transparent"></div>
+
+      <span class="mt-3 text-sm text-gray-500 font-medium">Analyzing links… Please wait.</span>
+    </div>
+
+    <!-- Results -->
+
+    <div id="resultsSection"></div>
+
+    <div class="mt-10 pt-6 border-t border-gray-200">
+      <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+        <li>Enter any URL to extract anchor texts from the page’s links.</li>
+
+        <li>See which anchor texts appear most frequently and their counts.</li>
+
+        <li>Great for optimizing internal linking, audits, and outreach.</li>
+      </ul>
+
+      <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+        <li>Instantly find your site’s top anchor texts for SEO.</li>
+
+        <li>Spot over-optimization and diversify anchor strategies.</li>
+
+        <li>No registration, no login, and always free.</li>
+      </ul>
+    </div>
+  </div>
+
+  <template id="anchor-results-template">
+    <div class="bg-white shadow-lg border border-gray-100 rounded-2xl p-6 animate-fade-in">
+      <h2 class="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+        <i data-lucide="list" class="lucide w-6 h-6 text-[#DAAC40]"></i>
+
+        Top Anchor Texts
+      </h2>
+
+      <table class="w-full border-collapse text-left mb-3">
+        <thead>
+          <tr class="bg-gray-50">
+            <th class="py-2 px-3 border-b font-semibold">Anchor Text</th>
+
+            <th class="py-2 px-3 border-b font-semibold text-right">Count</th>
+          </tr>
+        </thead>
+
+        <tbody id="anchorsTableBody"></tbody>
+      </table>
+
+      <div class="text-xs text-gray-500 mt-2">
+        Only anchor texts found on the main page are shown. For a full site audit, try the <a href="/tools/broken-link-checker" class="text-[#DAAC40] hover:underline">Broken Link Checker</a>.
+      </div>
+    </div>
+  </template>
+
+  <style>
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-fade-in {
+      animation: fade-in 0.6s cubic-bezier(0.6, 0, 0.3, 1);
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('anchorForm')
+    
+      const results = document.getElementById('resultsSection')
+    
+      const loader = document.getElementById('loader')
+    
+      const template = document.getElementById('anchor-results-template')
+    
+      const csrfToken = document.getElementById('csrf_token').value
+    
+      form.addEventListener('submit', function (e) {
+        e.preventDefault()
+    
+        results.innerHTML = ''
+    
+        loader.style.display = 'flex'
+    
+        const url = document.getElementById('url').value
+    
+        fetch('/tools/anchor-text-checker/ajax', {
+          method: 'POST',
+    
+          headers: {
+            'Content-Type': 'application/json',
+    
+            'X-CSRFToken': csrfToken
+          },
+    
+          body: JSON.stringify({ url })
+        })
+          .then((r) => r.json())
+    
+          .then((data) => {
+            loader.style.display = 'none'
+    
+            if (data.error) {
+              results.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">${data.error}</div>`
+    
+              return
+            }
+    
+            const node = template.content.cloneNode(true)
+    
+            const tbody = node.getElementById('anchorsTableBody')
+    
+            data.anchors.forEach(([anchor, count]) => {
+              let row = document.createElement('tr')
+    
+              row.innerHTML = `
+        
+                    <td class="py-2 px-3 border-b">${anchor ? anchor : '<span class="italic text-gray-400">[Empty]</span>'}</td>
+        
+                    <td class="py-2 px-3 border-b text-right">${count}</td>
+        
+                  `
+    
+              tbody.appendChild(row)
+            })
+    
+            results.innerHTML = ''
+    
+            results.appendChild(node)
+    
+            if (window.lucide) lucide.createIcons()
+          })
+    
+          .catch(() => {
+            loader.style.display = 'none'
+    
+            results.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">Error: Could not fetch anchor texts. Please try again.</div>`
+          })
+      })
+    
+      if (window.lucide) lucide.createIcons()
+    })
+  </script>
+{% endblock %}

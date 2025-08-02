@@ -1,0 +1,117 @@
+<footer class="bg-gradient-to-tr from-[#191919] via-[#121212] to-[#242424] text-gray-300 pt-16 pb-8 border-t border-[#232323] relative overflow-x-hidden">
+  <!-- Glow element -->
+  <span class="absolute top-[-40px] left-[-60px] w-72 h-44 rounded-full blur-3xl opacity-30 bg-[#DAAC40] animate-pulse pointer-events-none"></span>
+
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-12">
+    <!-- Branding & Mission -->
+    <div class="md:col-span-2 flex flex-col gap-4">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="zap" class="lucide w-7 h-7 text-[#DAAC40] animate-pulse"></i>
+        <span class="font-extrabold text-2xl text-[#DAAC40] tracking-tight">Super SEO Toolkit</span>
+      </div>
+      <p class="text-sm leading-relaxed text-gray-400">
+        250+ free SEO tools for <strong>audit, keywords, links, AI content, and site speed</strong>. <span class="text-[#DAAC40] font-medium">Grow faster, rank higher—powered by AI.</span>
+      </p>
+      <!-- Mini Newsletter -->
+      <form action="{{ url_for('subscribe') }}" method="POST" class="flex items-center gap-2 mt-4 max-w-xs w-full">
+        <label for="footer-newsletter" class="sr-only">Your email</label>
+        <input id="footer-newsletter" type="email" name="email" placeholder="Your email for SEO tips"
+          class="w-full px-3 py-2 rounded-l-lg bg-[#191919] text-gray-100 border-0 focus:ring-2 focus:ring-[#DAAC40] placeholder-gray-400 text-xs" required>
+        <button type="submit"
+          class="bg-[#DAAC40] text-gray-900 px-4 py-2 rounded-r-lg text-xs font-semibold hover:bg-[#b89627] transition">Join</button>
+      </form>
+    </div>
+
+    <!-- Quick Navigation -->
+    <div>
+      <h4 class="text-white font-semibold text-base mb-4 tracking-wide">Explore</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="{{ url_for('home') }}" class="footer-link">Home</a></li>
+        <li><a href="{{ url_for('tools.list_tools') }}" class="footer-link">All Tools</a></li>
+        <li><a href="{{ url_for('pricing') }}" class="footer-link">Pricing</a></li> 
+        <a href="{{ url_for('blog.blog_index') }}" class="footer-link">Blog</a>
+        <li><a href="{{ url_for('contact.contact') }}" class="footer-link">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Categories -->
+    <div>
+      <h4 class="text-white font-semibold text-base mb-4 tracking-wide">Categories</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="{{ url_for('tools.category_page', category_slug='meta-tags-tools') }}" class="footer-link">Meta Tags</a></li>
+        <li><a href="{{ url_for('tools.category_page', category_slug='ai-writing-generators') }}" class="footer-link">AI Writing</a></li>
+        <li><a href="{{ url_for('tools.category_page', category_slug='website-management-tools') }}" class="footer-link">Web Management</a></li>
+        <li><a href="{{ url_for('tools.category_page', category_slug='keyword-tools') }}" class="footer-link">Keywords</a></li>
+        <li><a href="{{ url_for('tools.category_page', category_slug='backlink-tools') }}" class="footer-link">Backlinks</a></li>
+      </ul>
+    </div>
+
+    <!-- Legal & Social -->
+    <div>
+      <h4 class="text-white font-semibold text-base mb-4 tracking-wide">Legal & Social</h4>
+      <ul class="space-y-2 text-sm mb-4">
+        <li><a href="{{ url_for('privacy') }}" class="footer-link">Privacy Policy</a></li>
+        <li><a href="{{ url_for('terms') }}" class="footer-link">Terms of Use</a></li>
+        <li><a href="{{ url_for('cookies') }}" class="footer-link">Cookie Policy</a></li>
+        <li><a href="{{ url_for('users.login') }}" class="footer-link">User Login</a></li>
+      </ul>
+      <!-- Social Icons -->
+      <div class="flex gap-4 mt-2">
+        <a href="https://twitter.com/" aria-label="Twitter" class="footer-link"><i data-lucide="twitter" class="lucide w-5 h-5"></i></a>
+        <a href="https://facebook.com/" aria-label="Facebook" class="footer-link"><i data-lucide="facebook" class="lucide w-5 h-5"></i></a>
+        <a href="https://linkedin.com/" aria-label="LinkedIn" class="footer-link"><i data-lucide="linkedin" class="lucide w-5 h-5"></i></a>
+        <a href="mailto:contact@superseotoolkit.com" aria-label="Email" class="footer-link"><i data-lucide="mail" class="lucide w-5 h-5"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="max-w-7xl mx-auto mt-12 mb-4 border-t border-[#232323]"></div>
+  
+  <!-- Bottom Footer -->
+  <div class="text-center text-xs text-gray-500">
+    &copy; 2025 <span class="font-semibold text-[#DAAC40]">Super SEO Toolkit</span>. All rights reserved.
+    <span class="inline-block mx-2">|</span>
+    <span>Made with <i data-lucide="heart" class="lucide inline w-4 h-4 text-[#DAAC40] animate-pulse"></i> for the web.</span>
+  </div>
+
+  <style>
+    .footer-link {
+      @apply hover:text-[#DAAC40] hover:underline transition duration-150;
+      position: relative;
+      display: inline-block;
+    }
+    .footer-link:after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg,#DAAC40,#f1eaff);
+      transition: width .2s;
+      margin: 0 auto;
+      border-radius: 1px;
+    }
+    .footer-link:hover:after {
+      width: 100%;
+    }
+    @media (max-width: 767px) {
+      footer .grid {
+        grid-template-columns: 1fr !important;
+        gap: 2.5rem !important;
+      }
+      footer form {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+        max-width: 100% !important;
+      }
+      footer input[type="email"], footer button[type="submit"] {
+        border-radius: 0.5rem !important;
+      }
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.lucide) window.lucide.createIcons();
+    });
+  </script>
+</footer>

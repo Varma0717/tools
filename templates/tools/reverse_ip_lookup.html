@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Reverse IP Lookup Tool - Super SEO Toolkit
+{% endblock %}
+
+{% block meta_description %}
+  Use our Reverse IP Lookup tool to discover all domains hosted on a specific IP address. Useful for SEO analysis, competitor research, and server audits.
+{% endblock %}
+
+{% block meta_keywords %}
+  Reverse IP Lookup Tool
+{% endblock %}
+
+{% block content %}
+  <section class="py-12 bg-white min-h-screen">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="bg-white shadow-xl rounded-xl p-8 border border-gray-200 relative overflow-hidden">
+        <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+
+        <div class="relative z-10 text-center">
+          <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="w-[50px] mx-auto mb-3" />
+
+          <h1 class="text-3xl font-bold text-gray-800">Reverse IP Lookup</h1>
+
+          <p class="text-sm text-gray-600 mb-6">Discover all domains hosted on a given IP address using our fast lookup tool.</p>
+        </div>
+
+        <form id="reverseForm" class="space-y-4">
+          <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+
+          <div>
+            <label for="ip" class="block text-sm font-medium text-gray-700">Enter Server IP Address</label>
+
+            <input type="text" id="ip" name="ip" placeholder="e.g., 185.60.216.35" class="mt-1 w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#DAAC40]" />
+          </div>
+
+          <button type="submit" class="w-full bg-[#DAAC40] text-white py-2 rounded-md hover:bg-[#c69735] transition">Find Domains</button>
+        </form>
+
+        <div id="loader" class="mt-6 hidden text-center">
+          <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+
+            <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+
+          <p class="text-sm text-gray-500 mt-2">Scanning for hosted domains...</p>
+        </div>
+
+        <div id="results" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-gray-800 mb-2">Hosted Domains</h2>
+
+          <p class="text-xs text-gray-400 mb-2" id="sourceInfo"></p>
+
+          <ul class="text-sm list-disc pl-6 space-y-1 text-gray-700" id="domainList"></ul>
+        </div>
+      </div>
+
+      <!-- Guide Section -->
+
+      <div class="mt-12 bg-white shadow border border-gray-100 rounded-xl p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">What is a Reverse IP Lookup?</h2>
+
+        <p class="text-gray-700 text-sm mb-4">A reverse IP lookup is a powerful tool that helps you identify all domains hosted on a specific IP address.
+
+          This is useful for uncovering websites sharing the same server, understanding hosting infrastructure, and analyzing competitors.</p>
+
+        <h3 class="text-md font-semibold text-gray-800 mt-6 mb-2">Why Use Reverse IP Lookup?</h3>
+
+        <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+          <li>Uncover domains hosted on the same IP address.</li>
+
+          <li>Perform competitor research and SEO audits.</li>
+
+          <li>Investigate server abuse or malware hosting.</li>
+
+          <li>Check shared hosting neighbors and DNS transparency.</li>
+
+          <li>Resolve email delivery or blacklist issues.</li>
+        </ul>
+
+        <h3 class="text-md font-semibold text-gray-800 mt-6 mb-2">Who Should Use This Tool?</h3>
+
+        <p class="text-gray-700 text-sm">This tool is beneficial for SEO professionals, webmasters, digital marketers, cybersecurity analysts, and hosting service providers
+
+          looking to understand shared infrastructure and domain mapping.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.getElementById('reverseForm').addEventListener('submit', function (e) {
+      e.preventDefault()
+    
+      const ip = document.getElementById('ip').value.trim()
+    
+      const csrf = document.getElementById('csrf_token').value
+    
+      const loader = document.getElementById('loader')
+    
+      const results = document.getElementById('results')
+    
+      const domainList = document.getElementById('domainList')
+    
+      const sourceInfo = document.getElementById('sourceInfo')
+    
+      if (!ip) return alert('Please enter an IP address.')
+    
+      loader.classList.remove('hidden')
+    
+      results.classList.add('hidden')
+    
+      domainList.innerHTML = ''
+    
+      fetch('/tools/reverse-ip-lookup/ajax', {
+        method: 'POST',
+    
+        headers: {
+          'Content-Type': 'application/json',
+    
+          'X-CSRFToken': csrf
+        },
+    
+        body: JSON.stringify({ ip })
+      })
+        .then((res) => res.json())
+    
+        .then((data) => {
+          if (data.success) {
+            if (data.domains.length > 0) {
+              sourceInfo.textContent = `Source: ${data.source}`
+    
+              data.domains.forEach((domain) => {
+                domainList.innerHTML += `<li>${domain}</li>`
+              })
+            } else {
+              domainList.innerHTML = `<li>No domains found for this IP.</li>`
+            }
+    
+            results.classList.remove('hidden')
+          } else {
+            alert(data.error || 'Something went wrong.')
+          }
+        })
+    
+        .catch(() => alert('Unexpected error.'))
+    
+        .finally(() => loader.classList.add('hidden'))
+    })
+  </script>
+{% endblock %}

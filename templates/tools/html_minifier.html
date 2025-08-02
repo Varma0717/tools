@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}HTML Minifier - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Minify HTML code by removing comments, line breaks, and extra spaces. Perfect for SEO and faster loading.{% endblock %}
+{% block meta_keywords %}html minifier, minify html online, html compressor, reduce html size{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+      <h1 class="text-3xl font-bold text-center text-gray-900 mb-4">HTML Minifier</h1>
+      <p class="text-center text-sm text-gray-600 mb-6">Paste your HTML code and get a clean, compressed version instantly.</p>
+
+      <form id="minifyForm" class="space-y-4">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+        <textarea id="inputCode" rows="12" required placeholder="Paste your HTML code here…" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono"></textarea>
+        <button type="submit" class="bg-[#DAAC40] text-white font-semibold px-6 py-2 rounded-md hover:bg-[#b89627] transition">Minify HTML</button>
+      </form>
+
+      <div id="loader" class="mt-6 text-center hidden text-sm text-gray-500">Minifying HTML…</div>
+
+      <div id="resultsSection" class="mt-6 hidden">
+        <h2 class="text-md font-semibold text-[#DAAC40] mb-2">Minified Output:</h2>
+        <textarea id="resultOutput" class="w-full border border-green-300 bg-green-50 rounded-md px-3 py-2 text-sm font-mono" rows="10" readonly></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("minifyForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const code = document.getElementById("inputCode").value;
+  const csrf = document.getElementById("csrf_token").value;
+  const loader = document.getElementById("loader");
+  const section = document.getElementById("resultsSection");
+  const output = document.getElementById("resultOutput");
+
+  loader.classList.remove("hidden");
+  section.classList.add("hidden");
+  output.value = "";
+
+  fetch("/tools/html-minifier/ajax", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-CSRFToken": csrf
+    },
+    body: new URLSearchParams({ code, csrf_token: csrf })
+  })
+  .then(res => res.json())
+  .then(data => {
+    loader.classList.add("hidden");
+    if (data.error) {
+      output.value = "❌ " + data.error;
+    } else {
+      output.value = data.result;
+    }
+    section.classList.remove("hidden");
+  })
+  .catch(() => {
+    loader.classList.add("hidden");
+    output.value = "❌ Something went wrong.";
+    section.classList.remove("hidden");
+  });
+});
+</script>
+{% endblock %}

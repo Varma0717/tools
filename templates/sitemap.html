@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Sitemap{% endblock %}
+{% block content %}
+<div class="prose mx-auto py-12">
+  <h1 class="text-3xl font-bold mb-6">Site Map</h1>
+  <ul class="list-disc ml-6">
+  {% for page in pages %}
+    <li>
+      <a href="{{ page.loc }}" class="text-indigo-600 hover:underline">
+        {{ page.loc.replace(request.url_root, '/') }}
+      </a>
+    </li>
+  {% endfor %}
+  </ul>
+</div>
+{% endblock %}

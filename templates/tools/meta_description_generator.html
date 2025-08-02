@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Meta Description Generator - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Generate perfect SEO meta descriptions for your pages or topics using AI. Fast, unique, and 100% optimized for Google!{% endblock %}
+
+{% block meta_keywords %}Meta Description Generator{% endblock %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto px-4 py-10">
+
+  <div class="bg-white shadow-xl rounded-2xl p-8 mb-10 border border-gray-100 relative">
+
+    <div class="flex items-center gap-4 mb-3">
+
+      <i data-lucide="text-cursor-input" class="lucide w-9 h-9 text-[#DAAC40]"></i>
+
+      <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#DAAC40] to-yellow-100 bg-clip-text text-transparent">Meta Description Generator</h1>
+
+    </div>
+
+    <p class="text-gray-600 mb-8">
+
+      Instantly generate Google-perfect SEO meta descriptions for any page, product, or topic using advanced AI. <b>No login required!</b>
+
+    </p>
+
+    <form id="metaDescForm" class="space-y-5" autocomplete="off">
+
+      <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+      <label class="block text-sm font-medium text-gray-700 mb-2">Page Content or Topic</label>
+
+      <textarea name="content" id="inputContent" rows="6" class="block w-full rounded-xl border-gray-200 shadow-sm focus:ring-2 focus:ring-[#DAAC40] text-gray-800 text-base px-4 py-3" placeholder="Paste your content, summary, or topic here..." required></textarea>
+
+      <button type="submit" class="w-full flex justify-center items-center gap-2 bg-[#DAAC40] hover:bg-[#ce9e1b] text-white font-bold rounded-xl px-6 py-3 transition-all duration-200 shadow-lg text-lg">
+
+        <i data-lucide="wand-sparkles" class="lucide w-6 h-6"></i> Generate Meta Description
+
+      </button>
+
+    </form>
+
+  </div>
+
+
+
+  <!-- Loader/Spinner -->
+
+  <div id="loader" class="flex flex-col items-center py-8" style="display:none;">
+
+    <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#DAAC40] border-t-transparent"></div>
+
+    <span class="mt-3 text-sm text-gray-500 font-medium">Generating meta description…</span>
+
+  </div>
+
+
+
+  <!-- Results -->
+
+  <div id="metaDescResult" style="display:none;"></div>
+
+
+
+  <div class="mt-10 pt-6 border-t border-gray-200">
+
+    <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+    <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+      <li>Paste your content, summary, or topic.</li>
+
+      <li>Click <b>Generate Meta Description</b>. Our AI creates an optimized meta description, 155-160 characters, ready for SEO.</li>
+
+      <li>Copy and use the description in your HTML or CMS!</li>
+
+    </ul>
+
+    <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+    <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+      <li>Maximize Google CTR with perfectly optimized meta descriptions.</li>
+
+      <li>Save time—AI writes and checks for length, tone, and keywords.</li>
+
+      <li>100% unique, unlimited use, and always free.</li>
+
+    </ul>
+
+  </div>
+
+</div>
+
+
+
+<!-- Result Card Template -->
+
+<template id="meta-desc-template">
+
+  <div class="bg-white shadow-lg border border-gray-100 rounded-2xl p-6 flex flex-col gap-4 animate-fade-in">
+
+    <div class="flex items-center gap-2 mb-3">
+
+      <i data-lucide="badge-check" class="lucide w-5 h-5 text-[#DAAC40]"></i>
+
+      <span class="font-semibold text-lg">Meta Description</span>
+
+    </div>
+
+    <div class="font-mono text-base text-gray-800 bg-gray-50 border border-gray-100 p-3 rounded select-all" id="metaText"></div>
+
+    <div class="flex gap-3 items-center">
+
+      <button class="copy-meta-btn bg-[#DAAC40] hover:bg-[#ce9e1b] text-white font-semibold rounded-lg px-4 py-2 flex items-center gap-2 transition">
+
+        <i data-lucide="copy" class="lucide w-4 h-4"></i> Copy
+
+      </button>
+
+      <span class="text-xs text-gray-500" id="metaLength"></span>
+
+    </div>
+
+  </div>
+
+</template>
+
+
+
+<style>
+
+@keyframes fade-in { from { opacity:0; transform:translateY(40px);} to { opacity:1; transform:translateY(0);}}
+
+.animate-fade-in { animation: fade-in .6s cubic-bezier(.6,0,.3,1);}
+
+</style>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const form = document.getElementById('metaDescForm');
+
+  const result = document.getElementById('metaDescResult');
+
+  const loader = document.getElementById('loader');
+
+  const template = document.getElementById('meta-desc-template');
+
+
+
+  form?.addEventListener('submit', function (e) {
+
+    e.preventDefault();
+
+    result.style.display = "none";
+
+    loader.style.display = "flex";
+
+    const content = document.getElementById('inputContent').value;
+
+    const csrfToken = document.getElementById('csrf_token').value;
+
+
+
+    fetch('/tools/meta-description-generator/ajax', {
+
+      method: 'POST',
+
+      headers: {
+
+        'Content-Type': 'application/json',
+
+        'X-CSRFToken': csrfToken,
+
+      },
+
+      body: JSON.stringify({ content })
+
+    })
+
+    .then(r => r.json())
+
+    .then(data => {
+
+      loader.style.display = "none";
+
+      result.style.display = "block";
+
+      if (data.error) {
+
+        result.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">${data.error}</div>`;
+
+        return;
+
+      }
+
+      const node = template.content.cloneNode(true);
+
+      node.getElementById('metaText').textContent = data.meta;
+
+      node.querySelector('.copy-meta-btn').onclick = function() {
+
+        navigator.clipboard.writeText(data.meta);
+
+        this.innerHTML = '<i data-lucide="check" class="lucide w-4 h-4"></i> Copied!';
+
+        setTimeout(() => this.innerHTML = '<i data-lucide="copy" class="lucide w-4 h-4"></i> Copy', 1400);
+
+      }
+
+      node.getElementById('metaLength').textContent = `Length: ${data.meta.length} chars`;
+
+      result.innerHTML = '';
+
+      result.appendChild(node);
+
+      if (window.lucide) lucide.createIcons();
+
+    })
+
+    .catch(() => {
+
+      loader.style.display = "none";
+
+      result.style.display = "block";
+
+      result.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">Error: Could not generate description. Try again.</div>`;
+
+    });
+
+  });
+
+  if (window.lucide) lucide.createIcons();
+
+});
+
+</script>
+
+{% endblock %}
+

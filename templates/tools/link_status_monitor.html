@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Link Status Monitor - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Check HTTP status of multiple URLs in bulk. Identify broken, redirected, or valid links easily.{% endblock %}
+{% block meta_keywords %}link status monitor, bulk url checker, link checker, 404 finder, broken link test{% endblock %}
+
+{% block content %}
+<section class="py-14 min-h-screen bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc]">
+  <div class="max-w-3xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+      <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">Link Status Monitor</h1>
+      <p class="text-sm text-gray-600 text-center mb-6">Check the status of multiple URLs. Useful for finding 404s, redirects, and working links.</p>
+
+      <form id="linkStatusForm" class="space-y-4">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+        <textarea id="urlList" rows="6" placeholder="Enter one URL per line..." class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-[#DAAC40] focus:outline-none"></textarea>
+        <button type="submit" class="bg-[#DAAC40] hover:bg-[#b89627] text-white font-semibold px-6 py-2 rounded-md">Check Status</button>
+      </form>
+
+      <div id="loader" class="text-center mt-6 hidden">
+        <p class="text-gray-500 text-sm">Checking URLs…</p>
+      </div>
+
+      <div id="resultsSection" class="mt-6 hidden">
+        <table class="w-full text-sm border-collapse border">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="border px-3 py-2">URL</th>
+              <th class="border px-3 py-2">Status Code</th>
+              <th class="border px-3 py-2">Status</th>
+            </tr>
+          </thead>
+          <tbody id="resultTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("linkStatusForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const csrfToken = document.getElementById("csrf_token").value;
+  const urls = document.getElementById("urlList").value;
+
+  document.getElementById("loader").classList.remove("hidden");
+  document.getElementById("resultsSection").classList.add("hidden");
+
+  fetch('/tools/link-status-monitor/ajax', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': csrfToken
+    },
+    body: new URLSearchParams({ urls, csrf_token: csrfToken })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("loader").classList.add("hidden");
+    if (data.error) {
+      alert(data.error);
+    } else {
+      const tbody = document.getElementById("resultTableBody");
+      tbody.innerHTML = "";
+      data.results.forEach(row => {
+        tbody.innerHTML += `
+          <tr>
+            <td class="border px-3 py-2 break-all">${row.url}</td>
+            <td class="border px-3 py-2 text-center">${row.status_code}</td>
+            <td class="border px-3 py-2 text-center">${row.status_label}</td>
+          </tr>`;
+      });
+      document.getElementById("resultsSection").classList.remove("hidden");
+    }
+  })
+  .catch(() => {
+    document.getElementById("loader").classList.add("hidden");
+    alert("Something went wrong. Please try again.");
+  });
+});
+</script>
+{% endblock %}

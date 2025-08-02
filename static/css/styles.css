@@ -1,0 +1,13 @@
+body {
+      font-family: 'Poppins', sans-serif;
+}
+main {
+      max-width: 1440px;
+}
+    
+svg {
+  width: 48px;
+  height: 48px;
+  display: block;
+  margin: 0 auto;
+}

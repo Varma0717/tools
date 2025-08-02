@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}SERP Snippet Preview Tool - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Preview Google SERP snippets for multiple URLs in one go. title & description length checker for advanced SEO.{% endblock %}
+
+{% block meta_keywords %}SERP Snippet Preview{% endblock %}
+
+{% block content %}
+
+<div class="max-w-3xl mx-auto py-10">
+
+  <h1 class="text-3xl font-bold text-center text-gray-800 mb-6 flex items-center gap-2">
+
+    <i data-lucide="search" class="lucide w-7 h-7 text-[#DAAC40]"></i>
+
+    SERP Snippet Preview Tool
+
+  </h1>
+
+  <p class="text-base text-gray-600 mb-6 text-center">
+
+    Instantly visualize how your title, meta description, and URL will appear in Google search results.<br>
+
+    <span class="block mt-2 text-xs text-gray-400">Optimize your snippet for higher CTR. Works for any website/keyword!</span>
+
+  </p>
+
+  <form method="POST" class="space-y-4 mb-8">
+
+    <div class="flex flex-col gap-2">
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <input name="title" maxlength="80" required placeholder="Page Title (Recommended: ≤60 characters)"
+
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] text-gray-900"
+
+        value="{{ values.title or '' }}" />
+
+      {% if warning.title %}
+
+        <div class="text-xs text-red-500">Warning: Title is too long for Google. ({{ values.title|length }}/60)</div>
+
+      {% endif %}
+
+    </div>
+
+    <div class="flex flex-col gap-2">
+
+      <input name="url" maxlength="100" required placeholder="Page URL (slug only is fine)"
+
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] text-gray-900"
+
+        value="{{ values.url or '' }}" />
+
+      {% if warning.url %}
+
+        <div class="text-xs text-red-500">Warning: URL is too long. ({{ values.url|length }}/75)</div>
+
+      {% endif %}
+
+    </div>
+
+    <div class="flex flex-col gap-2">
+
+      <textarea name="description" rows="2" maxlength="250" required
+
+        placeholder="Meta Description (Recommended: ≤160 characters)"
+
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] text-gray-900">{{ values.description or '' }}</textarea>
+
+      {% if warning.description %}
+
+        <div class="text-xs text-red-500">Warning: Description is too long for Google. ({{ values.description|length }}/160)</div>
+
+      {% endif %}
+
+    </div>
+
+    <button type="submit" class="bg-[#DAAC40] text-gray-900 px-6 py-2 rounded-lg font-bold shadow hover:bg-[#b89627] transition">Preview SERP</button>
+
+  </form>
+
+  {% if values.title or values.description or values.url %}
+
+    <div class="bg-white rounded-xl shadow-xl p-6">
+
+      <div class="mb-1 text-xs text-gray-400">Google SERP Preview</div>
+
+      <div class="border border-gray-100 rounded-lg p-5" style="background:#F8FAFC">
+
+        <div class="truncate text-lg font-bold text-blue-800 leading-tight" style="max-width: 100%;">{{ values.title }}</div>
+
+        <div class="text-green-700 text-sm mb-1">{{ values.url }}</div>
+
+        <div class="text-gray-700">{{ values.description }}</div>
+
+      </div>
+
+      <div class="text-xs text-gray-400 mt-3">
+
+        <b>Note:</b> Google may rewrite snippets or truncate long titles/desc. Keep within limits for best results.
+
+      </div>
+
+    </div>
+
+  {% endif %}
+
+</div>
+
+{% endblock %}
+

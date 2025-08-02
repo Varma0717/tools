@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Bot Detection Tool - Super SEO Toolkit
+{% endblock %}
+{% block meta_description %}
+  Accurately detect bots and crawlers from User-Agent strings with a large updated database.
+{% endblock %}
+{% block meta_keywords %}
+  bot detection, crawler detection, user agent, seo tools, bot identification
+{% endblock %}
+
+{% block content %}
+  <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+        <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+        <div class="relative z-10 text-center">
+          <img src="/static/favicon.png" alt="Logo" class="mx-auto w-[50px] mb-3" />
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Bot Detection Tool</h1>
+          <p class="text-sm text-gray-600 mb-4">Paste a User-Agent string or upload a CSV file with User-Agent strings to detect bots and crawlers.</p>
+
+          <form id="botDetectForm" class="space-y-4" autocomplete="off" enctype="multipart/form-data">
+            <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
+            <textarea id="inputUserAgent" name="user_agent" rows="4" placeholder="Enter User-Agent string here..." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DAAC40] text-gray-700 resize-none"></textarea>
+
+            <div class="text-center">OR</div>
+
+            <input type="file" id="logfile" name="logfile" accept=".csv,text/csv" class="mx-auto block border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DAAC40] text-gray-700" />
+
+            <button type="submit" class="bg-[#DAAC40] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#b89627] transition focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/50">Detect Bot(s)</button>
+          </form>
+
+          <div id="loader" class="mt-6 text-center hidden">
+            <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+              <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            <p class="text-sm text-gray-500 mt-2">Detecting bots… Please wait.</p>
+          </div>
+
+          <div id="resultsSection" class="mt-6 hidden text-left text-gray-800 space-y-4">
+            <template id="singleResultTemplate">
+              <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+                <div>
+                  <strong>User-Agent:</strong>
+                </div>
+                <pre class="whitespace-pre-wrap font-mono text-sm" data-ua></pre>
+                <div class="mt-2">
+                  <strong>Detection Result:</strong>
+                  <p class="font-semibold text-lg" data-result></p>
+                  <p class="italic text-sm text-gray-600" data-family></p>
+                </div>
+              </div>
+            </template>
+
+            <template id="bulkResultTemplate">
+              <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+                <div>
+                  <strong>User-Agent:</strong>
+                </div>
+                <pre class="whitespace-pre-wrap font-mono text-sm" data-ua></pre>
+                <div class="mt-2">
+                  <strong>Bot:</strong>
+                  <p class="font-semibold text-lg" data-result></p>
+                  <p class="italic text-sm text-gray-600" data-family></p>
+                </div>
+              </div>
+            </template>
+
+            <div id="resultsContainer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('botDetectForm')
+      const loader = document.getElementById('loader')
+      const resultsSection = document.getElementById('resultsSection')
+      const resultsContainer = document.getElementById('resultsContainer')
+      const uaInput = document.getElementById('inputUserAgent')
+      const fileInput = document.getElementById('logfile')
+      const singleTemplate = document.getElementById('singleResultTemplate')
+      const bulkTemplate = document.getElementById('bulkResultTemplate')
+    
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        resultsSection.style.display = 'none'
+        resultsContainer.innerHTML = ''
+        loader.style.display = 'block'
+    
+        const csrfToken = document.getElementById('csrf_token').value
+    
+        let fetchOptions
+        let url = '/tools/bot-detection/ajax'
+    
+        if (fileInput.files.length > 0) {
+          // Bulk upload mode
+          const formData = new FormData()
+          formData.append('logfile', fileInput.files[0])
+          formData.append('csrf_token', csrfToken)
+          fetchOptions = {
+            method: 'POST',
+            body: formData
+          }
+        } else {
+          // Single UA input mode
+          const ua = uaInput.value.trim()
+          if (!ua) {
+            alert('Please enter a User-Agent string or upload a CSV file.')
+            loader.style.display = 'none'
+            return
+          }
+          fetchOptions = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ user_agent: ua })
+          }
+        }
+    
+        try {
+          const res = await fetch(url, fetchOptions)
+          const data = await res.json()
+    
+          loader.style.display = 'none'
+    
+          if (data.error) {
+            resultsContainer.innerHTML = `<div class="text-center text-red-600 py-6 font-semibold">${data.error}</div>`
+            resultsSection.style.display = 'block'
+            return
+          }
+    
+          if (data.results) {
+            // Bulk results
+            data.results.forEach((r) => {
+              const clone = bulkTemplate.content.cloneNode(true)
+              clone.querySelector('[data-ua]').textContent = r.user_agent
+              clone.querySelector('[data-result]').textContent = r.is_bot ? 'Likely a bot' : 'Likely NOT a bot'
+              clone.querySelector('[data-family]').textContent = r.bot_family
+              resultsContainer.appendChild(clone)
+            })
+          } else {
+            // Single result
+            const clone = singleTemplate.content.cloneNode(true)
+            clone.querySelector('[data-ua]').textContent = data.user_agent
+            clone.querySelector('[data-result]').textContent = data.message
+            clone.querySelector('[data-family]').textContent = data.bot_family
+            resultsContainer.appendChild(clone)
+          }
+    
+          resultsSection.style.display = 'block'
+        } catch (err) {
+          loader.style.display = 'none'
+          resultsContainer.innerHTML = `<div class="text-center text-red-600 py-6 font-semibold">Network or server error, please try again.</div>`
+          resultsSection.style.display = 'block'
+        }
+      })
+    })
+  </script>
+{% endblock %}

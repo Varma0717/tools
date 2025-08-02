@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8 bg-gray-900 rounded-xl shadow-lg ring-4 ring-[#DAAC40]/50"
+     x-data="adminPanel()"
+     x-init="loadSection('overview')">
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <!-- Sidebar -->
+    <aside class="bg-gray-800 rounded-lg shadow ring-2 ring-[#DAAC40]/60">
+      <ul class="divide-y divide-[#DAAC40]/40 text-gray-300">
+        <template x-for="item in tabs" :key="item.key">
+          <li>
+            <a href="#"
+               @click.prevent="loadSection(item.key)"
+               :class="{'bg-[#DAAC40] text-gray-900 font-semibold': current === item.key, 'hover:bg-[#b48828] hover:text-gray-900': current !== item.key}"
+               class="block px-4 py-3 capitalize transition rounded">
+              <span x-text="item.label"></span>
+            </a>
+          </li>
+        </template>
+        <li>
+          <a href="{{ url_for('admin.posts_list') }}"
+             class="block px-4 py-3 hover:bg-[#b48828] hover:text-gray-900 rounded transition text-[#DAAC40] font-semibold">
+            Posts
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <section class="col-span-3 bg-gray-800 rounded-lg shadow-lg ring-2 ring-[#DAAC40]/50 p-6 min-h-[400px] text-gray-200">
+      <div x-show="loading" class="text-center py-10">
+        <div class="animate-spin h-8 w-8 mx-auto border-4 border-[#DAAC40] border-t-transparent rounded-full"></div>
+        <p class="mt-2 text-sm text-[#DAAC40]">Loading...</p>
+      </div>
+      <div id="admin-content" x-show="!loading" x-transition.opacity></div>
+    </section>
+  </div>
+</div>
+
+<script>
+  function adminPanel() {
+    return {
+      current: 'overview',
+      loading: false,
+      tabs: [
+        { key: 'overview', label: 'Overview' },
+        { key: 'orders', label: 'Orders' },
+        { key: 'downloads', label: 'Downloads' },
+        { key: 'settings', label: 'Settings' }
+      ],
+      loadSection(name) {
+        this.current = name;
+        this.loading = true;
+        fetch(`/admin/section/${name}`)
+          .then(res => {
+            if (!res.ok) throw new Error('Failed to load');
+            return res.text();
+          })
+          .then(html => {
+            document.getElementById('admin-content').innerHTML = html;
+          })
+          .catch(() => {
+            document.getElementById('admin-content').innerHTML =
+              '<div class="text-red-500 text-center">Failed to load section.</div>';
+          })
+          .finally(() => {
+            this.loading = false;
+          });
+      }
+    };
+  }
+</script>
+{% endblock %}

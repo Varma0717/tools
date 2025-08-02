@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Backlink URL Monitor - Super SEO Toolkit
+{% endblock %}
+{% block meta_description %}
+  Check if specific pages are still linking to your website. Detect lost or removed backlinks manually.
+{% endblock %}
+{% block meta_keywords %}
+  backlink monitor, backlink status, link checker, external links, backlink finder
+{% endblock %}
+
+{% block content %}
+  <section class="py-14 min-h-screen bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc]">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">Backlink URL Monitor</h1>
+        <p class="text-sm text-gray-600 text-center mb-6">Check if your website is still being linked from specific pages.</p>
+
+        <form id="backlinkForm" class="space-y-4">
+          <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+          <div>
+            <label class="text-sm font-semibold mb-1 block">Target URL or Domain</label>
+            <input type="text" id="targetUrl" name="target" placeholder="https://yourdomain.com" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-[#DAAC40] focus:outline-none" />
+          </div>
+          <div>
+            <label class="text-sm font-semibold mb-1 block">Backlink Source URLs (one per line)</label>
+            <textarea id="sourceUrls" name="urls" rows="6" placeholder="https://example.com/page1" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-[#DAAC40] focus:outline-none"></textarea>
+          </div>
+          <button type="submit" class="bg-[#DAAC40] hover:bg-[#b89627] text-white font-semibold px-6 py-2 rounded-md">Check Backlinks</button>
+        </form>
+
+        <div id="loader" class="text-center mt-6 hidden">
+          <p class="text-sm text-gray-500">Checking links… Please wait.</p>
+        </div>
+
+        <div id="resultsSection" class="mt-6 hidden">
+          <table class="w-full text-sm border-collapse border">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="border px-3 py-2">Source URL</th>
+                <th class="border px-3 py-2">Status</th>
+                <th class="border px-3 py-2">Anchor Text</th>
+              </tr>
+            </thead>
+            <tbody id="resultTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.getElementById('backlinkForm').addEventListener('submit', function (e) {
+      e.preventDefault()
+      const csrfToken = document.getElementById('csrf_token').value
+      const target = document.getElementById('targetUrl').value.trim()
+      const urls = document.getElementById('sourceUrls').value
+    
+      document.getElementById('loader').classList.remove('hidden')
+      document.getElementById('resultsSection').classList.add('hidden')
+    
+      fetch('/tools/backlink-url-monitor/ajax', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': csrfToken
+        },
+        body: new URLSearchParams({ target, urls, csrf_token: csrfToken })
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          document.getElementById('loader').classList.add('hidden')
+          const tbody = document.getElementById('resultTableBody')
+          tbody.innerHTML = ''
+    
+          if (data.error) {
+            alert(data.error)
+          } else {
+            data.results.forEach((row) => {
+              tbody.innerHTML += `
+                          <tr>
+                            <td class="border px-3 py-2 break-all">${row.source_url}</td>
+                            <td class="border px-3 py-2 text-center">${row.status}</td>
+                            <td class="border px-3 py-2 text-center">${row.anchor_text}</td>
+                          </tr>`
+            })
+            document.getElementById('resultsSection').classList.remove('hidden')
+          }
+        })
+        .catch(() => {
+          document.getElementById('loader').classList.add('hidden')
+          alert('Something went wrong. Please try again.')
+        })
+    })
+  </script>
+{% endblock %}

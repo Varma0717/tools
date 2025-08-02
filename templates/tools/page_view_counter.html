@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Page View Counter - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Check page view counts of your website URLs or slugs easily.{% endblock %}
+{% block meta_keywords %}page views, seo tools, website analytics, view counter{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-2xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+      <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+      <div class="relative z-10 text-center">
+
+        <img src="/static/favicon.png" alt="Logo" class="mx-auto w-[50px] mb-3" />
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Page View Counter</h1>
+        <p class="text-sm text-gray-600 mb-6">Enter your website page slug or full URL to check total page views recorded.</p>
+
+        <form id="viewCounterForm" class="space-y-4" autocomplete="off">
+          <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
+          <input
+            type="text"
+            id="inputSlug"
+            name="page_slug"
+            placeholder="Example: /blog/how-to-seo or https://example.com/blog/how-to-seo"
+            required
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DAAC40] text-gray-700"
+          />
+          <button
+            type="submit"
+            class="bg-[#DAAC40] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#b89627] transition focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/50"
+          >
+            Get View Count
+          </button>
+        </form>
+
+        <div id="loader" class="mt-6 text-center hidden">
+          <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+            <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          <p class="text-sm text-gray-500 mt-2">Fetching page views… Please wait.</p>
+        </div>
+
+        <div id="resultsSection" class="mt-6 hidden text-left text-gray-800">
+          <div><strong>Page Slug:</strong> <span id="resultSlug"></span></div>
+          <div><strong>Total Views:</strong> <span id="resultViews"></span></div>
+          <div><strong>Last Viewed At:</strong> <span id="resultLastViewed"></span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const form = document.getElementById('viewCounterForm');
+  const loader = document.getElementById('loader');
+  const resultsSection = document.getElementById('resultsSection');
+  const resultSlug = document.getElementById('resultSlug');
+  const resultViews = document.getElementById('resultViews');
+  const resultLastViewed = document.getElementById('resultLastViewed');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    resultsSection.style.display = 'none';
+    loader.style.display = 'block';
+
+    const csrfToken = document.getElementById('csrf_token').value;
+    const pageSlug = document.getElementById('inputSlug').value.trim();
+
+    try {
+      const response = await fetch('/tools/page-view-counter/ajax', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({ page_slug: pageSlug }),
+      });
+      const data = await response.json();
+
+      loader.style.display = 'none';
+
+      if (data.error) {
+        resultsSection.innerHTML = `<div class="text-center text-red-600 py-8 font-semibold">${data.error}</div>`;
+      } else {
+        resultSlug.textContent = data.page_slug || pageSlug;
+        resultViews.textContent = data.view_count || 0;
+        resultLastViewed.textContent = data.last_viewed_at || "Never";
+        resultsSection.style.display = 'block';
+      }
+    } catch (error) {
+      loader.style.display = 'none';
+      resultsSection.innerHTML = `<div class="text-center text-red-600 py-8 font-semibold">Network error, please try again.</div>`;
+      resultsSection.style.display = 'block';
+    }
+  });
+});
+</script>
+{% endblock %}

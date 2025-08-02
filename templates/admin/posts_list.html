@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Manage Posts - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-8 bg-gray-900 rounded-xl shadow-lg ring-4 ring-[#DAAC40]/50">
+  <h1 class="text-4xl font-extrabold text-[#DAAC40] mb-6 flex items-center gap-3">
+    <i data-lucide="file-text" class="w-8 h-8"></i> Manage Posts
+  </h1>
+
+  <a href="{{ url_for('admin.posts_create') }}" 
+     class="inline-flex items-center gap-2 mb-6 px-5 py-3 bg-[#DAAC40] hover:bg-[#b48828] rounded-lg text-white font-semibold transition">
+    <i data-lucide="plus-circle" class="w-5 h-5"></i> Create New Post
+  </a>
+
+  <div class="overflow-x-auto rounded-lg shadow-lg ring-2 ring-[#DAAC40]/40 bg-gray-800">
+    <table class="min-w-full text-left text-gray-300">
+      <thead class="bg-[#DAAC40]/20 text-[#DAAC40] uppercase tracking-wider">
+        <tr>
+          <th class="p-4">Title</th>
+          <th class="p-4">Slug</th>
+          <th class="p-4">Author</th>
+          <th class="p-4">Created At</th>
+          <th class="p-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for post in posts %}
+        <tr class="border-b border-[#DAAC40]/30 hover:bg-[#DAAC40]/10 transition">
+          <td class="p-4 font-semibold">{{ post.title }}</td>
+          <td class="p-4">{{ post.slug }}</td>
+          <td class="p-4">{{ post.author or '—' }}</td>
+          <td class="p-4">{{ post.created_at.strftime('%Y-%m-%d') }}</td>
+          <td class="p-4 flex gap-4">
+            <a href="{{ url_for('admin.posts_edit', post_id=post.id) }}" 
+               class="text-[#DAAC40] hover:text-[#b48828] flex items-center gap-1">
+              <i data-lucide="edit-2" class="w-5 h-5"></i> Edit
+            </a>
+            <form action="{{ url_for('admin.posts_delete', post_id=post.id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="text-red-500 hover:text-red-700 flex items-center gap-1">
+                <i data-lucide="trash-2" class="w-5 h-5"></i> Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" class="p-6 text-center text-gray-500">No posts found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

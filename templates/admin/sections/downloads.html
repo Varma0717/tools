@@ -1,0 +1,21 @@
+<h2 class="text-xl font-semibold mb-4">All Downloads</h2>
+<table class="w-full text-sm">
+  <thead>
+    <tr class="bg-gray-100 text-left">
+      <th class="py-2 px-3">User</th>
+      <th class="py-2 px-3">File</th>
+      <th class="py-2 px-3">URL</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in downloads %}
+    <tr class="border-t">
+      <td class="py-2 px-3">{{ d.user.username }}</td>
+      <td class="py-2 px-3">{{ d.file_name }}</td>
+      <td class="py-2 px-3"><a href="{{ d.download_url }}" class="text-indigo-600 hover:underline" target="_blank">Download</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3" class="text-center py-4 text-gray-500">No downloads.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>

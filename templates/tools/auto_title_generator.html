@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Auto Title Generator - Super SEO Toolkit
+{% endblock %}
+{% block meta_description %}
+  Instantly generate catchy and SEO-friendly titles for blogs, videos, or products using AI.
+{% endblock %}
+{% block meta_keywords %}
+  title generator, SEO titles, blog headlines, catchy titles, youtube title ideas
+{% endblock %}
+
+{% block content %}
+  <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+    <div class="max-w-md mx-auto px-4">
+      <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+        <div class="absolute -top-16 -left-16 w-48 h-48 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+        <div class="relative z-10 text-center">
+          <img src="/static/favicon.png" alt="Logo" class="mx-auto w-[50px] mb-3" />
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Auto Title Generator</h1>
+          <p class="text-sm text-gray-600 mb-6">Enter a keyword or topic and generate attention-grabbing titles in seconds.</p>
+
+          <form id="titleForm" class="space-y-4" autocomplete="off">
+            <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+            <input type="text" id="inputKeyword" name="keyword" placeholder="e.g., digital marketing tips" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DAAC40] text-gray-700" />
+            <button type="submit" class="bg-[#DAAC40] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#b89627] transition focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/50">Generate Titles</button>
+          </form>
+
+          <div id="loader" class="mt-6 text-center hidden">
+            <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+              <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            <p class="text-sm text-gray-500 mt-2">Generating… Please wait.</p>
+          </div>
+
+          <div id="resultsSection" class="mt-6 hidden text-left text-gray-800 space-y-3">
+            <h2 class="text-md font-semibold mb-1 text-[#DAAC40]">Generated Titles:</h2>
+            <ul id="resultList" class="list-disc pl-5 text-sm space-y-1"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('titleForm')
+      const loader = document.getElementById('loader')
+      const resultsSection = document.getElementById('resultsSection')
+      const resultList = document.getElementById('resultList')
+    
+      form.addEventListener('submit', function (e) {
+        e.preventDefault()
+        loader.classList.remove('hidden')
+        resultsSection.classList.add('hidden')
+        resultList.innerHTML = ''
+    
+        const csrfToken = document.getElementById('csrf_token').value
+        const keyword = document.getElementById('inputKeyword').value.trim()
+    
+        fetch('/tools/auto-title-generator/ajax', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrfToken
+          },
+          body: new URLSearchParams({ keyword, csrf_token: csrfToken })
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            loader.classList.add('hidden')
+            if (data.error) {
+              resultList.innerHTML = `<li class="text-red-600">${data.error}</li>`
+            } else {
+              const lines = data.result.split(/\n|\r/).filter((line) => line.trim())
+              lines.forEach((line) => {
+                resultList.innerHTML += `<li>${line.replace(/^[-*•\d.]*\s*/, '').trim()}</li>`
+              })
+              resultsSection.classList.remove('hidden')
+            }
+          })
+          .catch(() => {
+            loader.classList.add('hidden')
+            resultList.innerHTML = `<li class="text-red-600">Network error. Please try again.</li>`
+            resultsSection.classList.remove('hidden')
+          })
+      })
+    })
+  </script>
+{% endblock %}

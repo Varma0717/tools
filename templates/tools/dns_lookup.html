@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}DNS Lookup Tool - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Check DNS records (A, MX, TXT, etc.) for any domain in real-time. Free DNS lookup tool.{% endblock %}
+
+{% block meta_keywords %}DNS Lookup{% endblock %}
+
+{% block content %}
+
+<section class="py-12 bg-gray-50 min-h-screen">
+
+  <div class="max-w-xl mx-auto px-4">
+
+    <div class="bg-white shadow rounded-xl p-8 border border-gray-200 relative overflow-hidden">
+
+      <!-- Subtle Glow -->
+
+      <div class="absolute -top-12 -left-12 w-64 h-64 bg-[#DAAC40]/15 rounded-full blur-3xl animate-pulse"></div>
+
+
+
+      <div class="relative z-10 text-center">
+
+        <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="mx-auto w-[50px] mb-3">
+
+        <h1 class="text-2xl font-bold text-gray-800">DNS Lookup Tool</h1>
+
+        <p class="text-gray-600 text-sm mb-6">Quickly view DNS records (A, MX, TXT, NS, etc.) for any domain.</p>
+
+      </div>
+
+
+
+      <div x-data="dnsLookupApp()">
+
+        <form @submit.prevent="submit" class="space-y-4">
+
+          <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+
+
+          <div>
+
+            <label for="domain" class="block text-sm font-medium text-gray-700">Domain</label>
+
+            <input x-model="url" id="domain" type="url" placeholder="example.com" required
+
+              class="mt-1 w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#DAAC40]">
+
+          </div>
+
+
+
+          <button type="submit" class="w-full bg-[#DAAC40] text-white py-2 rounded-md hover:bg-[#c69735] transition">
+
+            <span x-text="loading ? 'Looking up...' : 'Lookup DNS Records'"></span>
+
+          </button>
+
+        </form>
+
+
+
+        <div x-show="error" class="mt-4 text-sm text-red-600 bg-red-50 p-2 rounded">{{ error }}</div>
+
+
+
+        <div x-show="loading" class="mt-4 text-center">
+
+          <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+
+            <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+
+          </svg>
+
+        </div>
+
+
+
+        <template x-if="results">
+
+          <div class="mt-6">
+
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">DNS Records</h2>
+
+            <ul class="space-y-2">
+
+              <template x-for="(rec, idx) in results" :key="idx">
+
+                <li class="border-l-4 border-[#DAAC40] bg-gray-50 p-2 rounded text-sm">
+
+                  <strong x-text="rec.type" class="text-[#DAAC40] mr-2"></strong>
+
+                  <span x-text="rec.value" class="text-gray-800 break-words"></span>
+
+                </li>
+
+              </template>
+
+            </ul>
+
+          </div>
+
+        </template>
+
+      </div>
+
+
+
+      <div class="mt-8 text-sm border-t pt-4 text-gray-600">
+
+        <strong>How it Works:</strong>
+
+        <ul class="list-disc list-inside">
+
+          <li>Fetches all standard DNS record types.</li>
+
+          <li>Ideal for domain troubleshooting and SEO.</li>
+
+          <li>Real-time results using AJAX.</li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<script>
+
+function dnsLookupApp() {
+
+  return {
+
+    url: '',
+
+    results: null,
+
+    error: '',
+
+    loading: false,
+
+    submit() {
+
+      this.results = null;
+
+      this.error = '';
+
+      this.loading = true;
+
+      fetch('/tools/dns-lookup/ajax', {
+
+        method: 'POST',
+
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': document.getElementById('csrf_token').value},
+
+        body: JSON.stringify({url: this.url})
+
+      })
+
+      .then(res => res.json())
+
+      .then(data => {
+
+        if (data.success) this.results = data.results;
+
+        else this.error = data.error || 'Lookup failed.';
+
+      })
+
+      .catch(() => this.error = 'Error occurred.')
+
+      .finally(() => this.loading = false);
+
+    }
+
+  }
+
+}
+
+window.lucide && window.lucide.createIcons();
+
+</script>
+
+{% endblock %}

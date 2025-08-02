@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}JavaScript Error Logger - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Find and debug runtime errors in JavaScript code using a safe sandbox environment.{% endblock %}
+{% block meta_keywords %}javascript error checker, js error logger, debug js, find javascript bugs{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+      <h1 class="text-3xl font-bold text-center text-gray-900 mb-4">JavaScript Error Logger</h1>
+      <p class="text-center text-sm text-gray-600 mb-6">Paste your JS code to detect runtime or syntax errors.</p>
+
+      <form id="jsForm" class="space-y-4">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+        <textarea id="inputCode" rows="14" required placeholder="Paste JavaScript code here…" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono"></textarea>
+        <button type="submit" class="bg-[#DAAC40] text-white font-semibold px-6 py-2 rounded-md hover:bg-[#b89627] transition">
+          Log Errors
+        </button>
+      </form>
+
+      <div id="loader" class="mt-6 text-center hidden">Running JS… Please wait.</div>
+
+      <div id="resultsSection" class="mt-6 hidden text-sm font-mono">
+        <h2 class="text-md font-semibold text-[#DAAC40] mb-2">Detected Errors:</h2>
+        <ul id="resultList" class="space-y-2 text-gray-800"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("jsForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const code = document.getElementById("inputCode").value;
+  const csrfToken = document.getElementById("csrf_token").value;
+  const loader = document.getElementById("loader");
+  const resultList = document.getElementById("resultList");
+  const resultsSection = document.getElementById("resultsSection");
+
+  loader.classList.remove("hidden");
+  resultsSection.classList.add("hidden");
+  resultList.innerHTML = "";
+
+  fetch("/tools/javascript-error-logger/ajax", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-CSRFToken": csrfToken,
+    },
+    body: new URLSearchParams({ code, csrf_token: csrfToken })
+  })
+  .then(res => res.json())
+  .then(data => {
+    loader.classList.add("hidden");
+    if (data.error) {
+      resultList.innerHTML = `<li class="text-red-600">${data.error}</li>`;
+    } else {
+      data.results.forEach(err => {
+        const lineText = err.line !== null ? `Line ${err.line}` : "Line ?";
+        resultList.innerHTML += `<li><strong class="text-[#DAAC40]">${lineText}:</strong> ${err.message}</li>`;
+      });
+      resultsSection.classList.remove("hidden");
+    }
+  })
+  .catch(() => {
+    loader.classList.add("hidden");
+    resultList.innerHTML = `<li class="text-red-600">Something went wrong.</li>`;
+    resultsSection.classList.remove("hidden");
+  });
+});
+</script>
+{% endblock %}

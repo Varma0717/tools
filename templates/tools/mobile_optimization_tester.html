@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Mobile Optimization Tester - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Test your webpage for mobile responsiveness, viewport, font size, and user-friendliness. Get an SEO-friendly mobile score.{% endblock %}
+{% block meta_keywords %}mobile tester, mobile optimization, responsive checker, viewport, mobile seo{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-3xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+      <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">Mobile Optimization Tester</h1>
+      <p class="text-sm text-gray-600 text-center mb-6">Check if your site is mobile-friendly and SEO-optimized for mobile users.</p>
+
+      <form id="mobileForm" class="space-y-4">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+        <input type="url" id="inputUrl" name="url" required placeholder="https://example.com"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-[#DAAC40] focus:outline-none">
+        <button type="submit" class="bg-[#DAAC40] hover:bg-[#b89627] text-white font-semibold px-6 py-2 rounded-md">Run Test</button>
+      </form>
+
+      <div id="loader" class="text-center mt-6 hidden text-sm text-gray-500">Testing mobile optimization…</div>
+
+      <div id="resultsSection" class="mt-6 hidden">
+        <h2 class="text-md font-semibold mb-3 text-[#DAAC40]">Mobile Score: <span id="score">0</span>/100</h2>
+        <ul class="text-sm text-gray-700 space-y-2">
+          <li><strong>Viewport Meta Tag:</strong> <span id="viewport"></span></li>
+          <li><strong>Responsive Layout (Media Queries):</strong> <span id="media_queries"></span></li>
+          <li><strong>Responsive Width Layout:</strong> <span id="responsive_width"></span></li>
+          <li><strong>Font Size OK (12px+):</strong> <span id="font_size_ok"></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("mobileForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const csrfToken = document.getElementById("csrf_token").value;
+  const url = document.getElementById("inputUrl").value.trim();
+
+  document.getElementById("loader").classList.remove("hidden");
+  document.getElementById("resultsSection").classList.add("hidden");
+
+  fetch('/tools/mobile-optimization/ajax', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': csrfToken
+    },
+    body: new URLSearchParams({ url, csrf_token: csrfToken })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("loader").classList.add("hidden");
+
+    document.getElementById("score").textContent = data.score;
+    document.getElementById("viewport").textContent = data.viewport ? "✅ Present" : "❌ Missing";
+    document.getElementById("media_queries").textContent = data.media_queries ? "✅ Detected" : "❌ Not Detected";
+    document.getElementById("responsive_width").textContent = data.responsive_width ? "✅ Responsive" : "❌ Fixed Width";
+    document.getElementById("font_size_ok").textContent = data.font_size_ok ? "✅ OK" : "❌ Too Small";
+
+    document.getElementById("resultsSection").classList.remove("hidden");
+  })
+  .catch(() => {
+    document.getElementById("loader").classList.add("hidden");
+    alert("Something went wrong. Please try again.");
+  });
+});
+</script>
+{% endblock %}

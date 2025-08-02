@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Privacy Policy | Super SEO Toolkit{% endblock %}
+
+{% block content %}
+<section class="py-16 bg-white text-gray-900">
+  <div class="max-w-3xl mx-auto px-6">
+    <h1 class="text-4xl font-bold mb-6">Privacy Policy</h1>
+    <p class="mb-4 text-gray-700">Effective Date: {{ (now() | date('Y-m-d')) if now else '2025-06-21' }}</p>
+
+    <p class="mb-6">At <strong>Super SEO Toolkit</strong>, accessible from <a href="https://superseotoolkit.com" class="text-[#DAAC40] underline">superseotoolkit.com</a>, we respect your privacy and are committed to protecting your personal information. This policy outlines what data we collect, how we use it, and your rights.</p>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">Information We Collect</h2>
+    <ul class="mb-6 ml-6 list-disc text-gray-700">
+      <li><strong>Personal Information:</strong> Name, email address, messages, and, if you choose, address.</li>
+      <li><strong>Technical Data:</strong> IP address, browser information, device type, and analytics data.</li>
+      <li><strong>Authentication Data:</strong> If you log in with Google, we collect basic Google profile info.</li>
+      <li><strong>Cookies & Usage Data:</strong> To improve our site, tools, and experience.</li>
+    </ul>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">How We Use Your Information</h2>
+    <ul class="mb-6 ml-6 list-disc text-gray-700">
+      <li>To provide, operate, and maintain the website and tools</li>
+      <li>To improve our services and your experience</li>
+      <li>To send newsletters and updates (only if you opt in)</li>
+      <li>To communicate with you regarding your account or inquiries</li>
+      <li>For analytics and advertising (e.g., Google Analytics, AdSense)</li>
+      <li>To comply with legal obligations</li>
+    </ul>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">Third-Party Services</h2>
+    <p class="mb-4">We use Google Analytics and Google AdSense for analytics and advertising. These third parties may use cookies and similar technologies. Please see their respective privacy policies for more details.</p>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">Cookies</h2>
+    <p class="mb-4">We use cookies to store preferences and enhance functionality. You may refuse cookies in your browser settings, but this may affect your site experience.</p>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">Data Control & Your Rights</h2>
+    <ul class="mb-6 ml-6 list-disc text-gray-700">
+      <li>You can view and update your personal info via your dashboard.</li>
+      <li>You can unsubscribe from newsletters at any time.</li>
+      <li>For account deletion or data removal, please contact us at <a href="mailto:contact@superseotoolkit.com" class="text-[#DAAC40] underline">contact@superseotoolkit.com</a>.</li>
+    </ul>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">Children's Privacy</h2>
+    <p class="mb-4">Super SEO Toolkit is not intended for children under 13. We do not knowingly collect data from children under 13.</p>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">Policy Changes</h2>
+    <p class="mb-4">We may update this Privacy Policy from time to time. Changes are effective when posted on this page.</p>
+
+    <h2 class="text-2xl font-bold mt-8 mb-2">Contact Us</h2>
+    <p>If you have any questions, please contact us at <a href="mailto:contact@superseotoolkit.com" class="text-[#DAAC40] underline">contact@superseotoolkit.com</a>.</p>
+  </div>
+</section>
+{% endblock %}

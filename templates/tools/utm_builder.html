@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}UTM Builder - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Easily generate UTM tracking URLs for Google Analytics. Build and copy campaign links with all UTM parameters.{% endblock %}
+
+{% block meta_keywords %}UTM Builder{% endblock %}
+ 
+{% block content %}
+
+<section class="py-12 bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-950 min-h-[80vh]">
+
+  <div class="max-w-2xl mx-auto p-6 bg-white/90 rounded-2xl shadow-xl backdrop-blur-sm">
+
+    <h1 class="text-3xl md:text-4xl font-extrabold text-indigo-900 mb-3 flex items-center gap-2">
+
+      <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2" stroke-width="2"></rect><path stroke-width="2" d="M16 3h-8"></path></svg>
+
+      UTM Builder
+
+    </h1>
+
+    <p class="mb-6 text-gray-700">Generate Google Analytics campaign URLs with UTM parameters. Perfect for tracking campaigns, ads, emails, and more.</p>
+
+
+
+    <form method="POST" class="space-y-4">
+
+      {{ form.hidden_tag() }}
+
+      <div>
+
+        {{ form.url.label(class_="block text-sm font-semibold text-gray-700 mb-1") }}
+
+        {{ form.url(class_="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500", placeholder="https://yourdomain.com/page") }}
+
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+        <div>
+
+          {{ form.utm_source.label(class_="block text-sm font-semibold text-gray-700 mb-1") }}
+
+          {{ form.utm_source(class_="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500", placeholder="newsletter, facebook, etc.") }}
+
+        </div>
+
+        <div>
+
+          {{ form.utm_medium.label(class_="block text-sm font-semibold text-gray-700 mb-1") }}
+
+          {{ form.utm_medium(class_="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500", placeholder="email, cpc, banner, etc.") }}
+
+        </div>
+
+        <div>
+
+          {{ form.utm_campaign.label(class_="block text-sm font-semibold text-gray-700 mb-1") }}
+
+          {{ form.utm_campaign(class_="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500", placeholder="spring_sale, launch, etc.") }}
+
+        </div>
+
+        <div>
+
+          {{ form.utm_term.label(class_="block text-sm font-semibold text-gray-700 mb-1") }}
+
+          {{ form.utm_term(class_="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500", placeholder="(optional) keywords") }}
+
+        </div>
+
+        <div>
+
+          {{ form.utm_content.label(class_="block text-sm font-semibold text-gray-700 mb-1") }}
+
+          {{ form.utm_content(class_="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500", placeholder="(optional) ad name, etc.") }}
+
+        </div>
+
+      </div>
+
+      <div class="pt-2">
+
+        <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg font-bold hover:bg-indigo-700 shadow transition-all duration-150">
+
+          {{ form.submit.label.text }}
+
+        </button>
+
+      </div>
+
+    </form>
+
+
+
+    {% if utm_url %}
+
+      <div class="mt-8 rounded-xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-white p-5 animate-fadeIn shadow">
+
+        <h3 class="text-lg font-bold text-indigo-800 mb-3 flex items-center gap-1">
+
+          <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2" stroke-width="2"></rect><path stroke-width="2" d="M16 3h-8"></path></svg>
+
+          Generated UTM URL
+
+        </h3>
+
+        <div class="flex items-center gap-2">
+
+          <input type="text" readonly value="{{ utm_url }}" class="flex-1 px-2 py-1 border border-indigo-300 rounded bg-indigo-50 text-indigo-800 text-xs font-mono" id="utm-url-output">
+
+          <button onclick="navigator.clipboard.writeText(document.getElementById('utm-url-output').value); this.innerText='Copied!';" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 transition text-xs font-semibold">Copy</button>
+
+        </div>
+
+      </div>
+
+    {% endif %}
+
+
+
+    <div class="mt-10 pt-6 border-t border-gray-200">
+
+      <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Enter your landing page URL and fill out campaign source, medium, and campaign name (required).</li>
+
+        <li>Optionally add keyword (<b>utm_term</b>) and ad content (<b>utm_content</b>).</li>
+
+        <li>Click "Generate" to get a ready-to-use UTM tracking URL for Google Analytics and all major analytics platforms.</li>
+
+      </ul>
+
+      <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Track traffic from every marketing campaign, ad, or email easily.</li>
+
+        <li>No manual URL building — just copy and paste your result.</li>
+
+        <li>Perfect for marketers, agencies, and campaign managers.</li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}
+

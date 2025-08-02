@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}CSS & JS Bundler - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Combine and minify multiple CSS or JavaScript files instantly.{% endblock %}
+{% block meta_keywords %}css bundler, js bundler, combine css, combine js, minify js css{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+      <h1 class="text-3xl font-bold text-center text-gray-900 mb-4">CSS & JS Bundler</h1>
+      <p class="text-center text-sm text-gray-600 mb-6">Paste up to 3 files to merge and minify into a single output.</p>
+
+      <form id="bundlerForm" class="space-y-4">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+        <select id="mode" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+          <option value="">-- Select File Type --</option>
+          <option value="css">CSS</option>
+          <option value="js">JavaScript</option>
+        </select>
+
+        <textarea id="code1" rows="6" placeholder="Paste File 1…" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono"></textarea>
+        <textarea id="code2" rows="6" placeholder="Paste File 2 (optional)…" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono"></textarea>
+        <textarea id="code3" rows="6" placeholder="Paste File 3 (optional)…" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono"></textarea>
+
+        <button type="submit" class="bg-[#DAAC40] text-white font-semibold px-6 py-2 rounded-md hover:bg-[#b89627] w-full sm:w-auto">Bundle Files</button>
+      </form>
+
+      <div id="loader" class="mt-6 text-center hidden text-gray-500">Bundling and minifying…</div>
+
+      <div id="resultsSection" class="mt-6 hidden">
+        <h2 class="text-md font-semibold text-[#DAAC40] mb-2">Bundled Output:</h2>
+        <textarea id="resultOutput" class="w-full border border-green-300 bg-green-50 rounded-md px-3 py-2 text-sm font-mono" rows="10" readonly></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("bundlerForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const csrf = document.getElementById("csrf_token").value;
+  const mode = document.getElementById("mode").value;
+  const code1 = document.getElementById("code1").value;
+  const code2 = document.getElementById("code2").value;
+  const code3 = document.getElementById("code3").value;
+  const loader = document.getElementById("loader");
+  const output = document.getElementById("resultOutput");
+  const section = document.getElementById("resultsSection");
+
+  loader.classList.remove("hidden");
+  section.classList.add("hidden");
+  output.value = "";
+
+  fetch("/tools/bundler/ajax", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-CSRFToken": csrf
+    },
+    body: new URLSearchParams({ code1, code2, code3, mode, csrf_token: csrf })
+  })
+  .then(res => res.json())
+  .then(data => {
+    loader.classList.add("hidden");
+    if (data.error) {
+      output.value = "❌ " + data.error;
+    } else {
+      output.value = data.result;
+    }
+    section.classList.remove("hidden");
+  })
+  .catch(() => {
+    loader.classList.add("hidden");
+    output.value = "❌ Something went wrong.";
+    section.classList.remove("hidden");
+  });
+});
+</script>
+{% endblock %}

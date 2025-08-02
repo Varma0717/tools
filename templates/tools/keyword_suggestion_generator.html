@@ -1,0 +1,249 @@
+{# templates/tools/keyword_suggestion_generator.html #}
+
+{% extends "base.html" %}
+
+{% block title %}Keyword Suggestion Generator - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Get 20+ real keyword ideas from Google in seconds. Discover long-tail, trending, and related keywords for any topic or seed phrase.{% endblock %}
+
+{% block meta_keywords %}Keyword Suggestion Generator{% endblock %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto px-4 py-10">
+
+  <div class="bg-white shadow-xl rounded-2xl p-8 mb-10 border border-gray-100 relative">
+
+    <div class="flex items-center gap-4 mb-3">
+
+      <i data-lucide="search" class="lucide w-9 h-9 text-[#DAAC40]"></i>
+
+      <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#DAAC40] to-yellow-100 bg-clip-text text-transparent">Keyword Suggestion Generator</h1>
+
+    </div>
+
+    <p class="text-gray-600 mb-8">
+
+      Discover <b>20+ real keyword ideas</b> from Google. Perfect for SEO, blog, and PPC.<br><b>No login required!</b>
+
+    </p>
+
+    <form id="kwForm" class="space-y-4" autocomplete="off">
+
+      <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+      <label class="block text-sm font-medium text-gray-700 mb-1">Seed Keyword</label>
+
+      <input type="text" name="keyword" id="inputKeyword"
+
+        class="w-full px-4 py-3 rounded-xl border-gray-200 shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900"
+
+        placeholder="e.g. ai tools for seo" required>
+
+      <button type="submit"
+
+        class="mt-3 w-full flex justify-center items-center gap-2 bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 font-bold rounded-xl px-6 py-3 transition-all duration-150 shadow-lg text-lg">
+
+        <i data-lucide="wand-2" class="lucide w-5 h-5"></i>
+
+        Get Suggestions
+
+      </button>
+
+    </form>
+
+    <!-- Loader/Spinner -->
+
+    <div id="loader" class="flex flex-col items-center py-8" style="display:none;">
+
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#DAAC40] border-t-transparent"></div>
+
+      <span class="mt-3 text-sm text-gray-500 font-medium">Fetching keywords...</span>
+
+    </div>
+
+    <!-- Results -->
+
+    <div id="resultsSection" class="py-6" style="display:none;"></div>
+
+
+
+    <div class="mt-10 pt-6 border-t border-gray-200">
+
+      <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Enter any keyword or topic to get up to 20 real suggestions from Google Autocomplete.</li>
+
+        <li>Discover long-tail, trending, and related phrases you can target.</li>
+
+        <li>Copy suggestions with one click, ready for content, PPC, or research.</li>
+
+      </ul>
+
+      <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+      <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+        <li>Super fast and accurate — data direct from Google.</li>
+
+        <li>Boost your SEO and content reach with fresh ideas.</li>
+
+        <li>No registration, unlimited searches, privacy safe.</li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+<template id="kw-template">
+
+  <div class="bg-white border border-[#DAAC40] rounded-xl shadow-lg p-6 animate-fade-in">
+
+    <div class="flex items-center gap-2 mb-2">
+
+      <i data-lucide="lightbulb" class="lucide w-6 h-6 text-[#DAAC40]"></i>
+
+      <span class="text-lg font-semibold text-gray-900">Keyword Suggestions</span>
+
+    </div>
+
+    <ul id="kwList" class="mb-3 text-sm"></ul>
+
+    <button type="button" onclick="copyKeywords()" class="bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 px-4 py-2 rounded shadow font-semibold flex items-center gap-2 mb-2">
+
+      <i data-lucide="copy" class="lucide w-4 h-4"></i> Copy All
+
+    </button>
+
+    <div class="text-xs text-gray-500 mt-1">Use for blog, SEO, ads, and research!</div>
+
+  </div>
+
+</template>
+
+<style>
+
+@keyframes fade-in { from { opacity:0; transform:translateY(40px);} to { opacity:1; transform:translateY(0);}
+
+}
+
+.animate-fade-in { animation: fade-in .7s cubic-bezier(.6,0,.3,1);}
+
+</style>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const form = document.getElementById('kwForm');
+
+  const loader = document.getElementById('loader');
+
+  const resultsSection = document.getElementById('resultsSection');
+
+  const template = document.getElementById('kw-template');
+
+
+
+  form?.addEventListener('submit', function (e) {
+
+    e.preventDefault();
+
+    resultsSection.style.display = "none";
+
+    loader.style.display = "flex";
+
+    const keyword = document.getElementById('inputKeyword').value;
+
+    const csrfToken = document.getElementById('csrf_token').value;
+
+
+
+    fetch('/tools/keyword-suggestion-generator/ajax', {
+
+      method: 'POST',
+
+      headers: {
+
+        'Content-Type': 'application/json',
+
+        'X-CSRFToken': csrfToken,
+
+      },
+
+      body: JSON.stringify({ keyword })
+
+    })
+
+    .then(r => r.json())
+
+    .then(data => {
+
+      loader.style.display = "none";
+
+      resultsSection.style.display = "block";
+
+      if (data.error) {
+
+        resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">${data.error}</div>`;
+
+        return;
+
+      }
+
+      const node = template.content.cloneNode(true);
+
+      const kwList = node.getElementById("kwList");
+
+      window.currentKeywords = (data.suggestions || []).join('\n');
+
+      kwList.innerHTML = (data.suggestions || []).map(
+
+        kw => `<li class="mb-1 px-2 py-1 bg-gray-50 rounded text-gray-800 font-mono">${kw}</li>`
+
+      ).join('');
+
+      resultsSection.innerHTML = '';
+
+      resultsSection.appendChild(node);
+
+      if (window.lucide) lucide.createIcons();
+
+    })
+
+    .catch(() => {
+
+      loader.style.display = "none";
+
+      resultsSection.style.display = "block";
+
+      resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">Error: Could not fetch keyword suggestions. Try again.</div>`;
+
+    });
+
+  });
+
+  if (window.lucide) lucide.createIcons();
+
+});
+
+
+
+function copyKeywords() {
+
+  if (window.currentKeywords) {
+
+    navigator.clipboard.writeText(window.currentKeywords);
+
+  }
+
+}
+
+</script>
+
+{% endblock %}

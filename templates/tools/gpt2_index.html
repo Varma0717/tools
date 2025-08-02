@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}AI GPT-2 Generator{% endblock %}
+
+{% block content %}
+<section class="py-14 min-h-screen bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc]">
+  <div class="max-w-2xl mx-auto px-4">
+    <div class="bg-white p-8 rounded-xl shadow-lg relative overflow-hidden">
+      <h1 class="text-3xl font-bold mb-6 text-center">AI GPT-2 Text Generator</h1>
+
+      <form id="gpt2Form" autocomplete="off" class="space-y-4">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token() }}">
+        <textarea id="inputPrompt" name="prompt" rows="4" placeholder="Enter prompt or topic here..." required
+          class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#DAAC40]"></textarea>
+        <button type="submit" class="w-full bg-[#DAAC40] text-white py-3 rounded-md font-semibold hover:bg-[#b89627] transition">
+          Generate Text
+        </button>
+      </form>
+
+      <div id="loader" class="hidden mt-6 text-center">
+        <svg class="animate-spin mx-auto h-8 w-8 text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4"/>
+          <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+        </svg>
+        <p class="text-gray-500 mt-2">Generating text… please wait.</p>
+      </div>
+
+      <div id="result" class="mt-6 p-4 bg-gray-50 rounded-md text-gray-800 whitespace-pre-line"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById('gpt2Form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const loader = document.getElementById('loader');
+  const result = document.getElementById('result');
+  loader.classList.remove('hidden');
+  result.textContent = '';
+
+  const prompt = document.getElementById('inputPrompt').value;
+  const csrfToken = document.getElementById('csrf_token').value;
+
+  try {
+    const response = await fetch('/tools/gpt2/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await response.json();
+    loader.classList.add('hidden');
+    if (data.error) {
+      result.textContent = 'Error: ' + data.error;
+    } else {
+      result.textContent = data.result;
+    }
+  } catch (err) {
+    loader.classList.add('hidden');
+    result.textContent = 'Request failed: ' + err.message;
+  }
+});
+</script>
+{% endblock %}

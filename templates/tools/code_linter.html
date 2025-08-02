@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Advanced Code Linter - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Validate and debug your HTML, CSS, or JavaScript code with line-by-line error checking.{% endblock %}
+{% block meta_keywords %}code linter, js syntax checker, html validator, css error checker, developer tools{% endblock %}
+
+{% block content %}
+<section class="py-14 min-h-screen bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc]">
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+      <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">Advanced Code Linter</h1>
+      <p class="text-sm text-gray-600 text-center mb-6">Paste your HTML, CSS, or JavaScript code. We'll find syntax issues and show line numbers.</p>
+
+      <form id="linterForm" class="space-y-4">
+  <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+  <select id="modeSelect" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+    <option value="">-- Select Code Type --</option>
+    <option value="html">HTML</option>
+    <option value="css">CSS</option>
+    <option value="js">JavaScript</option>
+  </select>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Code Input with Line Numbers -->
+    <div>
+      <label for="inputCode" class="block mb-1 text-sm font-medium text-gray-600">Your Code</label>
+      <textarea id="inputCode" rows="20" required placeholder="Paste your code..." class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono resize-none"></textarea>
+    </div>
+
+    <!-- Lint Results -->
+    <div>
+      <label class="block mb-1 text-sm font-medium text-gray-600">Lint Results</label>
+      <div class="border border-gray-300 rounded-md px-4 py-3 bg-gray-50 h-[calc(100%-2rem)] overflow-y-auto text-sm font-mono text-gray-800" id="resultsContainer">
+        <p class="text-gray-400 italic">No results yet. Paste your code and click 'Lint Code'.</p>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="bg-[#DAAC40] hover:bg-[#b89627] text-white font-semibold px-6 py-2 rounded-md w-full sm:w-auto">Lint Code</button>
+</form>
+
+
+      <div id="loader" class="mt-6 text-center hidden">Linting… please wait.</div>
+
+      <div id="resultsSection" class="mt-6 hidden">
+        <h2 class="text-md font-semibold text-[#DAAC40] mb-2">Lint Results:</h2>
+        <ul id="resultList" class="space-y-2 text-sm text-gray-800 list-none"></ul>
+
+        <div class="mt-4 flex flex-col sm:flex-row gap-3">
+          <button id="copyBtn" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700">📋 Copy Results</button>
+          <button id="downloadBtn" class="bg-[#DAAC40] text-white px-4 py-2 rounded-md hover:bg-[#b89627]">📥 Download Report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("linterForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const csrfToken = document.getElementById("csrf_token").value;
+  const code = document.getElementById("inputCode").value.trim();
+  const mode = document.getElementById("modeSelect").value;
+  const resultsBox = document.getElementById("resultsContainer");
+
+  resultsBox.innerHTML = `<p class="text-gray-400 italic">Linting... Please wait.</p>`;
+
+  fetch('/tools/code-linter/ajax', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': csrfToken
+    },
+    body: new URLSearchParams({ code, mode, csrf_token: csrfToken })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) {
+      resultsBox.innerHTML = `<p class="text-red-600">${data.error}</p>`;
+    } else {
+      if (data.results.length === 1 && data.results[0].message.includes("No")) {
+        resultsBox.innerHTML = `<p class="text-green-600">${data.results[0].message}</p>`;
+      } else {
+        resultsBox.innerHTML = "";
+        data.results.forEach(err => {
+          const lineDisplay = err.line !== null ? `Line ${err.line}` : "Line ?";
+          const el = document.createElement("div");
+          el.className = "mb-2";
+          el.innerHTML = `<span class="text-[#DAAC40] font-bold">${lineDisplay}:</span> ${err.message}`;
+          resultsBox.appendChild(el);
+        });
+      }
+    }
+  })
+  .catch(() => {
+    resultsBox.innerHTML = `<p class="text-red-600">Something went wrong. Please try again.</p>`;
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Conversion Funnel Tracker - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Upload user funnel logs to analyze conversion rates and drop-offs in your marketing funnel.{% endblock %}
+{% block meta_keywords %}conversion funnel, funnel analysis, user journey, drop-off rate, seo tools{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-2xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+      <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+      <div class="relative z-10 text-center">
+        <img src="/static/favicon.png" alt="Logo" class="mx-auto w-[50px] mb-3" />
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Conversion Funnel Tracker</h1>
+        <p class="text-sm text-gray-600 mb-6">Upload your user funnel log CSV file with user IDs and funnel steps to analyze conversion and drop-offs.</p>
+
+        <form id="funnelForm" class="space-y-4" autocomplete="off" enctype="multipart/form-data">
+          <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
+          <input type="file" id="logfile" name="logfile" accept=".csv,text/csv" required
+            class="mx-auto block border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DAAC40] text-gray-700" />
+          <button type="submit" class="bg-[#DAAC40] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#b89627] transition">Analyze Funnel</button>
+        </form>
+
+        <div id="loader" class="mt-6 text-center hidden">
+          <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+            <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          <p class="text-sm text-gray-500 mt-2">Analyzing funnel data… Please wait.</p>
+        </div>
+
+        <div id="resultsSection" class="mt-6 hidden text-left text-gray-800 space-y-4">
+          <div>
+            <h3 class="text-xl font-semibold mb-3">Funnel Conversion Counts</h3>
+            <ul id="funnelCounts" class="list-disc list-inside"></ul>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-3">Drop-off Rates (%)</h3>
+            <ul id="dropOffs" class="list-disc list-inside text-red-600"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const form = document.getElementById('funnelForm');
+  const loader = document.getElementById('loader');
+  const resultsSection = document.getElementById('resultsSection');
+  const funnelCounts = document.getElementById('funnelCounts');
+  const dropOffs = document.getElementById('dropOffs');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    resultsSection.style.display = 'none';
+    loader.style.display = 'block';
+
+    const csrfToken = document.getElementById('csrf_token').value;
+    const fileInput = document.getElementById('logfile');
+    const file = fileInput.files[0];
+    if (!file) {
+      alert('Please select a CSV log file.');
+      loader.style.display = 'none';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('logfile', file);
+    formData.append('csrf_token', csrfToken);
+
+    fetch('/tools/conversion-funnel-tracker/ajax', {
+      method: 'POST',
+      body: formData,
+    })
+    .then(r => r.json())
+    .then(data => {
+      loader.style.display = 'none';
+      if (data.error) {
+        resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">${data.error}</div>`;
+        resultsSection.style.display = 'block';
+        return;
+      }
+
+      funnelCounts.innerHTML = '';
+      data.funnel_order.forEach(step => {
+        funnelCounts.innerHTML += `<li><strong>${step}:</strong> ${data.funnel_counts[step] || 0}</li>`;
+      });
+
+      dropOffs.innerHTML = '';
+      for (const [key, val] of Object.entries(data.drop_offs)) {
+        dropOffs.innerHTML += `<li><strong>${key.replace(/_/g, ' ')}:</strong> ${val !== null ? val + '%' : 'N/A'}</li>`;
+      }
+
+      resultsSection.style.display = 'block';
+    })
+    .catch(() => {
+      loader.style.display = 'none';
+      resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">Error analyzing funnel data. Please try again.</div>`;
+      resultsSection.style.display = 'block';
+    });
+  });
+});
+</script>
+{% endblock %}

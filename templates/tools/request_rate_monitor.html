@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Request Rate Monitor - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Monitor the number of requests your IP makes to this service.{% endblock %}
+{% block meta_keywords %}Request Rate, IP Monitoring, Traffic Analysis{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-2xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+      <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+      <div class="relative z-10 text-center">
+        <img src="/static/favicon.png" alt="Logo" class="mx-auto w-[50px] mb-3">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Request Rate Monitor</h1>
+        <p class="text-sm text-gray-600 mb-6">Track how many requests your IP has sent to this tool during this session.</p>
+
+        <form id="rateForm" class="space-y-4" autocomplete="off">
+          <input type="hidden" id="csrf_token" value="{{ csrf_token() }}">
+
+          <button
+            type="submit"
+            class="bg-[#DAAC40] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#b89627] transition focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/50"
+          >
+            Check Request Count
+          </button>
+        </form>
+
+        <div id="loader" class="mt-6 text-center hidden">
+          <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+            <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          <p class="text-sm text-gray-500 mt-2">Checking request count…</p>
+        </div>
+
+        <div id="resultsSection" class="mt-6 hidden text-left text-gray-800">
+          <div class="bg-gray-100 p-4 rounded-lg shadow-sm space-y-2">
+            <div><strong>Your IP:</strong> <span id="visitorIP"></span></div>
+            <div><strong>Request Count:</strong> <span id="requestCount"></span></div>
+            <div><em id="message"></em></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById('rateForm');
+  const loader = document.getElementById('loader');
+  const resultsSection = document.getElementById('resultsSection');
+  const visitorIP = document.getElementById('visitorIP');
+  const requestCount = document.getElementById('requestCount');
+  const message = document.getElementById('message');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    resultsSection.style.display = "none";
+    loader.style.display = "block";
+
+    const csrfToken = document.getElementById('csrf_token').value;
+
+    fetch('/tools/request-rate-monitor/ajax', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+      body: JSON.stringify({})
+    })
+    .then(r => r.json())
+    .then(data => {
+      loader.style.display = "none";
+      if (data.error) {
+        resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">${data.error}</div>`;
+      } else {
+        visitorIP.textContent = data.ip || 'N/A';
+        requestCount.textContent = data.request_count || 0;
+        message.textContent = data.message || '';
+        resultsSection.style.display = "block";
+      }
+    })
+    .catch(() => {
+      loader.style.display = "none";
+      resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">Error fetching request count. Try again.</div>`;
+      resultsSection.style.display = "block";
+    });
+  });
+});
+</script>
+{% endblock %}

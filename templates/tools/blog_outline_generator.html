@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}
+  Blog Outline Generator - Super SEO Toolkit
+{% endblock %}
+{% block meta_description %}
+  Generate SEO-optimized blog outlines instantly. Perfect for content planning.
+{% endblock %}
+{% block meta_keywords %}
+  blog outline generator, content planning, SEO blog outline
+{% endblock %}
+
+{% block content %}
+  <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+    <div class="max-w-2xl mx-auto px-4">
+      <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+        <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+
+        <div class="relative z-10">
+          <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">Blog Outline Generator</h1>
+
+          <form id="outlineForm" class="space-y-4" autocomplete="off">
+            <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
+            <input type="text" id="inputTopic" name="topic" placeholder="Enter blog topic or title" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DAAC40] text-gray-700" />
+            <textarea id="inputDesc" name="desc" rows="3" placeholder="(Optional) Describe your blog purpose or audience" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DAAC40] text-gray-700 resize-none"></textarea>
+            <button type="submit" class="bg-[#DAAC40] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#b89627] transition">Generate Outline</button>
+          </form>
+
+          <div id="loader" class="mt-6 text-center hidden">
+            <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+              <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            <p class="text-sm text-gray-500 mt-2">Generating outline… Please wait.</p>
+          </div>
+
+          <pre id="resultsSection" class="mt-6 text-gray-800 hidden whitespace-pre-wrap"></pre>
+
+          <div class="mt-10 pt-6 border-t border-gray-200">
+            <h4 class="text-lg font-bold text-gray-800 mb-2">How It Works</h4>
+            <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+              <li>Input your blog topic and optional description.</li>
+              <li>The AI generates a detailed SEO-friendly outline.</li>
+              <li>Use it to plan your content and improve search ranking.</li>
+            </ul>
+
+            <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">SEO Tips</h4>
+            <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+              <li>Include keywords naturally in your headings and bullet points.</li>
+              <li>Focus on clear, informative, and engaging content structure.</li>
+              <li>Use the outline to guide your writing process efficiently.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('outlineForm')
+      const loader = document.getElementById('loader')
+      const resultsSection = document.getElementById('resultsSection')
+    
+      form.addEventListener('submit', function (e) {
+        e.preventDefault()
+        resultsSection.style.display = 'none'
+        resultsSection.textContent = ''
+        loader.style.display = 'block'
+    
+        const csrfToken = document.getElementById('csrf_token').value
+        const topic = document.getElementById('inputTopic').value.trim()
+        const desc = document.getElementById('inputDesc').value.trim()
+    
+        fetch('/tools/blog-outline-generator/ajax', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+          },
+          body: JSON.stringify({ topic, desc })
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            loader.style.display = 'none'
+            if (data.error) {
+              resultsSection.textContent = 'Error: ' + data.error
+            } else {
+              resultsSection.textContent = data.outline
+            }
+            resultsSection.style.display = 'block'
+          })
+          .catch(() => {
+            loader.style.display = 'none'
+            resultsSection.textContent = 'Error generating outline. Please try again.'
+            resultsSection.style.display = 'block'
+          })
+      })
+    })
+  </script>
+{% endblock %}

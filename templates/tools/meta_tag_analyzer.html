@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Meta Tag Analyzer - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Analyze and score your page’s meta tags instantly! Get actionable feedback on titles, descriptions, robots, Open Graph, and more for top SEO.{% endblock %}
+
+{% block meta_keywords %}Meta Tag Analyzer{% endblock %}
+
+{% block content %}
+
+<div class="max-w-4xl mx-auto px-4 py-10">
+
+  <h1 class="text-4xl font-extrabold text-gray-900 mb-3 flex items-center gap-3">
+
+    <i data-lucide="tag" class="lucide w-7 h-7 text-[#DAAC40]"></i>
+
+    Meta Tag Analyzer
+
+  </h1>
+
+  <p class="text-lg text-gray-600 mb-8">
+
+    Instantly analyze any page’s SEO meta tags, including title, description, canonical, robots, Open Graph, Twitter Card, and more.
+
+    <span class="block mt-2 text-sm text-gray-400">Get detailed scores and actionable feedback—<b>free and unlimited.</b></span>
+
+  </p>
+
+  <p class="text-base text-gray-600 mb-4">
+
+    Enter a page URL below to see which meta tags are present, missing, or need improvement for top search and social performance.
+
+  </p>
+
+
+
+  <form method="POST" class="mb-8 space-y-4" id="metaTagForm">
+
+    {{ form.hidden_tag() }}
+
+    <div class="flex flex-col sm:flex-row gap-4">
+
+      {{ form.url(
+
+          class_="flex-1 p-3 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#DAAC40] bg-white text-gray-900",
+
+          placeholder="Enter any page URL (e.g. https://yourwebsite.com/page)"
+
+      ) }}
+
+      <button type="submit"
+
+        class="bg-[#DAAC40] text-gray-900 px-8 py-3 rounded-xl font-bold shadow-md hover:bg-[#b89627] transition focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/50">
+
+        Analyze Tags
+
+      </button>
+
+    </div>
+
+  </form>
+
+
+
+  <!-- Loader/Spinner -->
+
+  <div id="loader" class="flex flex-col items-center py-8" style="display:none;">
+
+    <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#DAAC40] border-t-transparent"></div>
+
+    <span class="mt-3 text-sm text-gray-500 font-medium">Analyzing meta tags… Please wait.</span>
+
+  </div>
+
+
+
+  <!-- Results -->
+
+  {% if result %}
+
+    <div id="resultsSection" class="py-6">
+
+      <h2 class="text-2xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
+
+        <i data-lucide="star" class="lucide w-6 h-6 text-[#DAAC40]"></i>
+
+        Meta Tag Report & Scores
+
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+
+        {% for tag in result.tags %}
+
+          <div class="bg-white shadow rounded-xl p-4 border-l-4
+
+            {% if tag.score >= 90 %}border-green-400
+
+            {% elif tag.score >= 60 %}border-yellow-400
+
+            {% else %}border-red-400{% endif %}">
+
+            <div class="flex items-center gap-2 mb-1">
+
+              <span class="font-bold text-gray-800">{{ tag.name }}</span>
+
+              {% if tag.score >= 90 %}
+
+                <i data-lucide="check-circle" class="lucide w-4 h-4 text-green-500"></i>
+
+              {% elif tag.score >= 60 %}
+
+                <i data-lucide="alert-triangle" class="lucide w-4 h-4 text-yellow-500"></i>
+
+              {% else %}
+
+                <i data-lucide="x-circle" class="lucide w-4 h-4 text-red-500"></i>
+
+              {% endif %}
+
+            </div>
+
+            <div class="font-mono text-xs text-gray-700 break-words mb-2">{{ tag.value or "—" }}</div>
+
+            <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-2">
+
+              <div class="h-full rounded-full transition-all"
+
+                   style="width: {{ tag.score }}%; background: linear-gradient(90deg, #DAAC40, #ffc900);"></div>
+
+            </div>
+
+            <div class="text-xs text-gray-600">{{ tag.feedback or "" }}</div>
+
+          </div>
+
+        {% endfor %}
+
+      </div>
+
+      <div class="text-xs text-gray-500">
+
+        Tip: Aim for a perfect score (90+) on Title, Description, Canonical, and Open Graph for the best SEO and shareability!
+
+      </div>
+
+    </div>
+
+  {% endif %}
+
+
+
+  <div class="mt-10 pt-6 border-t border-gray-200">
+
+    <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+    <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+      <li>Enter any page URL above for a real-time scan of all major meta tags.</li>
+
+      <li>Scores, feedback, and improvement tips are provided for every key tag.</li>
+
+      <li>Free, unlimited, and export-friendly for every project.</li>
+
+    </ul>
+
+    <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+    <ul class="list-inside list-disc text-gray-700 text-sm space-y-1">
+
+      <li>Boost search rankings and click-through with optimal tags.</li>
+
+      <li>Fix missing, duplicate, or incorrect tags in seconds.</li>
+
+      <li>Perfect for SEOs, agencies, and webmasters.</li>
+
+    </ul>
+
+  </div>
+
+</div>
+
+<script>
+
+  // OPTIONAL: AJAX loader or custom JS
+
+</script>
+
+{% endblock %}
+

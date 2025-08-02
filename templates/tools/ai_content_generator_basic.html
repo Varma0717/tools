@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  AI Content Generator - Super SEO Toolkit
+{% endblock %}
+{% block meta_description %}
+  Generate full content pieces with headings, paragraphs, and conclusions using AI — perfect for blogs and articles.
+{% endblock %}
+{% block meta_keywords %}
+  ai content generator, article writer, blog generator, seo content, write with ai
+{% endblock %}
+
+{% block content %}
+  <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+        <div class="absolute -top-16 -left-16 w-48 h-48 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+        <div class="relative z-10 text-center">
+          <img src="/static/favicon.png" alt="Logo" class="mx-auto w-[50px] mb-3" />
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">AI Content Generator</h1>
+          <p class="text-sm text-gray-600 mb-6">Provide a topic and optional description to generate full SEO content with AI.</p>
+
+          <form id="contentForm" class="space-y-4" autocomplete="off">
+            <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+            <input type="text" id="inputTopic" name="topic" placeholder="Enter topic" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DAAC40] text-gray-700" />
+            <textarea id="inputDesc" name="desc" rows="3" placeholder="Optional: Add a short description" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#DAAC40] text-gray-700"></textarea>
+            <button type="submit" class="bg-[#DAAC40] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#b89627] transition focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/50">Generate Content</button>
+          </form>
+
+          <div id="loader" class="mt-6 text-center hidden">
+            <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+              <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            <p class="text-sm text-gray-500 mt-2">Generating… Please wait.</p>
+          </div>
+
+          <div id="resultsSection" class="mt-6 hidden text-left text-gray-800 space-y-3">
+            <h2 class="text-md font-semibold mb-1 text-[#DAAC40]">Generated Content:</h2>
+            <div id="resultText" class="text-sm bg-gray-50 p-4 rounded-md border border-gray-200 whitespace-pre-wrap"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('contentForm')
+      const loader = document.getElementById('loader')
+      const resultsSection = document.getElementById('resultsSection')
+      const resultText = document.getElementById('resultText')
+    
+      form.addEventListener('submit', function (e) {
+        e.preventDefault()
+        loader.classList.remove('hidden')
+        resultsSection.classList.add('hidden')
+        resultText.textContent = ''
+    
+        const csrfToken = document.getElementById('csrf_token').value
+        const topic = document.getElementById('inputTopic').value.trim()
+        const desc = document.getElementById('inputDesc').value.trim()
+    
+        fetch('/tools/ai-content-generator/ajax', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrfToken
+          },
+          body: new URLSearchParams({ topic, desc, csrf_token: csrfToken })
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            loader.classList.add('hidden')
+            if (data.error) {
+              resultText.textContent = data.error
+              resultText.classList.add('text-red-600')
+            } else {
+              resultText.textContent = data.result
+              resultText.classList.remove('text-red-600')
+              resultsSection.classList.remove('hidden')
+            }
+          })
+          .catch(() => {
+            loader.classList.add('hidden')
+            resultText.textContent = 'Network error. Please try again.'
+            resultText.classList.add('text-red-600')
+            resultsSection.classList.remove('hidden')
+          })
+      })
+    })
+  </script>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Link Profile Analyzer - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Analyze internal and external links on any webpage. Check anchor text, link type, and overall link profile for SEO.{% endblock %}
+{% block meta_keywords %}link profile analyzer, link audit tool, external link checker, nofollow link checker{% endblock %}
+
+{% block content %}
+<section class="py-14 min-h-screen bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc]">
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+      <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">Link Profile Analyzer</h1>
+      <p class="text-sm text-gray-600 text-center mb-6">Enter a page URL to analyze all internal and external links with anchor text and link type.</p>
+
+      <form id="linkProfileForm" class="space-y-4">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+        <input type="url" id="inputUrl" required placeholder="https://example.com"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-[#DAAC40] focus:outline-none">
+        <button type="submit" class="bg-[#DAAC40] hover:bg-[#b89627] text-white font-semibold px-6 py-2 rounded-md">Analyze Profile</button>
+      </form>
+
+      <div id="loader" class="text-center mt-6 hidden">
+        <p class="text-sm text-gray-500">Analyzing link profile…</p>
+      </div>
+
+      <div id="resultsSection" class="mt-6 hidden">
+        <div>
+          <h2 class="text-lg font-semibold mb-2 text-[#DAAC40]">Internal Links</h2>
+          <table class="w-full text-sm border-collapse border mb-6">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="border px-3 py-2">URL</th>
+                <th class="border px-3 py-2">Anchor</th>
+                <th class="border px-3 py-2">Rel</th>
+              </tr>
+            </thead>
+            <tbody id="internalLinks"></tbody>
+          </table>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-semibold mb-2 text-[#DAAC40]">External Links</h2>
+          <table class="w-full text-sm border-collapse border">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="border px-3 py-2">URL</th>
+                <th class="border px-3 py-2">Anchor</th>
+                <th class="border px-3 py-2">Rel</th>
+              </tr>
+            </thead>
+            <tbody id="externalLinks"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("linkProfileForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const csrfToken = document.getElementById("csrf_token").value;
+  const url = document.getElementById("inputUrl").value.trim();
+
+  document.getElementById("loader").classList.remove("hidden");
+  document.getElementById("resultsSection").classList.add("hidden");
+
+  fetch('/tools/link-profile-analyzer/ajax', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': csrfToken
+    },
+    body: new URLSearchParams({ url, csrf_token: csrfToken })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("loader").classList.add("hidden");
+
+    const internalTable = document.getElementById("internalLinks");
+    const externalTable = document.getElementById("externalLinks");
+    internalTable.innerHTML = "";
+    externalTable.innerHTML = "";
+
+    data.internal.forEach(link => {
+      internalTable.innerHTML += `
+        <tr>
+          <td class="border px-3 py-2 break-all">${link.url}</td>
+          <td class="border px-3 py-2">${link.anchor}</td>
+          <td class="border px-3 py-2">${link.rel}</td>
+        </tr>`;
+    });
+
+    data.external.forEach(link => {
+      externalTable.innerHTML += `
+        <tr>
+          <td class="border px-3 py-2 break-all">${link.url}</td>
+          <td class="border px-3 py-2">${link.anchor}</td>
+          <td class="border px-3 py-2">${link.rel}</td>
+        </tr>`;
+    });
+
+    document.getElementById("resultsSection").classList.remove("hidden");
+  })
+  .catch(() => {
+    document.getElementById("loader").classList.add("hidden");
+    alert("Something went wrong. Please try again.");
+  });
+});
+</script>
+{% endblock %}

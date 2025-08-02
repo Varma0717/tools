@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}HTTP Header Checker - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Analyze HTTP response headers, status codes, and server info of any website.{% endblock %}
+{% block meta_keywords %}http header checker, server status, website headers, response headers{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-2xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2 text-center">HTTP Header Checker</h1>
+      <p class="text-sm text-gray-600 text-center mb-6">Enter a URL to inspect HTTP headers, response codes, and server data.</p>
+
+      <form id="headerForm" class="space-y-4">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+        <input type="url" id="inputUrl" placeholder="https://example.com" required
+               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#DAAC40]">
+        <button type="submit" class="bg-[#DAAC40] hover:bg-[#b89627] text-white px-6 py-2 rounded-md font-semibold w-full">
+          Check Headers
+        </button>
+      </form>
+
+      <div id="loader" class="mt-6 text-center hidden">
+        <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+          <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+        <p class="text-sm text-gray-500 mt-2">Fetching headers…</p>
+      </div>
+
+      <div id="resultsSection" class="mt-6 hidden text-sm font-mono">
+        <div class="text-left space-y-2 text-gray-800">
+          <h2 class="text-md font-semibold text-[#DAAC40] mb-1">HTTP Headers:</h2>
+          <ul id="resultList" class="list-none space-y-1"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("headerForm");
+  const loader = document.getElementById("loader");
+  const resultList = document.getElementById("resultList");
+  const resultsSection = document.getElementById("resultsSection");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    loader.classList.remove("hidden");
+    resultsSection.classList.add("hidden");
+    resultList.innerHTML = "";
+
+    const url = document.getElementById("inputUrl").value.trim();
+    const csrfToken = document.getElementById("csrf_token").value;
+
+    fetch("/tools/http-header-checker/ajax", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": csrfToken
+      },
+      body: new URLSearchParams({
+        url,
+        csrf_token: csrfToken
+      })
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        loader.classList.add("hidden");
+
+        if (data.error) {
+          resultList.innerHTML = `<li class="text-red-600">${data.error}</li>`;
+        } else {
+          const headers = data.headers;
+          Object.keys(headers).forEach(key => {
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${key}:</strong> ${headers[key]}`;
+            resultList.appendChild(li);
+          });
+          resultsSection.classList.remove("hidden");
+        }
+      })
+      .catch(() => {
+        loader.classList.add("hidden");
+        resultList.innerHTML = `<li class="text-red-600">Something went wrong.</li>`;
+        resultsSection.classList.remove("hidden");
+      });
+  });
+});
+</script>
+{% endblock %}

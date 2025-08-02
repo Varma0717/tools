@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Find All Links - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Discover all internal and external links on any webpage. Instantly analyze a webpage for SEO linking structure.{% endblock %}
+
+{% block meta_keywords %}Find All Links In page{% endblock %}
+
+{% block content %}
+
+<section class="py-12 bg-gray-50 min-h-screen">
+
+  <div class="max-w-2xl mx-auto px-4">
+
+    <div class="bg-white shadow rounded-xl p-8 border border-gray-200 relative overflow-hidden">
+
+
+
+      <!-- Glowing Circle -->
+
+      <div class="absolute -top-12 -left-12 w-64 h-64 bg-[#DAAC40]/15 rounded-full blur-3xl animate-pulse"></div>
+
+
+
+      <div class="relative z-10 text-center">
+
+        <img src="/static/favicon.png" alt="Logo" class="mx-auto w-[50px] mb-3">
+
+        <h1 class="text-2xl font-bold text-gray-800">Find All Links</h1>
+
+        <p class="text-gray-600 text-sm mb-6">Get all internal and external links from any webpage URL.</p>
+
+      </div>
+
+
+
+      <form id="linkForm" class="space-y-4">
+
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
+
+
+        <div>
+
+          <label for="url" class="block text-sm font-medium text-gray-700">Enter Website URL</label>
+
+          <input type="url" id="url" name="url" required placeholder="https://example.com"
+
+                 class="mt-1 w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#DAAC40]">
+
+        </div>
+
+
+
+        <button type="submit" class="w-full bg-[#DAAC40] text-white py-2 rounded-md hover:bg-[#c69735] transition">
+
+          Scan for Links
+
+        </button>
+
+      </form>
+
+
+
+      <!-- Loader -->
+
+      <div id="loader" class="mt-6 hidden text-center">
+
+        <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+
+          <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+
+        </svg>
+
+        <p class="text-sm text-gray-500 mt-2">Fetching links...</p>
+
+      </div>
+
+
+
+      <!-- Results -->
+
+      <div id="results" class="mt-8 hidden">
+
+        <div class="mb-6">
+
+          <h3 class="text-lg font-bold text-gray-700">Internal Links</h3>
+
+          <ul id="internalLinks" class="list-disc list-inside text-sm text-gray-700 space-y-1 mt-2"></ul>
+
+        </div>
+
+
+
+        <div>
+
+          <h3 class="text-lg font-bold text-gray-700">External Links</h3>
+
+          <ul id="externalLinks" class="list-disc list-inside text-sm text-gray-700 space-y-1 mt-2"></ul>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- How It Works -->
+
+    <div class="mt-10 pt-6 border-t border-gray-200">
+
+      <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+      <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+
+        <li>Enter a valid website URL.</li>
+
+        <li>The tool fetches the webpage and parses all anchor tags.</li>
+
+        <li>It categorizes links into internal and external for easy review.</li>
+
+      </ul>
+
+      <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Benefits</h4>
+
+      <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+
+        <li>Quickly audit SEO-friendly linking structure.</li>
+
+        <li>Identify outbound links for backlink outreach.</li>
+
+        <li>Improve internal linking for better crawlability and UX.</li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<script>
+
+document.getElementById("linkForm").addEventListener("submit", function (e) {
+
+  e.preventDefault();
+
+  const loader = document.getElementById("loader");
+
+  const results = document.getElementById("results");
+
+  const csrf = document.getElementById("csrf_token").value;
+
+  const url = document.getElementById("url").value.trim();
+
+  const internalList = document.getElementById("internalLinks");
+
+  const externalList = document.getElementById("externalLinks");
+
+
+
+  if (!url) return alert("Please enter a valid URL.");
+
+
+
+  loader.classList.remove("hidden");
+
+  results.classList.add("hidden");
+
+  internalList.innerHTML = '';
+
+  externalList.innerHTML = '';
+
+
+
+  fetch("/tools/find-all-links/ajax", {
+
+    method: "POST",
+
+    headers: {
+
+      "Content-Type": "application/json",
+
+      "X-CSRFToken": csrf
+
+    },
+
+    body: JSON.stringify({ url: url })
+
+  })
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    if (data.success) {
+
+      data.result.internal.forEach(link => {
+
+        const li = document.createElement("li");
+
+        li.textContent = link;
+
+        internalList.appendChild(li);
+
+      });
+
+      data.result.external.forEach(link => {
+
+        const li = document.createElement("li");
+
+        li.textContent = link;
+
+        externalList.appendChild(li);
+
+      });
+
+      results.classList.remove("hidden");
+
+    } else {
+
+      alert(data.error || "An error occurred.");
+
+    }
+
+  })
+
+  .catch(() => alert("Unexpected error occurred."))
+
+  .finally(() => loader.classList.add("hidden"));
+
+});
+
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Open Graph Preview - Super SEO Toolkit{% endblock %}
+
+{% block meta_description %}Preview how your website will appear on social platforms. Instantly fetch Open Graph and Twitter Card meta tags from any URL.{% endblock %}
+
+{% block meta_keywords %}Open Graph Preview{% endblock %}
+
+{% block content %}
+
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+
+  <div class="max-w-2xl mx-auto px-4">
+
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+
+      <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+
+
+
+      <div class="relative z-10 text-center">
+
+        <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="mx-auto w-[50px] mb-3">
+
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Open Graph Preview</h1>
+
+        <p class="text-sm text-gray-600 mb-6">Fetch and preview your site's OG meta tags as they appear on social media platforms.</p>
+
+      </div>
+
+
+
+      <form id="ogForm" class="space-y-4">
+
+        <input type="hidden" id="csrf_token" value="{{ csrf_token() }}">
+
+
+
+        <label for="url" class="block text-sm font-medium text-gray-700">Website URL</label>
+
+        <input type="url" id="url" name="url" required placeholder="https://example.com"
+
+               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#DAAC40]">
+
+
+
+        <button type="submit" class="w-full bg-[#DAAC40] text-white py-2 rounded-md hover:bg-[#c69735] transition font-semibold">
+
+          Fetch Open Graph Preview
+
+        </button>
+
+      </form>
+
+
+
+      <!-- Loader -->
+
+      <div id="loader" class="mt-6 hidden text-center">
+
+        <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+
+          <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+
+        </svg>
+
+        <p class="text-sm text-gray-500 mt-2">Fetching preview...</p>
+
+      </div>
+
+
+
+      <!-- Results -->
+
+      <div id="results" class="mt-6 hidden">
+
+        <h2 class="text-lg font-semibold text-gray-800 mb-3">Preview Result</h2>
+
+        <div class="bg-gray-100 rounded-md p-4 shadow">
+
+          <div id="ogPreviewImage" class="mb-3"></div>
+
+          <p class="text-sm text-gray-800"><strong>Title:</strong> <span id="ogTitle"></span></p>
+
+          <p class="text-sm text-gray-800"><strong>Description:</strong> <span id="ogDescription"></span></p>
+
+          <p class="text-sm text-gray-800"><strong>Site Name:</strong> <span id="ogSiteName"></span></p>
+
+          <p class="text-sm text-gray-800"><strong>URL:</strong> <span id="ogUrl"></span></p>
+
+          <p class="text-sm text-gray-800"><strong>Twitter Card:</strong> <span id="ogCard"></span></p>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Guide -->
+
+      <div class="mt-10 pt-6 border-t border-gray-200">
+
+        <h4 class="text-lg font-bold text-gray-800 mb-2">How it Works</h4>
+
+        <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+
+          <li>Enter a full URL (including https://) of any live web page.</li>
+
+          <li>The tool fetches its Open Graph (OG) and Twitter Card metadata.</li>
+
+          <li>You get a visual preview + extracted title, description, and image.</li>
+
+        </ul>
+
+
+
+        <h4 class="text-lg font-bold text-gray-800 mt-6 mb-2">Why Use This Tool?</h4>
+
+        <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+
+          <li>Ensure social platforms show your content correctly.</li>
+
+          <li>Fix missing or broken meta tags quickly.</li>
+
+          <li>Test social preview for SEO clients, blogs, or ecommerce sites.</li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  const form = document.getElementById('ogForm');
+
+  const loader = document.getElementById('loader');
+
+  const results = document.getElementById('results');
+
+
+
+  form.addEventListener('submit', function (e) {
+
+    e.preventDefault();
+
+
+
+    const url = document.getElementById('url').value.trim();
+
+    const csrf = document.getElementById('csrf_token').value;
+
+
+
+    if (!url) return alert("Please enter a valid URL.");
+
+
+
+    loader.classList.remove('hidden');
+
+    results.classList.add('hidden');
+
+
+
+    fetch('/tools/open-graph-preview/ajax', {
+
+      method: 'POST',
+
+      headers: {
+
+        'Content-Type': 'application/json',
+
+        'X-CSRFToken': csrf
+
+      },
+
+      body: JSON.stringify({ url: url })
+
+    })
+
+    .then(res => res.json())
+
+    .then(data => {
+
+      if (data.success) {
+
+        const p = data.preview;
+
+        document.getElementById('ogTitle').textContent = p.title || '—';
+
+        document.getElementById('ogDescription').textContent = p.description || '—';
+
+        document.getElementById('ogSiteName').textContent = p.site_name || '—';
+
+        document.getElementById('ogUrl').textContent = p.url || '—';
+
+        document.getElementById('ogCard').textContent = p.twitter_card || '—';
+
+
+
+        const imgContainer = document.getElementById('ogPreviewImage');
+
+        imgContainer.innerHTML = p.image
+
+          ? `<img src="${p.image}" alt="Preview Image" class="w-full max-h-52 object-contain rounded shadow mb-2">`
+
+          : '';
+
+
+
+        results.classList.remove('hidden');
+
+      } else {
+
+        alert(data.error || 'Something went wrong.');
+
+      }
+
+    })
+
+    .catch(() => alert("An unexpected error occurred."))
+
+    .finally(() => loader.classList.add('hidden'));
+
+  });
+
+});
+
+</script>
+
+{% endblock %}
+

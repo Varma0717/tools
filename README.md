@@ -1,16 +1,18 @@
-# Tools Repository
+# SEO Tools Flask App (devsites.lol ready)
 
-This repository is prepared for a new Flask application with tools functionality.
+## 📦 Deployment on Namecheap Shared Hosting
+- Place files in `/home/abneckuv/public_html/devsites.lol/`
+- Ensure Python app is created via cPanel
+- Activate your virtualenv:
+```bash
+source /home/abneckuv/virtualenv/public_html/devsites.lol/3.11/bin/activate
+pip install -r requirements.txt
+```
 
-## Status
-- Repository cleaned and ready for new application
-- Previous application files removed
-- Ready for import of new project
+- Restart app from cPanel
 
-## Next Steps
-1. Import your new Flask application
-2. Implement tools system with real logic
-3. Organize tools by categories (SEO, Text, Web, Security)
-
----
-*Repository cleaned on August 2, 2025*
+## 🔐 Default Routes:
+- `/tools/meta-tag-extractor`
+- `/users/login`
+- `/users/register`
+- `/admin/` (requires login)

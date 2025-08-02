@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}SEO Audit Tool - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Run a quick SEO audit of your webpage. Check title, meta description, headings, image ALT tags, and more.{% endblock %}
+{% block meta_keywords %}seo audit tool, website seo checker, onpage seo analysis, meta tag analyzer, h1 audit{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-3xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+      <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">SEO Audit Tool</h1>
+      <p class="text-sm text-gray-600 text-center mb-6">Check basic on-page SEO factors for your webpage in seconds.</p>
+
+      <form id="seoAuditForm" class="space-y-4">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
+        <input type="url" id="inputUrl" name="url" required placeholder="https://example.com"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-[#DAAC40] focus:outline-none">
+        <button type="submit" class="bg-[#DAAC40] hover:bg-[#b89627] text-white font-semibold px-6 py-2 rounded-md">Run Audit</button>
+      </form>
+
+      <div id="loader" class="mt-6 text-center hidden text-sm text-gray-500">Running audit…</div>
+
+      <div id="resultsSection" class="mt-6 hidden text-sm text-gray-800 space-y-2">
+        <div><strong>Title:</strong> <span id="titleResult"></span> <small>(<span id="titleLength"></span> chars)</small></div>
+        <div><strong>Meta Description:</strong> <span id="descResult"></span> <small>(<span id="descLength"></span> chars)</small></div>
+        <div><strong>H1 Tag Present:</strong> <span id="h1Result"></span></div>
+        <div><strong>Canonical Tag:</strong> <span id="canonicalResult"></span></div>
+        <div><strong>Images With ALT:</strong> <span id="altResult"></span></div>
+        <div><strong>Internal Links:</strong> <span id="internalLinks"></span></div>
+        <div><strong>External Links:</strong> <span id="externalLinks"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("seoAuditForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const csrfToken = document.getElementById("csrf_token").value;
+  const url = document.getElementById("inputUrl").value.trim();
+
+  document.getElementById("loader").classList.remove("hidden");
+  document.getElementById("resultsSection").classList.add("hidden");
+
+  fetch('/tools/seo-audit/ajax', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': csrfToken
+    },
+    body: new URLSearchParams({ url, csrf_token: csrfToken })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("loader").classList.add("hidden");
+
+    if (data.error) {
+      alert(data.error);
+    } else {
+      document.getElementById("titleResult").textContent = data.title || "N/A";
+      document.getElementById("titleLength").textContent = data.title_length;
+      document.getElementById("descResult").textContent = data.description || "N/A";
+      document.getElementById("descLength").textContent = data.description_length;
+      document.getElementById("h1Result").textContent = data.has_h1 ? "✅ Yes" : "❌ No";
+      document.getElementById("canonicalResult").textContent = data.has_canonical ? "✅ Yes" : "❌ No";
+      document.getElementById("altResult").textContent = `${data.images_with_alt}/${data.total_images}`;
+      document.getElementById("internalLinks").textContent = data.internal_links;
+      document.getElementById("externalLinks").textContent = data.external_links;
+      document.getElementById("resultsSection").classList.remove("hidden");
+    }
+  })
+  .catch(() => {
+    document.getElementById("loader").classList.add("hidden");
+    alert("Something went wrong. Please try again.");
+  });
+});
+</script>
+{% endblock %}

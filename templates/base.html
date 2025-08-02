@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+
+  <!-- Title & Meta -->
+
+  <title>{% block title %}Super SEO Toolkit: Free SEO Tools, Backlink Checker, Website Audit, Meta Tag Analyzer{% endblock %}</title>
+
+  <meta name="title" content="{% block og_title %}Super SEO Toolkit: #1 Free SEO Analyzer, Backlink Checker, Keyword Tools, Site Audit Platform{% endblock %}">
+
+  <meta name="description" content="{% block meta_description %}Super SEO Toolkit offers 250+ advanced free SEO tools for real-time website audits, backlink checking, keyword research, meta tag analysis, plagiarism detection, and performance optimization. Instantly boost your Google ranking and website traffic with AI-powered reports and actionable insights.{% endblock %}">
+
+  <meta name="keywords" content="{% block meta_keywords %}super seo toolkit, seo tools, free seo tools, seo analyzer, website audit, backlink checker, keyword research, meta tag analyzer, site speed checker, on-page seo, ai seo tools, google serp analysis, content optimization, rank tracking, seo report, sitemap generator, broken link checker, competitor analysis{% endblock %}">
+
+  <meta name="author" content="Super SEO Toolkit">
+
+  <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}" />
+
+
+
+  <!-- Open Graph / Facebook -->
+
+  <meta property="og:type" content="website">
+
+  <meta property="og:site_name" content="Super SEO Toolkit">
+
+  <meta property="og:url" content="{% block og_url %}{{ request.url if request else 'https://superseotoolkit.com/' }}{% endblock %}">
+
+  <meta property="og:title" content="{% block og_title_fb %}Super SEO Toolkit — Free SEO Analyzer, Backlink Checker, Keyword Tools{% endblock %}">
+
+  <meta property="og:description" content="{% block og_description %}Boost your Google ranking instantly with the Super SEO Toolkit — 250+ free SEO tools for site audit, backlink checking, content optimization, and meta tag analysis. AI-powered and AdSense-friendly!{% endblock %}">
+
+  <meta property="og:image" content="{% block og_image %}{% if post and post.featured_image %}{{ url_for('static', filename='images/' ~ post.featured_image) }}{% else %}https://superseotoolkit.com/static/og-preview.png{% endif %}{% endblock %}">
+
+
+  <meta property="og:image:alt" content="Super SEO Toolkit Screenshot" />
+  <meta property="og:locale" content="en_US" />
+
+  
+  
+
+  <!-- Twitter -->
+
+  <meta name="twitter:card" content="summary_large_image">
+
+  <meta name="twitter:site" content="@superseotoolkit">
+
+  <meta name="twitter:url" content="{% block twitter_url %}{{ request.url if request else 'https://superseotoolkit.com/' }}{% endblock %}">
+
+  <meta name="twitter:title" content="{% block twitter_title %}Super SEO Toolkit — Free SEO Tools, SEO Analyzer & Website Audit{% endblock %}">
+
+  <meta name="twitter:description" content="{% block twitter_description %}Run SEO audits, check backlinks, analyze keywords, and boost your traffic with Super SEO Toolkit’s 250+ real-time AI-powered SEO tools. Trusted by marketers, bloggers & agencies.{% endblock %}">
+
+  <meta name="twitter:image:alt" content="Super SEO Toolkit Screenshot" />
+
+  <meta name="csrf-token" content="{{ csrf_token }}">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Super SEO Toolkit",
+    "url": "https://superseotoolkit.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://superseotoolkit.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+
+
+  <!-- Canonical -->
+
+  <link rel="canonical" href="{% block canonical %}{{ request.url if request else 'https://superseotoolkit.com/' }}{% endblock %}" />
+
+
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon.png" />
+
+
+
+   {# Uncomment below and edit if using custom Tailwind build #}
+
+   <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+
+
+
+  <!-- Lucide Icons CDN -->
+
+  {# <script src="https://cdn.tailwindcss.com"></script> #}
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Alpine.js -->
+
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- HTMX (Optional, keep if used) -->
+
+  <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+
+  
+
+  <script src="https://analytics.ahrefs.com/analytics.js" data-key="cdKYXcyq0whzxMIhONhF9Q" async></script>
+
+  
+
+  <!-- Custom Site JS -->
+
+  {% block extra_head %}{% endblock %}
+
+</head>
+
+
+
+
+
+<body class="bg-white text-gray-900 antialiased min-h-screen flex flex-col">
+
+    
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+  {% if messages %}
+
+    <div class="my-4 space-y-2 max-w-xl mx-auto">
+
+      {% for category, msg in messages %}
+
+        <div class="rounded-lg px-4 py-2 text-sm font-medium 
+
+            {% if category == 'success' %}bg-green-100 text-green-800
+
+            {% elif category == 'danger' %}bg-red-100 text-red-800
+
+            {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+
+          {{ msg }}
+
+        </div>
+
+      {% endfor %}
+
+    </div>
+
+  {% endif %}
+
+{% endwith %}
+
+
+
+  {% include 'partials/header.html' %}
+
+
+
+  <main class="flex-grow mx-auto w-full px-6">{% block content %}{% endblock %}</main>
+
+
+
+  {% include 'partials/footer.html' %}
+
+
+
+  <!-- Custom Scripts -->
+
+  <script defer src="{{ url_for('static', filename='js/newsletter.js') }}"></script>
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+      if (window.lucide) window.lucide.createIcons();
+
+    });
+
+  </script>
+
+  
+
+  {# Google Analytics Example (uncomment and insert your tag) #}
+
+  
+
+  <!-- Google tag (gtag.js) -->
+
+
+
+
+
+
+
+  <!-- Google Analytics (GA4) -->
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5MQY4NXMWC"></script>
+
+  <script>
+
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag(){dataLayer.push(arguments);}
+
+    gtag('js', new Date());
+
+
+
+    gtag('config', 'G-5MQY4NXMWC');
+
+  </script>
+
+
+
+  {# Google AdSense (policy: only on pages you want to monetize) #}
+
+  {#
+
+  <script data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+  
+
+  
+
+  #}
+
+  
+
+  <script>
+
+  var ahrefs_analytics_script = document.createElement('script');
+
+  ahrefs_analytics_script.async = true;
+
+  ahrefs_analytics_script.src = 'https://analytics.ahrefs.com/analytics.js';
+
+  ahrefs_analytics_script.setAttribute('data-key', 'cdKYXcyq0whzxMIhONhF9Q');
+
+  document.getElementsByTagName('head')[0].appendChild(ahrefs_analytics_script);
+
+</script>
+
+</body>
+
+</html>
+

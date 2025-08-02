@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Referrer Spam Filter - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Filter out spammy referrer domains from your traffic logs for cleaner SEO data.{% endblock %}
+{% block meta_keywords %}referrer spam, spam filter, SEO analytics, referral traffic{% endblock %}
+
+{% block content %}
+<section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
+  <div class="max-w-2xl mx-auto px-4">
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+      <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
+      <div class="relative z-10 text-center">
+        <img src="/static/favicon.png" alt="Logo" class="mx-auto w-[50px] mb-3">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Referrer Spam Filter</h1>
+        <p class="text-sm text-gray-600 mb-4">Upload your referrer log file to detect and filter out common spammy referrer domains.</p>
+
+        <form id="spamFilterForm" class="space-y-4" autocomplete="off" enctype="multipart/form-data">
+          <input type="hidden" id="csrf_token" value="{{ csrf_token() }}">
+          <input type="file" id="logfile" name="logfile" accept=".csv,text/csv" required
+                 class="mx-auto block border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#DAAC40] text-gray-700" />
+          <button type="submit" class="bg-[#DAAC40] text-white px-6 py-2 rounded-md font-semibold hover:bg-[#b89627] transition">Filter Spam</button>
+        </form>
+
+        <div id="loader" class="mt-6 text-center hidden">
+          <svg class="animate-spin h-6 w-6 mx-auto text-[#DAAC40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#DAAC40" stroke-width="4" />
+            <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          <p class="text-sm text-gray-500 mt-2">Filtering spam referrers… Please wait.</p>
+        </div>
+
+        <div id="resultsSection" class="mt-6 hidden text-left text-gray-800 space-y-6">
+          <div>
+            <strong>Clean Referrers (<span id="cleanCount"></span>):</strong>
+            <ul id="cleanReferrers" class="list-disc list-inside max-h-48 overflow-y-auto border border-green-300 rounded p-3 bg-green-50 text-green-700"></ul>
+          </div>
+          <div>
+            <strong>Spammy Referrers (<span id="spamCount"></span>):</strong>
+            <ul id="spamReferrers" class="list-disc list-inside max-h-48 overflow-y-auto border border-red-300 rounded p-3 bg-red-50 text-red-700"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const form = document.getElementById('spamFilterForm');
+  const loader = document.getElementById('loader');
+  const resultsSection = document.getElementById('resultsSection');
+  const cleanCount = document.getElementById('cleanCount');
+  const spamCount = document.getElementById('spamCount');
+  const cleanReferrers = document.getElementById('cleanReferrers');
+  const spamReferrers = document.getElementById('spamReferrers');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    resultsSection.style.display = 'none';
+    loader.style.display = 'block';
+
+    const csrfToken = document.getElementById('csrf_token').value;
+    const fileInput = document.getElementById('logfile');
+    const file = fileInput.files[0];
+    if (!file) {
+      alert('Please select a CSV log file.');
+      loader.style.display = 'none';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('logfile', file);
+    formData.append('csrf_token', csrfToken);
+
+    fetch('/tools/referrer-spam-filter/ajax', {
+      method: 'POST',
+      body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+      loader.style.display = 'none';
+
+      if (data.error) {
+        resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">${data.error}</div>`;
+        resultsSection.style.display = 'block';
+        return;
+      }
+
+      cleanCount.textContent = data.clean_count;
+      spamCount.textContent = data.spam_count;
+
+      cleanReferrers.innerHTML = '';
+      data.clean_referrers.forEach(r => {
+        cleanReferrers.innerHTML += `<li>${r}</li>`;
+      });
+
+      spamReferrers.innerHTML = '';
+      if(data.spam_referrers.length > 0) {
+        data.spam_referrers.forEach(r => {
+          spamReferrers.innerHTML += `<li>${r}</li>`;
+        });
+      } else {
+        spamReferrers.innerHTML = '<li>None detected</li>';
+      }
+
+      resultsSection.style.display = 'block';
+    })
+    .catch(() => {
+      loader.style.display = 'none';
+      resultsSection.innerHTML = `<div class="text-center text-red-500 py-8 text-lg">Error analyzing log. Please try again.</div>`;
+      resultsSection.style.display = 'block';
+    });
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,23 @@
+<h2 class="text-xl font-semibold mb-4">All Orders</h2>
+<table class="w-full text-sm">
+  <thead>
+    <tr class="bg-gray-100 text-left">
+      <th class="py-2 px-3">User</th>
+      <th class="py-2 px-3">Product</th>
+      <th class="py-2 px-3">Amount</th>
+      <th class="py-2 px-3">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr class="border-t">
+      <td class="py-2 px-3">{{ order.user.username }}</td>
+      <td class="py-2 px-3">{{ order.product }}</td>
+      <td class="py-2 px-3">${{ order.amount }}</td>
+      <td class="py-2 px-3">{{ order.status }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-center py-4 text-gray-500">No orders yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
