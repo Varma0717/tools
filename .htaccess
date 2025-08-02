@@ -1,3 +1,72 @@
-# Block directory listing
-Options -Indexes
+# Flask Application .htaccess for XAMPP Apache Server
+# Enables clean URLs and proper routing for Flask app
+
+RewriteEngine On
+
+# Option 1: If mod_wsgi is available (preferred method)
+<IfModule mod_wsgi.c>
+    WSGIScriptAlias /app c:/xampp/htdocs/app/wsgi.py
+    WSGIApplicationGroup %{GLOBAL}
+    
+    # Set up directory for WSGI
+    <Directory "c:/xampp/htdocs/app">
+        WSGIProcessGroup %{GLOBAL}
+        WSGIApplicationGroup %{GLOBAL}
+        Require all granted
+    </Directory>
+</IfModule>
+
+# Option 2: Proxy to Flask development server (fallback)
+<IfModule !mod_wsgi.c>
+    # Enable proxy module (if available)
+    <IfModule mod_proxy.c>
+        ProxyPreserveHost On
+        ProxyPass /app/ http://localhost:8080/
+        ProxyPassReverse /app/ http://localhost:8080/
+    </IfModule>
+    
+    # If proxy is not available, use CGI
+    <IfModule !mod_proxy.c>
+        # Enable CGI execution for Python files
+        AddHandler cgi-script .py
+        Options +ExecCGI
+        
+        # Set index file to CGI script
+        DirectoryIndex index.py index.html
+        
+        # Handle static files directly
+        RewriteRule ^static/(.*)$ static/$1 [L]
+        
+        # Route requests through CGI
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteCond %{REQUEST_URI} !^/app/static/
+        RewriteRule ^(.*)$ index.py/$1 [QSA,L]
+    </IfModule>
+</IfModule>
+
+# Security: Block access to sensitive files
+<Files ".env*">
+    Require all denied
+</Files>
+
+<Files "*.py">
+    <RequireAll>
+        Require all granted
+        <RequireNone>
+            Require not expr %{REQUEST_URI} =~ m#/(config|models|utils|core)/#
+        </RequireNone>
+    </RequireAll>
+</Files>
+
+# Cache static files for better performance
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
 

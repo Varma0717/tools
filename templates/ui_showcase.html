@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% block title %}
+  UI Components Showcase
+{% endblock %}
+
+{% block content %}
+  <div class="max-w-7xl mx-auto py-8 px-4 space-y-12">
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-gradient-primary mb-4">UI Components Showcase</h1>
+      <p class="text-xl text-gray-600">Enhanced Super SEO Toolkit Design System</p>
+    </div>
+
+    <!-- Buttons Section -->
+    <section class="card p-8">
+      <h2 class="text-2xl font-semibold mb-6">Button System</h2>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <button class="btn-primary">Primary</button>
+        <button class="btn-secondary">Secondary</button>
+        <button class="btn-accent">Accent</button>
+        <button class="btn-danger">Danger</button>
+        <button class="btn-ghost">Ghost</button>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-4">
+        <button class="btn-primary btn-sm">Small</button>
+        <button class="btn-primary">Regular</button>
+        <button class="btn-primary btn-lg">Large</button>
+        <button class="btn-primary btn-xl">Extra Large</button>
+        <button class="btn-primary" disabled>Disabled</button>
+      </div>
+    </section>
+
+    <!-- Toast/Alert Testing -->
+    <section class="card p-8">
+      <h2 class="text-2xl font-semibold mb-6">Toast Notifications</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <button onclick="showSuccess('Operation completed successfully!')" class="btn-primary">
+          <i data-lucide="check" class="w-4 h-4 mr-2"></i>
+          Success Toast
+        </button>
+        <button onclick="showError('Something went wrong!')" class="btn-danger">
+          <i data-lucide="x" class="w-4 h-4 mr-2"></i>
+          Error Toast
+        </button>
+        <button onclick="showWarning('Please check your input!')" class="btn-secondary">
+          <i data-lucide="alert-triangle" class="w-4 h-4 mr-2"></i>
+          Warning Toast
+        </button>
+        <button onclick="showInfo('Here is some useful information!')" class="btn-accent">
+          <i data-lucide="info" class="w-4 h-4 mr-2"></i>
+          Info Toast
+        </button>
+      </div>
+    </section>
+
+    <!-- Card Variations -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-6">Card System</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="font-semibold">Regular Card</h3>
+          </div>
+          <div class="card-body">
+            <p class="text-gray-600">This is a standard card with header and body.</p>
+          </div>
+          <div class="card-footer">
+            <button class="btn-primary btn-sm">Action</button>
+          </div>
+        </div>
+
+        <div class="card-hover">
+          <div class="card-body">
+            <h3 class="font-semibold mb-2">Hover Card</h3>
+            <p class="text-gray-600">This card has hover effects with lift and shadow.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="p-6 bg-gradient-accent text-white">
+            <h3 class="font-semibold mb-2">Gradient Card</h3>
+            <p>Beautiful gradient background with accent colors.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Components -->
+    <section class="card p-8">
+      <h2 class="text-2xl font-semibold mb-6">Form System</h2>
+      <div class="max-w-md space-y-6">
+        <div class="form-group">
+          <label class="form-label">Standard Input</label>
+          <input type="text" class="input" placeholder="Enter text here" />
+          <p class="form-help">This is a helpful description</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Error State</label>
+          <input type="email" class="input input-error" value="invalid-email" />
+          <p class="form-error">Please enter a valid email address</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Success State</label>
+          <input type="text" class="input input-success" value="Valid input" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Badges and Status -->
+    <section class="card p-8">
+      <h2 class="text-2xl font-semibold mb-6">Badges & Status</h2>
+      <div class="flex flex-wrap gap-4">
+        <span class="badge-primary">Primary</span>
+        <span class="badge-success">Success</span>
+        <span class="badge-warning">Warning</span>
+        <span class="badge-danger">Danger</span>
+      </div>
+    </section>
+
+    <!-- Loading States -->
+    <section class="card p-8">
+      <h2 class="text-2xl font-semibold mb-6">Loading States</h2>
+      <div class="space-y-4">
+        <div class="flex items-center space-x-4">
+          <div class="skeleton-avatar"></div>
+          <div class="flex-1 space-y-2">
+            <div class="skeleton-text"></div>
+            <div class="skeleton-text w-3/4"></div>
+          </div>
+          <div class="skeleton-button"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Cards -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-6">Statistics Cards</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="stat-card hover-lift">
+          <div class="stat-value text-blue-600">2,847</div>
+          <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card hover-lift">
+          <div class="stat-value text-green-600">98.2%</div>
+          <div class="stat-label">Uptime</div>
+        </div>
+        <div class="stat-card hover-lift">
+          <div class="stat-value text-purple-600">1,205</div>
+          <div class="stat-label">Active Sessions</div>
+        </div>
+        <div class="stat-card hover-lift">
+          <div class="stat-value text-accent-500">$4,832</div>
+          <div class="stat-label">Revenue</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Advanced Features -->
+    <section class="card p-8">
+      <h2 class="text-2xl font-semibold mb-6">Advanced Features</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <h3 class="font-semibold mb-4">Glass Morphism</h3>
+          <div class="glass p-6 rounded-xl">
+            <p class="text-gray-700">This card uses glass morphism with backdrop blur and transparency.</p>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-semibold mb-4">Gradient Text</h3>
+          <p class="text-gradient-primary text-2xl font-bold">Beautiful Gradient Text</p>
+          <p class="text-gradient-accent text-xl font-semibold">Accent Gradient</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Performance Info -->
+    <section class="card p-8 bg-gray-50">
+      <h2 class="text-2xl font-semibold mb-4">Performance Improvements</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-semibold text-green-600 mb-2">✅ Optimizations Applied</h3>
+          <ul class="text-sm space-y-1 text-gray-700">
+            <li>• Removed Alpine.js dependency</li>
+            <li>• Removed HTMX for better performance</li>
+            <li>• Enhanced Tailwind CSS with custom components</li>
+            <li>• Vanilla JavaScript for all interactions</li>
+            <li>• Preloaded critical resources</li>
+            <li>• Custom scrollbar styling</li>
+            <li>• Improved accessibility with focus states</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-semibold text-blue-600 mb-2">🚀 New Features</h3>
+          <ul class="text-sm space-y-1 text-gray-700">
+            <li>• Enhanced toast notification system</li>
+            <li>• Loading screen with animations</li>
+            <li>• Comprehensive button system</li>
+            <li>• Improved form components</li>
+            <li>• Glass morphism effects</li>
+            <li>• Better mobile navigation</li>
+            <li>• Custom animation utilities</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Demo Modal (hidden by default) -->
+  <div id="demo-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="text-lg font-semibold">Demo Modal</h3>
+      </div>
+      <div class="modal-body">
+        <p>This is a modal dialog example with smooth animations.</p>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+        <button onclick="closeModal()" class="btn-primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openModal() {
+      document.getElementById('demo-modal').classList.remove('hidden')
+    }
+    
+    function closeModal() {
+      document.getElementById('demo-modal').classList.add('hidden')
+    }
+    
+    // Initialize Lucide icons when page loads
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.lucide) {
+        window.lucide.createIcons()
+      }
+    })
+  </script>
+{% endblock %}

@@ -1,84 +1,120 @@
 {% extends 'base.html' %}
-{% block title %}Login | Super SEO Toolkit{% endblock %}
+{% block title %}
+  Login | Super SEO Toolkit
+{% endblock %}
 
 {% block content %}
-<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 overflow-hidden">
-  <div class="w-full max-w-md relative">
-    <!-- Animated AI Glow -->
-    <div class="absolute -top-20 -left-20 w-96 h-96 bg-[#DAAC40]/25 rounded-full blur-[100px] animate-pulse"></div>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 overflow-hidden">
+    <div class="w-full max-w-md relative">
+      <!-- Animated AI Glow -->
+      <div class="absolute -top-20 -left-20 w-96 h-96 bg-[#DAAC40]/25 rounded-full blur-[100px] animate-pulse"></div>
 
-    <div class="relative bg-white border border-gray-200 rounded-3xl shadow-xl p-10 overflow-hidden">
-      <div class="flex flex-col items-center">
-        <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="w-[50px] mb-4 animate-pulse">
-        <h2 class="text-3xl font-bold text-gray-800 text-center mb-2 tracking-tight">Login to Super SEO Toolkit</h2>
-        <p class="text-center text-gray-500 mb-6 text-sm">Access your audits and advanced SEO tools.</p>
-      </div>
-
-      <form method="POST" class="space-y-5" autocomplete="on">
-        {{ form.hidden_tag() }}
-
-        <div>
-          <label for="{{ form.username.id }}" class="block text-sm font-medium text-gray-700 mb-1">
-            {{ form.username.label.text }}
-          </label>
-          <div class="relative">
-            <i data-lucide="user" class="lucide w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            {{ form.username(class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none bg-white text-gray-700") }}
-          </div>
+      <div class="relative bg-white border border-gray-200 rounded-3xl shadow-xl p-10 overflow-hidden">
+        <div class="flex flex-col items-center">
+          <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="w-[50px] mb-4 animate-pulse" />
+          <h2 class="text-3xl font-bold text-gray-800 text-center mb-2 tracking-tight">Login to Super SEO Toolkit</h2>
+          <p class="text-center text-gray-500 mb-6 text-sm">Access your audits and advanced SEO tools.</p>
         </div>
 
-        <div x-data="{ show: false }">
-          <label for="{{ form.password.id }}" class="block text-sm font-medium text-gray-700 mb-1">
-            {{ form.password.label.text }}
-          </label>
-          <div class="relative">
-            <i data-lucide="key" class="lucide w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            <input
-              name="{{ form.password.name }}"
-              id="{{ form.password.id }}"
-              :type="show ? 'text' : 'password'"
-              class="w-full pl-10 pr-12 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none bg-white text-gray-700"
-              autocomplete="current-password"
-              required
-            >
-            <button type="button" @click="show = !show" tabindex="-1"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#DAAC40] focus:outline-none">
-              <i :data-lucide="show ? 'eye-off' : 'eye'" class="lucide w-5 h-5"></i>
-            </button>
+        <form method="POST" class="space-y-5" autocomplete="on">
+          {{ form.hidden_tag() }}
+
+          <div>
+            <label for="{{ form.username.id }}" class="block text-sm font-medium text-gray-700 mb-1">Username or Email</label>
+            <div class="relative">
+              <i data-lucide="user" class="lucide w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              {{ form.username(class='w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none bg-white text-gray-700', placeholder='Username or Email') }}
+            </div>
+            {% if form.username.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.username.errors %}
+                  <p>{{ error }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
           </div>
+
+          <div>
+            <label for="{{ form.password.id }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.password.label.text }}</label>
+            <div class="relative">
+              <i data-lucide="key" class="lucide w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input name="{{ form.password.name }}" id="{{ form.password.id }}" type="password" class="w-full pl-10 pr-12 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none bg-white text-gray-700" autocomplete="current-password" required />
+              <button type="button" onclick="togglePassword('{{ form.password.id }}')" tabindex="-1" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#DAAC40] focus:outline-none"><i data-lucide="eye" class="lucide w-5 h-5"></i></button>
+            </div>
+            {% if form.password.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.password.errors %}
+                  <p>{{ error }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Remember Me Checkbox -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              {{ form.remember_me(class='h-4 w-4 text-[#DAAC40] focus:ring-[#DAAC40] border-gray-300 rounded') }}
+              <label for="{{ form.remember_me.id }}" class="ml-2 block text-sm text-gray-700">Remember me</label>
+            </div>
+            <div class="text-sm">
+              <a href="{{ url_for('users.forgot_password') }}" class="font-medium text-[#DAAC40] hover:underline">Forgot password?</a>
+            </div>
+          </div>
+
+          {% if error %}
+            <p class="text-sm text-red-500 animate-shake">{{ error }}</p>
+          {% endif %}
+
+          {% if recaptcha_site_key %}
+            <div class="g-recaptcha my-2" data-sitekey="{{ recaptcha_site_key }}"></div>
+          {% endif %}
+
+          <button type="submit" class="w-full bg-[#DAAC40] text-white py-2 rounded-xl font-semibold shadow hover:bg-[#c69735] transition focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/50"><i data-lucide="log-in" class="lucide w-5 h-5 inline-block mr-2 -mt-1"></i> Login</button>
+        </form>
+
+        <div class="flex items-center my-6">
+          <span class="flex-grow border-t border-gray-200"></span>
+          <span class="mx-3 text-xs text-gray-400">OR</span>
+          <span class="flex-grow border-t border-gray-200"></span>
         </div>
 
-        {% if error %}
-          <p class="text-sm text-red-500 animate-shake">{{ error }}</p>
-        {% endif %}
+        <a href="{{ url_for('auth.google_login') }}" class="w-full flex items-center justify-center border border-gray-300 py-2 px-4 rounded-xl text-sm font-medium bg-white hover:bg-gray-50 shadow-sm transition"><img src="/static/img/icons8-google.svg" alt="Google" class="w-5 h-5 mr-2" /> Continue with Google</a>
 
-        {% if recaptcha_site_key %}
-        <div class="g-recaptcha my-2" data-sitekey="{{ recaptcha_site_key }}"></div>
-        {% endif %}
-
-        <button type="submit"
-          class="w-full bg-[#DAAC40] text-white py-2 rounded-xl font-semibold shadow hover:bg-[#c69735] transition focus:outline-none focus:ring-2 focus:ring-[#DAAC40]/50">
-          <i data-lucide="log-in" class="lucide w-5 h-5 inline-block mr-2 -mt-1"></i> Login
-        </button>
-      </form>
-
-      <div class="flex items-center my-6">
-        <span class="flex-grow border-t border-gray-200"></span>
-        <span class="mx-3 text-xs text-gray-400">OR</span>
-        <span class="flex-grow border-t border-gray-200"></span>
-      </div>
-
-      <a href="{{ url_for('auth.google_login') }}"
-         class="w-full flex items-center justify-center border border-gray-300 py-2 px-4 rounded-xl text-sm font-medium bg-white hover:bg-gray-50 shadow-sm transition">
-        <img src="/static/img/icons8-google.svg" alt="Google" class="w-5 h-5 mr-2"> Continue with Google
-      </a>
-
-      <div class="text-center mt-4">
-        <p class="text-sm text-gray-500">Don't have an account?
-          <a href="{{ url_for('users.register') }}" class="text-[#DAAC40] hover:underline font-medium">Register</a>
-        </p>
+        <div class="text-center mt-4">
+          <p class="text-sm text-gray-500">
+            Don't have an account?
+            <a href="{{ url_for('users.register') }}" class="text-[#DAAC40] hover:underline font-medium">Register</a>
+          </p>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
+  <script>
+    function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId)
+      const button = field.nextElementSibling
+      const icon = button.querySelector('i')
+    
+      if (field.type === 'password') {
+        field.type = 'text'
+        icon.setAttribute('data-lucide', 'eye-off')
+      } else {
+        field.type = 'password'
+        icon.setAttribute('data-lucide', 'eye')
+      }
+    
+      // Reinitialize lucide icons
+      if (window.lucide) {
+        window.lucide.createIcons()
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize lucide icons
+      if (window.lucide) {
+        window.lucide.createIcons()
+      }
+    })
+  </script>
 {% endblock %}

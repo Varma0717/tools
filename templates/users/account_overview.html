@@ -1,0 +1,222 @@
+<!-- Account Overview Section -->
+<div class="space-y-8">
+    <!-- Welcome Header -->
+    <div class="text-center border-b border-gray-200 pb-8">
+        <div class="inline-block rounded-full px-5 py-1 text-xs font-bold bg-[#DAAC40]/10 text-[#DAAC40] tracking-widest shadow-sm mb-4 uppercase">
+            Dashboard
+        </div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-3">Welcome back, {{ current_user.username }}!</h1>
+        <p class="text-xl text-gray-600">Manage your account, track usage, and access premium features.</p>
+    </div>
+
+    <!-- Current Subscription Status -->
+    <div class="bg-gradient-to-r from-[#DAAC40]/10 to-blue-50 rounded-2xl p-8 border border-[#DAAC40]/20 shadow-xl">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center mb-4 md:mb-0">
+                <div class="bg-[#DAAC40]/20 p-4 rounded-full mr-6">
+                    <i data-lucide="crown" class="lucide w-8 h-8 text-[#DAAC40]"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Your Current Plan</h2>
+                    {% if current_user.subscription and current_user.subscription.status == 'active' %}
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl font-bold text-[#DAAC40]">{{ current_user.subscription.plan.name }}</span>
+                            <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">Active</span>
+                        </div>
+                        <p class="text-gray-600 mt-2">
+                            Renews on {{ current_user.subscription.end_date.strftime('%B %d, %Y') }}
+                        </p>
+                    {% else %}
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl font-bold text-gray-600">Free Plan</span>
+                            <span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">Active</span>
+                        </div>
+                        <p class="text-gray-600 mt-2">Limited to 10 tool uses per day</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="text-center md:text-right">
+                {% if current_user.subscription and current_user.subscription.status == 'active' %}
+                    <a href="{{ url_for('subscription.plans') }}" 
+                       class="inline-block bg-white text-[#DAAC40] border-2 border-[#DAAC40] px-6 py-3 rounded-xl hover:bg-[#DAAC40] hover:text-white transition-colors font-semibold shadow">
+                        Change Plan
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('subscription.plans') }}" 
+                       class="inline-block bg-[#DAAC40] text-white px-8 py-3 rounded-xl hover:bg-[#b89627] transition-colors font-semibold shadow-lg">
+                        Upgrade Now
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Usage Statistics -->
+    <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white/90 rounded-2xl shadow-xl border border-gray-100 hover:border-[#DAAC40] transition-all duration-200 p-6 group">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Today's Usage</p>
+                    <p class="text-3xl font-bold text-gray-900" id="daily-usage">-</p>
+                </div>
+                <div class="bg-[#DAAC40]/10 p-3 rounded-full group-hover:bg-[#DAAC40]/20 transition-colors">
+                    <i data-lucide="activity" class="lucide w-8 h-8 text-[#DAAC40] group-hover:scale-110 transition-transform"></i>
+                </div>
+            </div>
+            <div class="mt-6">
+                <div class="bg-gray-200 rounded-full h-3">
+                    <div class="bg-[#DAAC40] h-3 rounded-full transition-all duration-500" id="daily-progress" style="width: 0%"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2" id="daily-limit">of - limit</p>
+            </div>
+        </div>
+
+        <div class="bg-white/90 rounded-2xl shadow-xl border border-gray-100 hover:border-[#DAAC40] transition-all duration-200 p-6 group">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">This Month</p>
+                    <p class="text-3xl font-bold text-gray-900" id="monthly-usage">-</p>
+                </div>
+                <div class="bg-green-100 p-3 rounded-full group-hover:bg-green-200 transition-colors">
+                    <i data-lucide="calendar" class="lucide w-8 h-8 text-green-600 group-hover:scale-110 transition-transform"></i>
+                </div>
+            </div>
+            <div class="mt-6">
+                <div class="bg-gray-200 rounded-full h-3">
+                    <div class="bg-green-600 h-3 rounded-full transition-all duration-500" id="monthly-progress" style="width: 0%"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2" id="monthly-limit">reports used</p>
+            </div>
+        </div>
+
+        <div class="bg-white/90 rounded-2xl shadow-xl border border-gray-100 hover:border-[#DAAC40] transition-all duration-200 p-6 group">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Member Since</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ current_user.created_at.strftime('%b %Y') }}</p>
+                </div>
+                <div class="bg-[#DAAC40]/20 p-3 rounded-full group-hover:bg-[#DAAC40]/30 transition-colors">
+                    <i data-lucide="user-check" class="lucide w-8 h-8 text-[#DAAC40] group-hover:scale-110 transition-transform"></i>
+                </div>
+            </div>
+            <p class="text-sm text-gray-500 mt-6">
+                {{ ((datetime.utcnow() - current_user.created_at).days) }} days with us
+            </p>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-xl shadow-sm border p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="{{ url_for('tools.index') }}" 
+               class="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-[#DAAC40] hover:bg-[#DAAC40]/5 transition-colors">
+                <i data-lucide="wrench" class="lucide w-5 h-5 text-[#DAAC40]"></i>
+                <span class="font-medium">Browse Tools</span>
+            </a>
+            
+            <a href="{{ url_for('analytics.dashboard') }}" 
+               class="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-[#DAAC40] hover:bg-[#DAAC40]/5 transition-colors">
+                <i data-lucide="bar-chart-3" class="lucide w-5 h-5 text-[#DAAC40]"></i>
+                <span class="font-medium">View Analytics</span>
+            </a>
+            
+            <a href="{{ url_for('blog.index') }}" 
+               class="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-[#DAAC40] hover:bg-[#DAAC40]/5 transition-colors">
+                <i data-lucide="book-open" class="lucide w-5 h-5 text-[#DAAC40]"></i>
+                <span class="font-medium">Read Blog</span>
+            </a>
+            
+            <a href="{{ url_for('contact.contact') }}" 
+               class="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-[#DAAC40] hover:bg-[#DAAC40]/5 transition-colors">
+                <i data-lucide="help-circle" class="lucide w-5 h-5 text-[#DAAC40]"></i>
+                <span class="font-medium">Get Help</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-white rounded-xl shadow-sm border p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+        <div class="space-y-3" id="recent-activity">
+            <div class="flex items-center space-x-3 text-gray-500">
+                <i data-lucide="loader-2" class="lucide w-4 h-4 animate-spin"></i>
+                <span>Loading recent activity...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Load usage statistics
+async function loadUsageStats() {
+    try {
+        const response = await fetch('/subscription/usage-stats');
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Update daily usage
+            document.getElementById('daily-usage').textContent = data.daily_usage;
+            document.getElementById('daily-limit').textContent = `of ${data.daily_limit} limit`;
+            const dailyPercent = (data.daily_usage / data.daily_limit) * 100;
+            document.getElementById('daily-progress').style.width = `${Math.min(dailyPercent, 100)}%`;
+            
+            // Update monthly usage
+            document.getElementById('monthly-usage').textContent = data.monthly_usage;
+            document.getElementById('monthly-limit').textContent = `${data.monthly_usage} reports used`;
+            const monthlyPercent = data.monthly_limit > 0 ? (data.monthly_usage / data.monthly_limit) * 100 : 0;
+            document.getElementById('monthly-progress').style.width = `${Math.min(monthlyPercent, 100)}%`;
+        }
+    } catch (error) {
+        console.error('Failed to load usage stats:', error);
+    }
+}
+
+// Load recent activity
+async function loadRecentActivity() {
+    try {
+        const response = await fetch('/analytics/api/recent-activity');
+        const container = document.getElementById('recent-activity');
+        
+        if (response.ok) {
+            const activities = await response.json();
+            
+            if (activities.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4 text-gray-500">
+                        <i data-lucide="activity" class="lucide w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                        <p>No recent activity</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = activities.map(activity => `
+                    <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="${activity.icon}" class="lucide w-4 h-4 text-[#DAAC40]"></i>
+                            <span class="text-gray-700">${activity.description}</span>
+                        </div>
+                        <span class="text-sm text-gray-500">${activity.time_ago}</span>
+                    </div>
+                `).join('');
+            }
+        } else {
+            container.innerHTML = `
+                <div class="text-center py-4 text-gray-500">
+                    <p>Unable to load recent activity</p>
+                </div>
+            `;
+        }
+        
+        // Re-initialize Lucide icons
+        lucide.createIcons();
+    } catch (error) {
+        console.error('Failed to load recent activity:', error);
+    }
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadUsageStats();
+    loadRecentActivity();
+});
+</script>

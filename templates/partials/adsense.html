@@ -1,0 +1,154 @@
+<!-- Google AdSense Configuration -->
+<!-- Replace YOUR-ADSENSE-ID with your actual AdSense publisher ID -->
+<!-- Replace YOUR-*-SLOT with your actual ad unit IDs -->
+
+<!-- AdSense Auto Ads (Optional - for automatic ad placement) -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR-ADSENSE-ID" crossorigin="anonymous"></script>
+<script>
+  ;(adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: 'ca-pub-YOUR-ADSENSE-ID',
+    enable_page_level_ads: true
+  })
+</script>
+
+<style>
+  /* AdSense Container Styles */
+  .adsense-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    border: 1px solid rgba(218, 172, 64, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+  
+  .adsense-container:hover {
+    border-color: rgba(218, 172, 64, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Left Sidebar Ad */
+  .sidebar-ad-left {
+    position: fixed;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 160px;
+    height: 600px;
+    z-index: 100;
+    padding: 8px;
+  }
+  
+  /* Right Sidebar Ad */
+  .sidebar-ad-right {
+    position: fixed;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 160px;
+    height: 600px;
+    z-index: 100;
+    padding: 8px;
+  }
+  
+  /* Bottom Banner Ad */
+  .bottom-banner-ad {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.98);
+    border-top: 1px solid rgba(218, 172, 64, 0.2);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+    padding: 5px;
+  }
+  
+  /* Top Banner Ad */
+  .top-banner-ad {
+    width: 100%;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(218, 172, 64, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  /* Responsive AdSense */
+  @media (max-width: 1400px) {
+    .sidebar-ad-left,
+    .sidebar-ad-right {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .bottom-banner-ad {
+      height: 60px;
+    }
+  
+    .bottom-banner-ad .adsbygoogle {
+      width: 320px !important;
+      height: 50px !important;
+    }
+  
+    .top-banner-ad .adsbygoogle {
+      width: 320px !important;
+      height: 50px !important;
+    }
+  }
+  
+  /* Main content adjustment when ads are present */
+  .main-content-with-ads {
+    padding-left: 180px;
+    padding-right: 180px;
+    padding-bottom: 120px;
+  }
+  
+  @media (max-width: 1400px) {
+    .main-content-with-ads {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+</style>
+
+<!-- Left Sidebar Ad -->
+<div class="sidebar-ad-left adsense-container">
+  <ins class="adsbygoogle" style="display:block; width:160px; height:600px;" data-ad-client="ca-pub-YOUR-ADSENSE-ID" data-ad-slot="YOUR-LEFT-SIDEBAR-SLOT" data-ad-format="vertical"></ins>
+</div>
+
+<!-- Right Sidebar Ad -->
+<div class="sidebar-ad-right adsense-container">
+  <ins class="adsbygoogle" style="display:block; width:160px; height:600px;" data-ad-client="ca-pub-YOUR-ADSENSE-ID" data-ad-slot="YOUR-RIGHT-SIDEBAR-SLOT" data-ad-format="vertical"></ins>
+</div>
+
+<!-- Bottom Banner Ad -->
+<div class="bottom-banner-ad adsense-container">
+  <ins class="adsbygoogle" style="display:block; width:728px; height:90px;" data-ad-client="ca-pub-YOUR-ADSENSE-ID" data-ad-slot="YOUR-BOTTOM-BANNER-SLOT" data-ad-format="horizontal"></ins>
+</div>
+
+<!-- Initialize AdSense -->
+<script>
+  // Initialize AdSense ads after page load
+  document.addEventListener('DOMContentLoaded', function () {
+    // Push ads to AdSense
+    try {
+      ;(adsbygoogle = window.adsbygoogle || []).push({})
+      ;(adsbygoogle = window.adsbygoogle || []).push({})
+      ;(adsbygoogle = window.adsbygoogle || []).push({})
+    } catch (e) {
+      console.log('AdSense initialization error:', e)
+    }
+  })
+</script>

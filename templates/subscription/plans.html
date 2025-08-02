@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Subscription Plans - Super SEO Toolkit{% endblock %}
+
+{% block head %}
+<style>
+  body {
+    background: radial-gradient(ellipse at top left, #fffbe6 0%, #f6f6f8 80%), linear-gradient(135deg, #DAAC42 0%, #f1eaff 100%);
+    min-height: 100vh;
+    position: relative;
+  }
+  .glow-blur {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(64px);
+    opacity: .25;
+    border-radius: 50%;
+    animation: blow 8s ease-in-out infinite alternate;
+  }
+  @keyframes blow {
+    0% {transform: scale(1);}
+    100% {transform: scale(1.07);}
+  }
+  .glow-blur.pricing-one {top: 20%; left: 8%; width: 400px; height: 250px; background: #DAAC42;}
+  .glow-blur.pricing-two {bottom: 15%; right: 10%; width: 350px; height: 200px; background: #7f5aff;}
+</style>
+<div class="glow-blur pricing-one"></div>
+<div class="glow-blur pricing-two"></div>
+{% endblock %}
+
+{% block content %}
+<section class="py-28 relative z-10">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <div class="flex flex-col items-center gap-3 mb-12">
+      <span class="inline-block rounded-full px-5 py-1 text-xs font-bold bg-[#DAAC40]/10 text-[#DAAC40] tracking-widest shadow-sm uppercase">
+        Pricing Plans
+      </span>
+      <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-3">
+        Choose Your <span class="text-[#DAAC40] drop-shadow-glow">Perfect Plan</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto mb-8">
+        Flexible plans for everyone, from freelancers to agencies. <span class="text-[#DAAC40] font-bold">Start free, upgrade anytime.</span>
+      </p>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-8">
+        {% for plan in plans %}
+        <div class="bg-white/90 rounded-2xl shadow-xl border-2 {{ 'border-[#DAAC40] scale-105 z-10' if plan.name == 'Pro' else 'border-gray-100' }} flex flex-col p-8 relative overflow-hidden {{ 'transform' if plan.name == 'Pro' else '' }} group hover:shadow-2xl transition-all duration-300">
+            {% if plan.name == 'Pro' %}
+                <span class="absolute top-5 right-5 bg-[#DAAC40] text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg">Most Popular</span>
+            {% endif %}
+            
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-extrabold text-gray-900 mb-2">{{ plan.name }}</h2>
+                <div class="text-4xl font-bold text-[#DAAC40] mb-4">
+                    ${{ plan.price }}{% if plan.price > 0 %}<span class="text-lg text-gray-600 font-normal">/{{ plan.billing_cycle }}</span>{% endif %}
+                </div>
+                
+                <div class="mb-6 text-gray-600 bg-gray-50 rounded-xl p-4">
+                    <div class="flex items-center justify-center mb-2">
+                        <i data-lucide="zap" class="lucide w-5 h-5 text-[#DAAC40] mr-2"></i>
+                        <span class="font-semibold">{{ plan.max_daily_usage if plan.max_daily_usage < 1000 else 'Unlimited' }} tool uses per day</span>
+                    </div>
+                    {% if plan.max_reports > 0 %}
+                    <div class="flex items-center justify-center">
+                        <i data-lucide="file-text" class="lucide w-5 h-5 text-[#DAAC40] mr-2"></i>
+                        <span class="font-semibold">{{ plan.max_reports }} PDF reports/month</span>
+                    </div>
+                    {% elif plan.max_reports == -1 %}
+                    <div class="flex items-center justify-center">
+                        <i data-lucide="infinity" class="lucide w-5 h-5 text-[#DAAC40] mr-2"></i>
+                        <span class="font-semibold">Unlimited PDF reports</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <ul class="mb-8 space-y-3 flex-grow">
+                {% for feature in plan.features %}
+                <li class="flex items-start gap-3 text-gray-800">
+                    <i data-lucide="check-circle" class="lucide w-5 h-5 text-[#DAAC40] mt-0.5 flex-shrink-0"></i> 
+                    <span>{{ feature }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            
+            {% if current_user.is_authenticated %}
+                {% if plan.price == 0 %}
+                    <button class="w-full text-center bg-gray-200 text-gray-700 font-semibold py-4 rounded-xl cursor-not-allowed shadow">
+                        Current Plan
+                    </button>
+                {% else %}
+                    <a href="{{ url_for('subscription.checkout', plan_id=plan.id) }}" 
+                       class="w-full text-center bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 font-semibold py-4 rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl transform hover:scale-105 block group-hover:bg-[#b89627]">
+                        Choose {{ plan.name }}
+                    </a>
+                {% endif %}
+            {% else %}
+                <a href="{{ url_for('users.register') }}" 
+                   class="w-full text-center bg-[#DAAC40] hover:bg-[#b89627] text-gray-900 font-semibold py-4 rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl transform hover:scale-105 block">
+                    Get Started
+                </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- FAQ Section -->
+    <div class="mt-20">
+        <h2 class="text-4xl font-bold text-center text-gray-900 mb-12">Frequently Asked Questions</h2>
+        
+        <div class="max-w-4xl mx-auto space-y-6 text-left">
+            <div class="bg-white/90 rounded-2xl p-8 shadow-xl border border-gray-100 hover:border-[#DAAC40] transition-all duration-200">
+                <h3 class="font-bold text-gray-900 mb-3 text-lg flex items-center">
+                    <i data-lucide="help-circle" class="lucide w-5 h-5 text-[#DAAC40] mr-3"></i>
+                    Can I cancel my subscription anytime?
+                </h3>
+                <p class="text-gray-600">Yes, you can cancel your subscription at any time. You'll continue to have access to premium features until the end of your billing period.</p>
+            </div>
+            
+            <div class="bg-white/90 rounded-2xl p-8 shadow-xl border border-gray-100 hover:border-[#DAAC40] transition-all duration-200">
+                <h3 class="font-bold text-gray-900 mb-3 text-lg flex items-center">
+                    <i data-lucide="gift" class="lucide w-5 h-5 text-[#DAAC40] mr-3"></i>
+                    Is there a free trial?
+                </h3>
+                <p class="text-gray-600">Yes! Pro plan comes with a 7-day free trial. No credit card required to start.</p>
+            </div>
+            
+            <div class="bg-white/90 rounded-2xl p-8 shadow-xl border border-gray-100 hover:border-[#DAAC40] transition-all duration-200">
+                <h3 class="font-bold text-gray-900 mb-3 text-lg flex items-center">
+                    <i data-lucide="shield-check" class="lucide w-5 h-5 text-[#DAAC40] mr-3"></i>
+                    Do you offer refunds?
+                </h3>
+                <p class="text-gray-600">Yes, we offer a 30-day money-back guarantee for all paid plans.</p>
+            </div>
+        </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

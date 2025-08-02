@@ -132,6 +132,9 @@
 
 <body class="bg-white text-gray-900 antialiased min-h-screen flex flex-col">
 
+  {% include 'partials/loading.html' %}
+  {% include 'partials/toast.html' %}
+
     
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -142,7 +145,7 @@
 
       {% for category, msg in messages %}
 
-        <div class="rounded-lg px-4 py-2 text-sm font-medium 
+        <div class="flash-message rounded-lg px-4 py-2 text-sm font-medium transition-opacity duration-500 ease-in-out opacity-100 
 
             {% if category == 'success' %}bg-green-100 text-green-800
 
@@ -151,6 +154,7 @@
             {% else %}bg-yellow-100 text-yellow-800{% endif %}">
 
           {{ msg }}
+          <button type="button" class="float-right ml-4 text-lg font-bold opacity-70 hover:opacity-100" onclick="this.parentElement.remove()">&times;</button>
 
         </div>
 
@@ -168,9 +172,10 @@
 
 
 
-  <main class="flex-grow mx-auto w-full px-6">{% block content %}{% endblock %}</main>
+  <main class="flex-grow mx-auto w-full">{% block content %}{% endblock %}</main>
 
-
+  <!-- Google AdSense Integration -->
+  {% include 'partials/adsense.html' %}
 
   {% include 'partials/footer.html' %}
 
@@ -185,6 +190,19 @@
     document.addEventListener('DOMContentLoaded', function () {
 
       if (window.lucide) window.lucide.createIcons();
+      
+      // Auto-dismiss flash messages after 3 seconds
+      const flashMessages = document.querySelectorAll('.flash-message');
+      if (flashMessages.length > 0) {
+        flashMessages.forEach(function(message) {
+          setTimeout(function() {
+            message.style.opacity = '0';
+            setTimeout(function() {
+              message.remove();
+            }, 500); // Wait for fade-out transition
+          }, 3000); // 3 seconds delay
+        });
+      }
 
     });
 

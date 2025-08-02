@@ -1,0 +1,526 @@
+{% extends "base.html" %}
+
+{% block title %}Bulk SEO Analysis - Super SEO Toolkit{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0">🔗 Bulk SEO Analysis</h1>
+                    <p class="text-muted">Analyze multiple URLs simultaneously for comprehensive SEO insights</p>
+                </div>
+                <div class="btn-group">
+                    <a href="{{ url_for('seo_analysis.analyze') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-search"></i> Single Analysis
+                    </a>
+                    <button type="button" class="btn btn-primary active">
+                        <i class="fas fa-list"></i> Bulk Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Analysis Form -->
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-upload"></i> URL Input
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="bulkAnalysisForm">
+                        <div class="form-group mb-3">
+                            <label for="urls" class="form-label">URLs to Analyze</label>
+                            <textarea 
+                                id="urls" 
+                                name="urls" 
+                                class="form-control" 
+                                rows="8" 
+                                placeholder="Enter URLs (one per line):&#10;https://example.com&#10;https://google.com&#10;https://github.com"
+                                required></textarea>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle"></i> Enter one URL per line. Maximum 10 URLs per batch.
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" id="deepAnalysis" name="deep_analysis" class="form-check-input">
+                                <label for="deepAnalysis" class="form-check-label">
+                                    Deep Analysis
+                                    <small class="text-muted d-block">More comprehensive but slower analysis</small>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                                <i class="fas fa-play"></i> Start Bulk Analysis
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="clearBtn">
+                                <i class="fas fa-trash"></i> Clear URLs
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Progress Section -->
+                    <div id="progressSection" class="mt-4" style="display: none;">
+                        <hr>
+                        <h6>Analysis Progress</h6>
+                        <div class="progress mb-2">
+                            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <div id="progressText" class="text-center text-muted">
+                            Initializing...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <!-- Results Section -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-bar"></i> Analysis Results
+                        </h5>
+                        <div class="btn-group btn-group-sm" style="display: none;" id="exportOptions">
+                            <button type="button" class="btn btn-outline-success" id="exportCSV">
+                                <i class="fas fa-file-csv"></i> Export CSV
+                            </button>
+                            <button type="button" class="btn btn-outline-danger" id="exportPDF">
+                                <i class="fas fa-file-pdf"></i> Export PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="resultsContainer">
+                        <div class="text-center py-5">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No Analysis Results Yet</h5>
+                            <p class="text-muted">Enter URLs and click "Start Bulk Analysis" to begin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Results Template -->
+<div id="resultsTemplate" style="display: none;">
+    <div class="bulk-results">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card border-primary">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-primary">Total URLs</h5>
+                        <h2 class="text-primary" id="totalUrls">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-success">
+                    <div class="card-body text-center">
+                        <h6 class="card-title text-success">Successful</h6>
+                        <h3 class="text-success" id="successfulUrls">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-danger">
+                    <div class="card-body text-center">
+                        <h6 class="card-title text-danger">Failed</h6>
+                        <h3 class="text-danger" id="failedUrls">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="urlResults" class="space-y-4">
+            <!-- Individual URL results will be inserted here -->
+        </div>
+    </div>
+</div>
+
+<!-- Individual Result Template -->
+<div id="urlResultTemplate" style="display: none;">
+    <div class="card mb-3 url-result">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div class="score-badge me-3">
+                    <span class="badge badge-score">0</span>
+                </div>
+                <div>
+                    <h6 class="mb-0 url-title">Website URL</h6>
+                    <small class="text-muted analysis-time">Analysis completed in 0.0s</small>
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse">
+                <i class="fas fa-chevron-down"></i> Details
+            </button>
+        </div>
+        <div class="collapse url-details">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>SEO Categories</h6>
+                        <div class="category-scores">
+                            <!-- Category scores will be inserted here -->
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Top Recommendations</h6>
+                        <div class="recommendations">
+                            <!-- Recommendations will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.score-badge .badge-score {
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-excellent { background-color: #28a745 !important; }
+.score-good { background-color: #17a2b8 !important; }
+.score-needs-improvement { background-color: #ffc107 !important; color: #212529 !important; }
+.score-poor { background-color: #dc3545 !important; }
+
+.category-score {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.category-score:last-child {
+    border-bottom: none;
+}
+
+.recommendation-item {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.375rem;
+    border-left: 4px solid;
+}
+
+.priority-critical { border-color: #dc3545; background-color: #f8d7da; }
+.priority-high { border-color: #fd7e14; background-color: #ffe5d0; }
+.priority-medium { border-color: #ffc107; background-color: #fff3cd; }
+.priority-low { border-color: #198754; background-color: #d4edda; }
+
+.url-result.loading {
+    opacity: 0.6;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const bulkForm = document.getElementById('bulkAnalysisForm');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const urlsTextarea = document.getElementById('urls');
+    const progressSection = document.getElementById('progressSection');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const exportOptions = document.getElementById('exportOptions');
+
+    let analysisResults = null;
+
+    // Clear URLs
+    clearBtn.addEventListener('click', function() {
+        urlsTextarea.value = '';
+        hideResults();
+    });
+
+    // Form submission
+    bulkForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const urls = urlsTextarea.value.trim().split('\n').filter(url => url.trim());
+        const deepAnalysis = document.getElementById('deepAnalysis').checked;
+
+        if (urls.length === 0) {
+            alert('Please enter at least one URL');
+            return;
+        }
+
+        if (urls.length > 10) {
+            alert('Maximum 10 URLs allowed per batch');
+            return;
+        }
+
+        await performBulkAnalysis(urls, deepAnalysis);
+    });
+
+    async function performBulkAnalysis(urls, deepAnalysis) {
+        // Show progress
+        showProgress();
+        analyzeBtn.disabled = true;
+        analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+
+        try {
+            updateProgress(0, 'Starting bulk analysis...');
+
+            const response = await fetch('/seo/api/bulk-analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    urls: urls,
+                    deep_analysis: deepAnalysis
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                updateProgress(100, 'Analysis complete!');
+                displayResults(data);
+            } else {
+                throw new Error(data.error || 'Analysis failed');
+            }
+
+        } catch (error) {
+            console.error('Bulk analysis error:', error);
+            alert('Analysis failed: ' + error.message);
+        } finally {
+            // Reset button
+            analyzeBtn.disabled = false;
+            analyzeBtn.innerHTML = '<i class="fas fa-play"></i> Start Bulk Analysis';
+            hideProgress();
+        }
+    }
+
+    function showProgress() {
+        progressSection.style.display = 'block';
+    }
+
+    function hideProgress() {
+        setTimeout(() => {
+            progressSection.style.display = 'none';
+        }, 2000);
+    }
+
+    function updateProgress(percent, message) {
+        progressBar.style.width = percent + '%';
+        progressText.textContent = message;
+    }
+
+    function displayResults(data) {
+        analysisResults = data;
+        
+        // Clone results template
+        const template = document.getElementById('resultsTemplate').cloneNode(true);
+        template.style.display = 'block';
+        template.id = '';
+
+        // Update summary stats
+        template.querySelector('#totalUrls').textContent = data.total_analyzed;
+        template.querySelector('#successfulUrls').textContent = data.successful;
+        template.querySelector('#failedUrls').textContent = data.failed;
+
+        // Clear and populate results
+        resultsContainer.innerHTML = '';
+        resultsContainer.appendChild(template);
+
+        const urlResultsContainer = template.querySelector('#urlResults');
+
+        // Add individual URL results
+        Object.entries(data.batch_results).forEach(([url, result]) => {
+            const urlCard = createUrlResultCard(url, result);
+            urlResultsContainer.appendChild(urlCard);
+        });
+
+        // Show export options
+        exportOptions.style.display = 'block';
+    }
+
+    function createUrlResultCard(url, result) {
+        const template = document.getElementById('urlResultTemplate').cloneNode(true);
+        template.style.display = 'block';
+        template.id = '';
+
+        if (result.status === 'success') {
+            const score = result.overall_score;
+            const scoreClass = getScoreClass(score);
+            
+            // Update score badge
+            const scoreBadge = template.querySelector('.badge-score');
+            scoreBadge.textContent = score;
+            scoreBadge.className = `badge badge-score ${scoreClass}`;
+
+            // Update URL title
+            template.querySelector('.url-title').textContent = url;
+            template.querySelector('.analysis-time').textContent = 
+                `Analysis completed in ${result.analysis_time}s`;
+
+            // Add category scores
+            const categoryContainer = template.querySelector('.category-scores');
+            Object.entries(result.categories).forEach(([category, data]) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category-score';
+                categoryDiv.innerHTML = `
+                    <span>${category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                    <span class="badge ${getScoreClass(data.score)}">${data.score}/100</span>
+                `;
+                categoryContainer.appendChild(categoryDiv);
+            });
+
+            // Add recommendations
+            const recommendationsContainer = template.querySelector('.recommendations');
+            result.recommendations.slice(0, 5).forEach(rec => {
+                const recDiv = document.createElement('div');
+                recDiv.className = `recommendation-item priority-${rec.priority.toLowerCase()}`;
+                recDiv.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-start">
+                        <small><strong>${rec.priority.toUpperCase()}</strong></small>
+                        <small class="text-muted">${rec.category.replace('_', ' ')}</small>
+                    </div>
+                    <div style="font-size: 0.9rem;">${rec.recommendation}</div>
+                `;
+                recommendationsContainer.appendChild(recDiv);
+            });
+
+        } else {
+            // Error state
+            template.querySelector('.badge-score').textContent = '!';
+            template.querySelector('.badge-score').className = 'badge badge-score bg-danger';
+            template.querySelector('.url-title').textContent = url;
+            template.querySelector('.analysis-time').textContent = 'Analysis failed';
+            
+            template.querySelector('.category-scores').innerHTML = 
+                '<div class="text-danger">Analysis failed: ' + (result.error || 'Unknown error') + '</div>';
+            template.querySelector('.recommendations').innerHTML = 
+                '<div class="text-muted">No recommendations available</div>';
+        }
+
+        // Add collapse functionality
+        const collapseId = 'collapse_' + Math.random().toString(36).substr(2, 9);
+        const detailsDiv = template.querySelector('.url-details');
+        const toggleBtn = template.querySelector('[data-bs-toggle="collapse"]');
+        
+        detailsDiv.id = collapseId;
+        toggleBtn.setAttribute('data-bs-target', '#' + collapseId);
+
+        return template;
+    }
+
+    function getScoreClass(score) {
+        if (score >= 80) return 'score-excellent';
+        if (score >= 60) return 'score-good';
+        if (score >= 40) return 'score-needs-improvement';
+        return 'score-poor';
+    }
+
+    function hideResults() {
+        resultsContainer.innerHTML = `
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No Analysis Results Yet</h5>
+                <p class="text-muted">Enter URLs and click "Start Bulk Analysis" to begin</p>
+            </div>
+        `;
+        exportOptions.style.display = 'none';
+    }
+
+    // Export functionality
+    document.getElementById('exportCSV').addEventListener('click', function() {
+        if (analysisResults) {
+            exportToCSV(analysisResults);
+        }
+    });
+
+    document.getElementById('exportPDF').addEventListener('click', function() {
+        if (analysisResults) {
+            alert('PDF export functionality coming soon!');
+        }
+    });
+
+    function exportToCSV(data) {
+        const csvRows = [];
+        
+        // Header
+        csvRows.push([
+            'URL',
+            'Overall Score',
+            'Status',
+            'Title Score',
+            'Meta Description Score',
+            'Headings Score',
+            'Content Score',
+            'Technical Score',
+            'Analysis Time'
+        ]);
+
+        // Data rows
+        Object.entries(data.batch_results).forEach(([url, result]) => {
+            if (result.status === 'success') {
+                const categories = result.categories;
+                csvRows.push([
+                    url,
+                    result.overall_score,
+                    result.summary.status_message,
+                    categories.title?.score || 0,
+                    categories.meta_description?.score || 0,
+                    categories.headings?.score || 0,
+                    categories.content?.score || 0,
+                    categories.technical?.score || 0,
+                    result.analysis_time
+                ]);
+            } else {
+                csvRows.push([
+                    url,
+                    'ERROR',
+                    result.error || 'Analysis failed',
+                    '', '', '', '', '', ''
+                ]);
+            }
+        });
+
+        // Convert to CSV string
+        const csvContent = csvRows.map(row => 
+            row.map(field => `"${field}"`).join(',')
+        ).join('\n');
+
+        // Download
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `bulk_seo_analysis_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+});
+</script>
+{% endblock %}

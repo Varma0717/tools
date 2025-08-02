@@ -2,12 +2,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from routes.seo_analysis import seo_bp
 from flask import request, Flask, render_template, jsonify
 
 from flask_wtf.csrf import CSRFProtect
 
 from flask_dance.contrib.google import make_google_blueprint, google
-from utils.extensions import db, login_manager, mail
+from utils.extensions import db, login_manager, mail, migrate
 from users.routes import users_bp
 from admin.routes import admin_bp
 from tools.routes import tools_bp, register_tool_blueprints
@@ -67,6 +68,7 @@ app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")  # <--- THI
 
 # Init extensions
 db.init_app(app)
+migrate.init_app(app, db)
 login_manager.init_app(app)
 mail.init_app(app)
 csrf = CSRFProtect(app)
@@ -92,6 +94,15 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(sitemap_bp)
 app.register_blueprint(blog_bp)
 
+# Register CRM and Analytics blueprints
+from routes.analytics import analytics_bp
+from routes.crm import crm_bp
+from routes.subscription import subscription_bp
+
+app.register_blueprint(analytics_bp, name="analytics_main")
+app.register_blueprint(crm_bp)
+app.register_blueprint(subscription_bp)
+
 
 # User loader
 from users.models import User
@@ -105,8 +116,11 @@ def load_user(user_id):
 
 
 from routes.contact import contact_bp
+from routes.api import api_bp
 
 app.register_blueprint(contact_bp)
+app.register_blueprint(api_bp)
+app.register_blueprint(seo_bp, url_prefix='/seo')
 
 
 # ========================
@@ -253,6 +267,11 @@ def cookies():
 @app.route("/about-us")
 def about_us():
     return render_template("about.html")
+
+
+@app.route("/ui-showcase")
+def ui_showcase():
+    return render_template("ui_showcase.html")
 
 
 # for rule in app.url_map.iter_rules():

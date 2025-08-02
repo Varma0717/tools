@@ -1,0 +1,511 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Cache Analytics - {{ super() }}{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .analytics-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .metric-value {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #2563eb;
+    }
+    
+    .metric-label {
+        color: #6b7280;
+        font-size: 0.9em;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .recommendation {
+        border-left: 4px solid #f59e0b;
+        background: #fef3c7;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 0 4px 4px 0;
+    }
+    
+    .recommendation.high-priority {
+        border-left-color: #dc2626;
+        background: #fee2e2;
+    }
+    
+    .recommendation.medium-priority {
+        border-left-color: #f59e0b;
+        background: #fef3c7;
+    }
+    
+    .recommendation.low-priority {
+        border-left-color: #059669;
+        background: #d1fae5;
+    }
+    
+    .progress-bar {
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: #10b981;
+        transition: width 0.3s ease;
+    }
+    
+    .progress-fill.warning {
+        background: #f59e0b;
+    }
+    
+    .progress-fill.danger {
+        background: #ef4444;
+    }
+    
+    .key-performance-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .key-performance-table th,
+    .key-performance-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .key-performance-table th {
+        background: #f9fafb;
+        font-weight: 600;
+    }
+    
+    .alert-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 4px;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+    }
+    
+    .alert-icon {
+        margin-right: 10px;
+        color: #dc2626;
+    }
+    
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #6b7280;
+    }
+    
+    .error {
+        background: #fee2e2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 20px 0;
+    }
+    
+    .btn-optimize {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.2s;
+    }
+    
+    .btn-optimize:hover {
+        background: #1d4ed8;
+    }
+    
+    .btn-optimize:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+    }
+    
+    .refresh-btn {
+        background: #059669;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9em;
+    }
+    
+    .refresh-btn:hover {
+        background: #047857;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="fas fa-chart-line"></i> Cache Analytics</h1>
+                <div>
+                    <button class="refresh-btn" onclick="refreshAnalytics()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn-optimize" onclick="optimizeCache()" id="optimizeBtn">
+                        <i class="fas fa-magic"></i> Auto Optimize
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="analytics-card">
+                <div class="metric-value" id="totalOperations">-</div>
+                <div class="metric-label">Total Operations</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="analytics-card">
+                <div class="metric-value" id="hitRate">-</div>
+                <div class="metric-label">Overall Hit Rate</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="analytics-card">
+                <div class="metric-value" id="avgResponseTime">-</div>
+                <div class="metric-label">Avg Response Time</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="analytics-card">
+                <div class="metric-value" id="recommendations">-</div>
+                <div class="metric-label">Recommendations</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recommendations -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="analytics-card">
+                <h3><i class="fas fa-lightbulb"></i> Optimization Recommendations</h3>
+                <div id="recommendationsContainer">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading recommendations...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Key Performance -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="analytics-card">
+                <h3><i class="fas fa-key"></i> Key Performance Analysis</h3>
+                <div class="table-responsive">
+                    <table class="key-performance-table" id="keyPerformanceTable">
+                        <thead>
+                            <tr>
+                                <th>Cache Key</th>
+                                <th>Hit Rate</th>
+                                <th>Total Operations</th>
+                                <th>Avg Duration</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="loading">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading key performance data...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Alerts -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="analytics-card">
+                <h3><i class="fas fa-exclamation-triangle"></i> Recent Alerts</h3>
+                <div id="alertsContainer">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading alerts...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let analyticsData = null;
+
+// Load analytics data on page load
+document.addEventListener('DOMContentLoaded', function() {
+    refreshAnalytics();
+    loadAlerts();
+    
+    // Auto-refresh every 30 seconds
+    setInterval(refreshAnalytics, 30000);
+});
+
+function refreshAnalytics() {
+    fetch('/admin/dashboard/api/cache/analytics')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                analyticsData = data.data;
+                updateSummaryCards();
+                updateRecommendations();
+                updateKeyPerformance();
+            } else {
+                showError('Failed to load analytics: ' + data.error);
+            }
+        })
+        .catch(error => {
+            showError('Error loading analytics: ' + error.message);
+        });
+}
+
+function updateSummaryCards() {
+    if (!analyticsData) return;
+    
+    const summary = analyticsData.summary;
+    
+    document.getElementById('totalOperations').textContent = 
+        formatNumber(summary.total_operations);
+    
+    document.getElementById('hitRate').textContent = 
+        summary.overall_hit_rate.toFixed(1) + '%';
+    
+    document.getElementById('avgResponseTime').textContent = 
+        (summary.average_response_time * 1000).toFixed(1) + 'ms';
+    
+    document.getElementById('recommendations').textContent = 
+        summary.total_recommendations;
+}
+
+function updateRecommendations() {
+    if (!analyticsData) return;
+    
+    const container = document.getElementById('recommendationsContainer');
+    const recommendations = analyticsData.recommendations;
+    
+    if (recommendations.length === 0) {
+        container.innerHTML = '<p class="text-muted">No optimization recommendations at this time. Your cache is performing well!</p>';
+        return;
+    }
+    
+    let html = '';
+    recommendations.forEach(rec => {
+        html += `
+            <div class="recommendation ${rec.priority}-priority">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>${rec.type.replace(/_/g, ' ').toUpperCase()}</strong>
+                        ${rec.key ? `<br><small class="text-muted">Key: ${rec.key}</small>` : ''}
+                    </div>
+                    <span class="badge badge-${getPriorityColor(rec.priority)}">${rec.priority}</span>
+                </div>
+                <p class="mt-2 mb-0">${rec.recommendation}</p>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+function updateKeyPerformance() {
+    if (!analyticsData) return;
+    
+    const tbody = document.querySelector('#keyPerformanceTable tbody');
+    const keyPerformance = analyticsData.detailed_analysis.key_performance;
+    
+    if (keyPerformance.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-muted text-center">No key performance data available</td></tr>';
+        return;
+    }
+    
+    let html = '';
+    keyPerformance.slice(0, 20).forEach(key => {  // Show top 20 keys
+        const status = getKeyStatus(key.hit_rate, key.avg_duration);
+        html += `
+            <tr>
+                <td title="${key.cache_key}">${truncateKey(key.cache_key)}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${getHitRateClass(key.hit_rate)}" 
+                             style="width: ${key.hit_rate}%"></div>
+                    </div>
+                    ${key.hit_rate.toFixed(1)}%
+                </td>
+                <td>${formatNumber(key.total_operations)}</td>
+                <td>${(key.avg_duration * 1000).toFixed(1)}ms</td>
+                <td><span class="badge badge-${status.color}">${status.text}</span></td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
+}
+
+function loadAlerts() {
+    fetch('/admin/dashboard/api/cache/alerts')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                updateAlerts(data.data);
+            } else {
+                document.getElementById('alertsContainer').innerHTML = 
+                    '<p class="text-muted">No alerts data available</p>';
+            }
+        })
+        .catch(error => {
+            document.getElementById('alertsContainer').innerHTML = 
+                '<p class="text-danger">Error loading alerts: ' + error.message + '</p>';
+        });
+}
+
+function updateAlerts(alerts) {
+    const container = document.getElementById('alertsContainer');
+    
+    if (alerts.length === 0) {
+        container.innerHTML = '<p class="text-success"><i class="fas fa-check-circle"></i> No recent alerts. Cache is performing well!</p>';
+        return;
+    }
+    
+    let html = '';
+    alerts.forEach(alert => {
+        html += `
+            <div class="alert-item">
+                <i class="fas fa-exclamation-triangle alert-icon"></i>
+                <div>
+                    <strong>${alert.type.replace(/_/g, ' ').toUpperCase()}</strong>
+                    <br>
+                    <small class="text-muted">${formatTimestamp(alert.timestamp)}</small>
+                    <p class="mb-0">${alert.message}</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+function optimizeCache() {
+    const btn = document.getElementById('optimizeBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Optimizing...';
+    
+    fetch('/admin/dashboard/api/cache/optimize', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showSuccess('Cache optimization completed! ' + 
+                       data.data.implemented.length + ' optimizations applied.');
+            refreshAnalytics();
+        } else {
+            showError('Optimization failed: ' + data.error);
+        }
+    })
+    .catch(error => {
+        showError('Error during optimization: ' + error.message);
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-magic"></i> Auto Optimize';
+    });
+}
+
+// Utility functions
+function formatNumber(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+}
+
+function formatTimestamp(timestamp) {
+    return new Date(timestamp).toLocaleString();
+}
+
+function truncateKey(key) {
+    return key.length > 50 ? key.substring(0, 47) + '...' : key;
+}
+
+function getPriorityColor(priority) {
+    const colors = {
+        'high': 'danger',
+        'medium': 'warning', 
+        'low': 'success'
+    };
+    return colors[priority] || 'secondary';
+}
+
+function getHitRateClass(hitRate) {
+    if (hitRate >= 80) return '';
+    if (hitRate >= 50) return 'warning';
+    return 'danger';
+}
+
+function getKeyStatus(hitRate, avgDuration) {
+    if (hitRate >= 80 && avgDuration < 0.1) {
+        return { color: 'success', text: 'Excellent' };
+    } else if (hitRate >= 60 && avgDuration < 0.2) {
+        return { color: 'primary', text: 'Good' };
+    } else if (hitRate >= 40) {
+        return { color: 'warning', text: 'Fair' };
+    } else {
+        return { color: 'danger', text: 'Poor' };
+    }
+}
+
+function showError(message) {
+    // Create a simple error notification
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error';
+    errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + message;
+    
+    const container = document.querySelector('.container-fluid');
+    container.insertBefore(errorDiv, container.firstChild);
+    
+    setTimeout(() => errorDiv.remove(), 5000);
+}
+
+function showSuccess(message) {
+    // Create a simple success notification
+    const successDiv = document.createElement('div');
+    successDiv.className = 'alert alert-success';
+    successDiv.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+    
+    const container = document.querySelector('.container-fluid');
+    container.insertBefore(successDiv, container.firstChild);
+    
+    setTimeout(() => successDiv.remove(), 5000);
+}
+</script>
+{% endblock %}

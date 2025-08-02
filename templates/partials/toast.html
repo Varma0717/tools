@@ -1,0 +1,152 @@
+<!-- Enhanced Toast Notification System -->
+<div id="toast-container" class="fixed top-4 right-4 z-50 space-y-4"></div>
+
+<script>
+class ToastManager {
+  constructor() {
+    this.container = document.getElementById('toast-container');
+    this.toasts = new Map();
+  }
+  
+  show(message, type = 'info', duration = 5000, actions = []) {
+    const id = 'toast-' + Date.now() + Math.random();
+    const toast = this.createToast(id, message, type, actions);
+    
+    this.container.appendChild(toast);
+    this.toasts.set(id, toast);
+    
+    // Animate in
+    requestAnimationFrame(() => {
+      toast.classList.add('toast-show');
+    });
+    
+    // Auto remove
+    if (duration > 0) {
+      setTimeout(() => {
+        this.remove(id);
+      }, duration);
+    }
+    
+    return id;
+  }
+  
+  createToast(id, message, type, actions) {
+    const toast = document.createElement('div');
+    toast.id = id;
+    toast.className = `toast toast-${type} transform translate-x-full transition-all duration-300 ease-in-out`;
+    
+    const icons = {
+      success: 'check-circle',
+      error: 'x-circle',
+      warning: 'alert-triangle',
+      info: 'info'
+    };
+    
+    const colors = {
+      success: 'bg-green-50 border-green-200 text-green-800',
+      error: 'bg-red-50 border-red-200 text-red-800',
+      warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+      info: 'bg-blue-50 border-blue-200 text-blue-800'
+    };
+    
+    toast.innerHTML = `
+      <div class="flex items-start space-x-3 p-4 rounded-lg border shadow-lg glass ${colors[type]} min-w-80 max-w-md">
+        <i data-lucide="${icons[type]}" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+        <div class="flex-1">
+          <p class="text-sm font-medium">${message}</p>
+          ${actions.length > 0 ? `
+            <div class="mt-2 flex space-x-2">
+              ${actions.map(action => `
+                <button onclick="${action.onClick}" class="text-xs font-semibold hover:underline">
+                  ${action.text}
+                </button>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
+        <button onclick="window.toastManager.remove('${id}')" class="flex-shrink-0 text-gray-400 hover:text-gray-600">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+    `;
+    
+    // Initialize icons
+    if (window.lucide) {
+      window.lucide.createIcons(toast);
+    }
+    
+    return toast;
+  }
+  
+  remove(id) {
+    const toast = this.toasts.get(id);
+    if (toast) {
+      toast.classList.remove('toast-show');
+      toast.classList.add('translate-x-full');
+      
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+        this.toasts.delete(id);
+      }, 300);
+    }
+  }
+  
+  clear() {
+    this.toasts.forEach((toast, id) => {
+      this.remove(id);
+    });
+  }
+  
+  success(message, duration = 4000) {
+    return this.show(message, 'success', duration);
+  }
+  
+  error(message, duration = 6000) {
+    return this.show(message, 'error', duration);
+  }
+  
+  warning(message, duration = 5000) {
+    return this.show(message, 'warning', duration);
+  }
+  
+  info(message, duration = 4000) {
+    return this.show(message, 'info', duration);
+  }
+}
+
+// Initialize global toast manager
+window.toastManager = new ToastManager();
+
+// Helper functions for easy usage
+window.showToast = (message, type, duration) => window.toastManager.show(message, type, duration);
+window.showSuccess = (message, duration) => window.toastManager.success(message, duration);
+window.showError = (message, duration) => window.toastManager.error(message, duration);
+window.showWarning = (message, duration) => window.toastManager.warning(message, duration);
+window.showInfo = (message, duration) => window.toastManager.info(message, duration);
+
+// CSS for toast animations
+const style = document.createElement('style');
+style.textContent = `
+  .toast-show {
+    transform: translateX(0) !important;
+  }
+  
+  .toast {
+    animation: slideInRight 0.3s ease-out;
+  }
+  
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+`;
+document.head.appendChild(style);
+</script>
