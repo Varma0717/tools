@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block title %}SEO Management - Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+.seo-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    border: none;
+    margin-bottom: 25px;
+}
+
+.seo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.seo-metric {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.seo-analysis-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.score-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.score-excellent { background: #28a745; color: white; }
+.score-good { background: #17a2b8; color: white; }
+.score-fair { background: #ffc107; color: #333; }
+.score-poor { background: #dc3545; color: white; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+        <h1>
+            <i class="fas fa-search text-primary"></i>
+            SEO Management
+        </h1>
+        <div class="btn-toolbar">
+            <button class="btn btn-success mr-2" onclick="runBulkAnalysis()">
+                <i class="fas fa-play"></i> Run Bulk Analysis
+            </button>
+            <button class="btn btn-outline-primary" onclick="exportSEOReport()">
+                <i class="fas fa-download"></i> Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- SEO Metrics -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="seo-metric" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                <div class="metric-value">{{ data.total_analyses or 0 }}</div>
+                <div class="metric-label">Total Analyses</div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="seo-metric" style="background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);">
+                <div class="metric-value">{{ data.avg_score or 0 }}</div>
+                <div class="metric-label">Average Score</div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="seo-metric" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
+                <div class="metric-value">{{ data.issues_found or 0 }}</div>
+                <div class="metric-label">Issues Found</div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="seo-metric" style="background: linear-gradient(135deg, #dc3545 0%, #e83f6f 100%);">
+                <div class="metric-value">{{ data.sites_monitored or 0 }}</div>
+                <div class="metric-label">Sites Monitored</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent SEO Analyses -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="seo-card card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-line text-success"></i> Recent SEO Analyses</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>URL</th>
+                                    <th>Score</th>
+                                    <th>Issues</th>
+                                    <th>Analyzed</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if data.recent_analyses %}
+                                    {% for analysis in data.recent_analyses %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ analysis.url }}</strong><br>
+                                            <small class="text-muted">{{ analysis.title or 'No title' }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="score-badge score-{{ analysis.score_category or 'fair' }}">
+                                                {{ analysis.score or 0 }}/100
+                                            </span>
+                                        </td>
+                                        <td>{{ analysis.issues_count or 0 }}</td>
+                                        <td>{{ analysis.analyzed_at|datetime if analysis.analyzed_at else 'N/A' }}</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary" onclick="viewAnalysis({{ analysis.id }})">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-outline-success" onclick="reanalyze('{{ analysis.url }}')">
+                                                    <i class="fas fa-redo"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">
+                                            <i class="fas fa-search fa-3x mb-3"></i><br>
+                                            No SEO analyses found
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="seo-card card">
+                <div class="card-header">
+                    <h5><i class="fas fa-exclamation-triangle text-warning"></i> Common Issues</h5>
+                </div>
+                <div class="card-body">
+                    {% if data.common_issues %}
+                        {% for issue in data.common_issues %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <strong>{{ issue.title }}</strong><br>
+                                <small class="text-muted">{{ issue.description }}</small>
+                            </div>
+                            <span class="badge badge-warning">{{ issue.count }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-check-circle fa-3x mb-3"></i><br>
+                            No common issues found
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function runBulkAnalysis() {
+    alert('Bulk SEO analysis will be implemented!');
+}
+
+function exportSEOReport() {
+    window.open('/admin/api/seo/export', '_blank');
+}
+
+function viewAnalysis(analysisId) {
+    window.open(`/seo/report/${analysisId}`, '_blank');
+}
+
+function reanalyze(url) {
+    if (confirm(`Re-analyze ${url}?`)) {
+        fetch('/seo/analyze/ajax', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({url: url})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

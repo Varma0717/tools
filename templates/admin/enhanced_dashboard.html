@@ -362,7 +362,7 @@
                                             {{ activity.message }}
                                         </div>
                                         <small class="text-muted">
-                                            {{ activity.timestamp.strftime('%H:%M') }}
+                                            {{ activity.timestamp|datetime('%H:%M') if activity.timestamp else 'N/A' }}
                                         </small>
                                     </div>
                                 </div>

@@ -1,0 +1,390 @@
+{% extends 'base.html' %}
+
+{% block title %}Content Management - Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+.content-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    border: none;
+    margin-bottom: 25px;
+}
+
+.content-card:hover {
+    transform: translateY(-2px);  
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.content-metric {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.content-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+}
+
+.content-item:hover {
+    background: #f8f9fa;
+    border-color: #007bff;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.status-published { background: #d4edda; color: #155724; }
+.status-draft { background: #fff3cd; color: #856404; }
+.status-archived { background: #f8d7da; color: #721c24; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+        <h1>
+            <i class="fas fa-file-alt text-primary"></i>
+            Content Management
+        </h1>
+        <div class="btn-toolbar">
+            <button class="btn btn-success mr-2" data-toggle="modal" data-target="#addContentModal">
+                <i class="fas fa-plus"></i> Add Content
+            </button>
+            <button class="btn btn-outline-primary mr-2" onclick="bulkActions()">
+                <i class="fas fa-tasks"></i> Bulk Actions
+            </button>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="?type=all">All Content</a>
+                    <a class="dropdown-item" href="?type=posts">Blog Posts</a>
+                    <a class="dropdown-item" href="?type=pages">Pages</a>
+                    <a class="dropdown-item" href="?type=drafts">Drafts</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Statistics -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="content-metric" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                <div class="metric-value">{{ data.total_posts or 0 }}</div>
+                <div class="metric-label">Total Posts</div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="content-metric" style="background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);">
+                <div class="metric-value">{{ data.published_posts or 0 }}</div>
+                <div class="metric-label">Published</div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="content-metric" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
+                <div class="metric-value">{{ data.draft_posts or 0 }}</div>
+                <div class="metric-label">Drafts</div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="content-metric" style="background: linear-gradient(135deg, #dc3545 0%, #e83f6f 100%);">
+                <div class="metric-value">{{ data.total_views or 0 }}</div>
+                <div class="metric-label">Total Views</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="content-card card">
+                <div class="card-header d-flex justify-content-between">
+                    <h5><i class="fas fa-list text-info"></i> Recent Content</h5>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary active" onclick="showContent('recent')">Recent</button>
+                        <button class="btn btn-outline-secondary" onclick="showContent('popular')">Popular</button>
+                        <button class="btn btn-outline-secondary" onclick="showContent('drafts')">Drafts</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                    </th>
+                                    <th>Title</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Views</th>
+                                    <th>Last Modified</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if data.posts %}
+                                    {% for post in data.posts %}
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="selected_posts" value="{{ post.id }}">
+                                        </td>
+                                        <td>
+                                            <strong>{{ post.title }}</strong><br>
+                                            <small class="text-muted">{{ post.slug }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-secondary">{{ post.type or 'Post' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge status-{{ post.status }}">
+                                                {{ post.status|title if post.status else 'Draft' }}
+                                            </span>
+                                        </td>
+                                        <td>{{ post.views or 0 }}</td>
+                                        <td>{{ post.updated_at|date if post.updated_at else 'N/A' }}</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary" onclick="editContent({{ post.id }})">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-outline-info" onclick="viewContent({{ post.id }})">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" onclick="deleteContent({{ post.id }})">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">
+                                            <i class="fas fa-file-alt fa-3x mb-3"></i><br>
+                                            No content found
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if data.pagination %}
+                    <nav aria-label="Content pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item {{ 'disabled' if not data.pagination.has_prev else '' }}">
+                                <a class="page-link" href="?page={{ data.pagination.prev_num if data.pagination.has_prev else 1 }}">Previous</a>
+                            </li>
+                            {% for page_num in data.pagination.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != data.pagination.page %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ page_num }}</span>
+                                        </li>
+                                    {% endif %}
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            <li class="page-item {{ 'disabled' if not data.pagination.has_next else '' }}">
+                                <a class="page-link" href="?page={{ data.pagination.next_num if data.pagination.has_next else data.pagination.pages }}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Content Modal -->
+<div class="modal fade" id="addContentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Content</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addContentForm">
+                    <div class="form-group">
+                        <label for="contentTitle">Title *</label>
+                        <input type="text" class="form-control" id="contentTitle" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="contentType">Content Type</label>
+                                <select class="form-control" id="contentType">
+                                    <option value="post">Blog Post</option>
+                                    <option value="page">Page</option>
+                                    <option value="tool">Tool Description</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="contentStatus">Status</label>
+                                <select class="form-control" id="contentStatus">
+                                    <option value="draft">Draft</option>
+                                    <option value="published">Published</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contentSlug">Slug</label>
+                        <input type="text" class="form-control" id="contentSlug">
+                        <small class="form-text text-muted">Auto-generated from title if left empty</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="contentExcerpt">Excerpt</label>
+                        <textarea class="form-control" id="contentExcerpt" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="contentBody">Content *</label>
+                        <textarea class="form-control" id="contentBody" rows="8" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveContent()">Save Content</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showContent(type) {
+    window.location.href = `?filter=${type}`;
+}
+
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('input[name="selected_posts"]');
+    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+}
+
+function bulkActions() {
+    const selected = document.querySelectorAll('input[name="selected_posts"]:checked');
+    if (selected.length === 0) {
+        alert('Please select content items first');
+        return;
+    }
+    
+    const action = prompt('Enter action: delete, publish, draft, archive');
+    if (action) {
+        const ids = Array.from(selected).map(cb => cb.value);
+        // Implement bulk action
+        alert(`${action} action will be applied to ${ids.length} items`);
+    }
+}
+
+function editContent(id) {
+    window.location.href = `/admin/posts/edit/${id}`;
+}
+
+function viewContent(id) {
+    window.open(`/blog/post/${id}`, '_blank');
+}
+
+function deleteContent(id) {
+    if (confirm('Delete this content? This action cannot be undone.')) {
+        fetch(`/admin/api/content/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        });
+    }
+}
+
+function saveContent() {
+    const data = {
+        title: document.getElementById('contentTitle').value,
+        type: document.getElementById('contentType').value,
+        status: document.getElementById('contentStatus').value,
+        slug: document.getElementById('contentSlug').value,
+        excerpt: document.getElementById('contentExcerpt').value,
+        content: document.getElementById('contentBody').value
+    };
+
+    fetch('/admin/api/content/create', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            $('#addContentModal').modal('hide');
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    });
+}
+
+// Auto-generate slug from title
+document.getElementById('contentTitle').addEventListener('input', function() {
+    const title = this.value;
+    const slug = title.toLowerCase()
+        .replace(/[^a-z0-9 -]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim('-');
+    document.getElementById('contentSlug').value = slug;
+});
+</script>
+{% endblock %}

@@ -122,7 +122,59 @@ from routes.api import api_bp
 
 app.register_blueprint(contact_bp)
 app.register_blueprint(api_bp)
-app.register_blueprint(seo_bp, url_prefix="/seo")
+app.register_blueprint(seo_bp)
+
+
+# Custom template filters
+@app.template_filter("datetime")
+def datetime_filter(datetime_obj, format="%Y-%m-%d %H:%M"):
+    """Custom datetime filter for templates"""
+    if datetime_obj is None:
+        return "N/A"
+    try:
+        return datetime_obj.strftime(format)
+    except (AttributeError, ValueError):
+        return str(datetime_obj)
+
+
+@app.template_filter("date")
+def date_filter(date_obj, format="%Y-%m-%d"):
+    """Custom date filter for templates"""
+    if date_obj is None:
+        return "N/A"
+    try:
+        return date_obj.strftime(format)
+    except (AttributeError, ValueError):
+        return str(date_obj)
+
+
+# Template globals
+@app.template_global()
+def current_date():
+    """Get current date for templates"""
+    from datetime import datetime
+
+    return datetime.now()
+
+
+@app.template_global()
+def default_data():
+    """Provide default data structure for templates"""
+    return {
+        "users": {"total": 0, "growth_rate": 0, "new_today": 0},
+        "seo": {"total_analyses": 0, "analyses_today": 0, "avg_score": 0},
+        "leads": {"total_contacts": 0, "new_today": 0, "conversion_rate": 0},
+        "system": {"redis_available": True, "cache_hit_rate": 95},
+        "recent_activities": [],
+        "posts": [],
+        "pagination": None,
+        "common_issues": [],
+        "keywords": [],
+        "issues": [],
+    }
+
+
+# Register tool blueprints
 
 
 # ========================
@@ -278,3 +330,11 @@ def ui_showcase():
 
 # for rule in app.url_map.iter_rules():
 #    print(f"Route: {rule} --> endpoint: {rule.endpoint}")
+
+if __name__ == "__main__":
+    with app.app_context():
+        # from init_db import init_db
+        # init_db()  # Initialize the database and default settings
+        pass
+
+    app.run(debug=True, host="0.0.0.0", port=5000)

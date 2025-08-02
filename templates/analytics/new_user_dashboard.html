@@ -56,7 +56,7 @@
                             <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">Active</span>
                         </div>
                         <p class="text-gray-600 mt-2">
-                            Renews on {{ current_user.subscription.end_date.strftime('%B %d, %Y') }}
+                            Renews on {{ current_user.subscription.end_date|datetime('%B %d, %Y') if current_user.subscription and current_user.subscription.end_date else 'N/A' }}
                         </p>
                     {% else %}
                         <div class="flex items-center space-x-3">

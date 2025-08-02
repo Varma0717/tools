@@ -7,7 +7,7 @@
                 <li class="p-4 border rounded hover:bg-gray-50 flex justify-between items-center">
                     <div>
                         <p class="font-medium text-gray-800">{{ file.file_name }}</p>
-                        <p class="text-sm text-gray-500">Added on {{ file.created_at.strftime('%Y-%m-%d') }}</p>
+                        <p class="text-sm text-gray-500">Added on {{ file.created_at|date if file.created_at else 'N/A' }}</p>
                     </div>
                     <a href="{{ file.download_url }}" target="_blank" class="text-blue-600 font-semibold hover:underline">
                         Download

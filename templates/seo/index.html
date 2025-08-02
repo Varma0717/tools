@@ -1,0 +1,491 @@
+{% extends 'base.html' %}
+
+{% block title %}SEO Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+.seo-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    border: none;
+    margin-bottom: 25px;
+}
+
+.seo-card:hover {
+    transform: translateY(-2px);  
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.seo-metric {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.seo-score {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+}
+
+.score-excellent { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); }
+.score-good { background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%); }
+.score-poor { background: linear-gradient(135deg, #dc3545 0%, #e83f6f 100%); }
+
+.keyword-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.keyword-item:last-child {
+    border-bottom: none;
+}
+
+.ranking-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.ranking-1-3 { background: #d4edda; color: #155724; }
+.ranking-4-10 { background: #fff3cd; color: #856404; }
+.ranking-11-50 { background: #f8d7da; color: #721c24; }
+
+.issue-item {
+    background: white;
+    border-left: 4px solid #dc3545;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.issue-medium { border-left-color: #ffc107; }
+.issue-low { border-left-color: #28a745; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+        <h1>
+            <i class="fas fa-search text-primary"></i>
+            SEO Dashboard
+        </h1>
+        <div class="btn-toolbar">
+            <button class="btn btn-success mr-2" onclick="runSEOAudit()">
+                <i class="fas fa-play"></i> Run SEO Audit
+            </button>
+            <button class="btn btn-outline-primary mr-2" onclick="exportSEOReport()">
+                <i class="fas fa-download"></i> Export Report
+            </button>
+            <a href="{{ url_for('seo_bp.seo_history') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-history"></i> View History
+            </a>
+        </div>
+    </div>
+
+    <!-- SEO Overview -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="seo-metric" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                <div class="metric-value">{{ seo_data.total_pages or 0 }}</div>
+                <div class="metric-label">Total Pages</div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="seo-metric" style="background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);">
+                <div class="metric-value">{{ seo_data.indexed_pages or 0 }}</div>
+                <div class="metric-label">Indexed Pages</div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="seo-metric" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
+                <div class="metric-value">{{ seo_data.seo_issues or 0 }}</div>
+                <div class="metric-label">SEO Issues</div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="seo-metric" style="background: linear-gradient(135deg, #dc3545 0%, #e83f6f 100%);">
+                <div class="metric-value">{{ seo_data.avg_load_time or 0 }}s</div>
+                <div class="metric-label">Avg Load Time</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEO Score and Analysis -->
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="seo-card card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-line text-success"></i> Overall SEO Score</h5>
+                </div>
+                <div class="card-body text-center">
+                    {% set score = seo_data.overall_score or 75 %}
+                    {% if score >= 80 %}
+                        {% set score_class = 'score-excellent' %}
+                    {% elif score >= 60 %}
+                        {% set score_class = 'score-good' %}
+                    {% else %}
+                        {% set score_class = 'score-poor' %}
+                    {% endif %}
+                    
+                    <div class="seo-score {{ score_class }}">
+                        {{ score }}
+                    </div>
+                    <p class="mt-3 mb-0">
+                        {% if score >= 80 %}
+                            <span class="text-success">Excellent SEO Performance</span>
+                        {% elif score >= 60 %}
+                            <span class="text-warning">Good SEO Performance</span>
+                        {% else %}
+                            <span class="text-danger">Needs Improvement</span>
+                        {% endif %}
+                    </p>
+                    <small class="text-muted">Last updated: {{ seo_data.last_updated or 'Never' }}</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="seo-card card">
+                <div class="card-header">
+                    <h5><i class="fas fa-key text-info"></i> Top Keywords</h5>
+                </div>
+                <div class="card-body">
+                    {% if seo_data.keywords %}
+                        {% for keyword in seo_data.keywords %}
+                        <div class="keyword-item">
+                            <div>
+                                <strong>{{ keyword.term }}</strong><br>
+                                <small class="text-muted">{{ keyword.search_volume or 0 }} searches/month</small>
+                            </div>
+                            <div>
+                                {% set ranking = keyword.ranking or 99 %}
+                                {% if ranking <= 3 %}
+                                    {% set ranking_class = 'ranking-1-3' %}
+                                {% elif ranking <= 10 %}
+                                    {% set ranking_class = 'ranking-4-10' %}
+                                {% else %}
+                                    {% set ranking_class = 'ranking-11-50' %}
+                                {% endif %}
+                                <span class="ranking-badge {{ ranking_class }}">
+                                    #{{ ranking }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-key fa-3x mb-3"></i><br>
+                            No keyword data available<br>
+                            <small>Run an SEO audit to get keyword rankings</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEO Issues -->
+    <div class="row">
+        <div class="col-12">
+            <div class="seo-card card">
+                <div class="card-header d-flex justify-content-between">
+                    <h5><i class="fas fa-exclamation-triangle text-warning"></i> SEO Issues</h5>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-danger active" onclick="filterIssues('high')">High Priority</button>
+                        <button class="btn btn-outline-warning" onclick="filterIssues('medium')">Medium</button>
+                        <button class="btn btn-outline-success" onclick="filterIssues('low')">Low</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if seo_data.issues %}
+                        {% for issue in seo_data.issues %}
+                        <div class="issue-item issue-{{ issue.priority or 'high' }}" data-priority="{{ issue.priority or 'high' }}">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">{{ issue.title or 'SEO Issue' }}</h6>
+                                    <p class="mb-1">{{ issue.description or 'Issue description not available' }}</p>
+                                    <small class="text-muted">
+                                        <i class="fas fa-link"></i> {{ issue.url or 'Multiple pages' }}
+                                    </small>
+                                </div>
+                                <div class="text-right">
+                                    <span class="badge badge-{{ 'danger' if issue.priority == 'high' else 'warning' if issue.priority == 'medium' else 'success' }}">
+                                        {{ issue.priority|default('high')|title }}
+                                    </span>
+                                    <br>
+                                    <button class="btn btn-sm btn-outline-primary mt-1" onclick="fixIssue({{ issue.id or 1 }})">
+                                        Fix
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-check-circle fa-3x mb-3 text-success"></i><br>
+                            No SEO issues found!<br>
+                            <small>Your site appears to be well optimized</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Analysis -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="seo-card card">
+                <div class="card-header">
+                    <h5><i class="fas fa-file-alt text-primary"></i> Page Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="pageUrl">Enter URL to analyze:</label>
+                        <div class="input-group">
+                            <input type="url" class="form-control" id="pageUrl" placeholder="https://example.com/page">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" onclick="analyzePage()">Analyze</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="pageAnalysisResults" style="display: none;">
+                        <hr>
+                        <h6>Analysis Results:</h6>
+                        <div id="analysisContent">
+                            <!-- Results will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="seo-card card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-bar text-info"></i> Performance Metrics</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="performanceChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Initialize performance chart
+const ctx = document.getElementById('performanceChart').getContext('2d');
+const performanceChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+            label: 'SEO Score',
+            data: [65, 70, 75, 72, 78, 85],
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+            tension: 0.1
+        }, {
+            label: 'Page Speed',
+            data: [3.2, 2.8, 2.5, 2.9, 2.3, 2.1],
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+            tension: 0.1,
+            yAxisID: 'y1'
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                    display: true,
+                    text: 'SEO Score'
+                }
+            },
+            y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                    display: true,
+                    text: 'Load Time (s)'
+                },
+                grid: {
+                    drawOnChartArea: false,
+                }
+            }
+        }
+    }
+});
+
+function runSEOAudit() {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running Audit...';
+
+    fetch('/admin/api/seo/audit', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('SEO audit completed successfully!', 'success');
+            setTimeout(() => location.reload(), 2000);
+        } else {
+            showToast('SEO audit failed: ' + data.message, 'error');
+        }
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-play"></i> Run SEO Audit';
+    });
+}
+
+function exportSEOReport() {
+    fetch('/admin/api/seo/export')
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'seo-report.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    });
+}
+
+function filterIssues(priority) {
+    // Update active button
+    document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Filter issues
+    document.querySelectorAll('.issue-item').forEach(item => {
+        if (priority === 'all' || item.dataset.priority === priority) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+function fixIssue(issueId) {
+    if (confirm('Attempt to automatically fix this SEO issue?')) {
+        fetch(`/admin/api/seo/fix-issue/${issueId}`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Issue fixed successfully!', 'success');
+                location.reload();
+            } else {
+                showToast('Could not fix issue: ' + data.message, 'error');
+            }
+        });
+    }
+}
+
+function analyzePage() {
+    const url = document.getElementById('pageUrl').value;
+    if (!url) {
+        alert('Please enter a URL to analyze');
+        return;
+    }
+
+    const resultsDiv = document.getElementById('pageAnalysisResults');
+    const contentDiv = document.getElementById('analysisContent');
+    
+    contentDiv.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Analyzing page...</div>';
+    resultsDiv.style.display = 'block';
+
+    fetch('/admin/api/seo/analyze-page', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({url: url})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            contentDiv.innerHTML = `
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Title:</strong><br>
+                        <span class="text-${data.analysis.title_length > 60 ? 'warning' : 'success'}">${data.analysis.title || 'Missing'}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Meta Description:</strong><br>
+                        <span class="text-${data.analysis.meta_length > 160 ? 'warning' : 'success'}">${data.analysis.meta_description || 'Missing'}</span>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-6">
+                        <strong>H1 Tags:</strong> ${data.analysis.h1_count || 0}<br>
+                        <strong>Images:</strong> ${data.analysis.image_count || 0}
+                    </div>
+                    <div class="col-6">
+                        <strong>Links:</strong> ${data.analysis.link_count || 0}<br>
+                        <strong>Words:</strong> ${data.analysis.word_count || 0}
+                    </div>
+                </div>
+            `;
+        } else {
+            contentDiv.innerHTML = '<div class="text-danger">Analysis failed: ' + data.message + '</div>';
+        }
+    });
+}
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
+    toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999;';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

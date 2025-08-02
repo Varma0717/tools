@@ -30,7 +30,7 @@
               class="flex items-center gap-1 whitespace-nowrap text-gray-600"
               aria-label="Published date">
           <i data-lucide="calendar" class="lucide w-4 h-4 text-[#DAAC42]"></i>
-          {{ post.date or (post.created_at.strftime('%b %d, %Y') if post.created_at else '') }}
+          {{ post.date or (post.created_at|datetime('%b %d, %Y') if post.created_at else '') }}
         </time>
 
         {% if post.tags %}

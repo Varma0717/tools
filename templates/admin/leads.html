@@ -344,7 +344,7 @@
                                         <td>{{ lead.email }}</td>
                                         <td>
                                             <span class="badge badge-{{ lead.status_color }}">
-                                                {{ lead.status.title() }}
+                                                {{ lead.status|title if lead.status else 'New' }}
                                             </span>
                                         </td>
                                         <td>
@@ -353,7 +353,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            {{ lead.last_contact.strftime('%m/%d/%Y') if lead.last_contact else 'Never' }}
+                                            {{ lead.last_contact|date('%m/%d/%Y') if lead.last_contact else 'Never' }}
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
@@ -397,12 +397,12 @@
                             <div class="activity-item">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <strong>{{ activity.type.title() }}</strong><br>
+                                        <strong>{{ activity.type|title if activity.type else 'Activity' }}</strong><br>
                                         <small>{{ activity.description }}</small><br>
                                         <small class="text-muted">{{ activity.lead_name }}</small>
                                     </div>
                                     <small class="text-muted">
-                                        {{ activity.created_at.strftime('%H:%M') }}
+                                        {{ activity.created_at|datetime('%H:%M') if activity.created_at else 'N/A' }}
                                     </small>
                                 </div>
                             </div>

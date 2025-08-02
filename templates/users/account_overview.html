@@ -24,7 +24,7 @@
                             <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">Active</span>
                         </div>
                         <p class="text-gray-600 mt-2">
-                            Renews on {{ current_user.subscription.end_date.strftime('%B %d, %Y') }}
+                            Renews on {{ current_user.subscription.end_date|datetime('%B %d, %Y') if current_user.subscription and current_user.subscription.end_date else 'N/A' }}
                         </p>
                     {% else %}
                         <div class="flex items-center space-x-3">
@@ -93,14 +93,14 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Member Since</p>
-                    <p class="text-3xl font-bold text-gray-900">{{ current_user.created_at.strftime('%b %Y') }}</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ current_user.created_at|datetime('%b %Y') if current_user.created_at else 'N/A' }}</p>
                 </div>
                 <div class="bg-[#DAAC40]/20 p-3 rounded-full group-hover:bg-[#DAAC40]/30 transition-colors">
                     <i data-lucide="user-check" class="lucide w-8 h-8 text-[#DAAC40] group-hover:scale-110 transition-transform"></i>
                 </div>
             </div>
             <p class="text-sm text-gray-500 mt-6">
-                {{ ((datetime.utcnow() - current_user.created_at).days) }} days with us
+                Days with us: {{ ((current_date() - current_user.created_at).days if current_user.created_at else 0) }}
             </p>
         </div>
     </div>

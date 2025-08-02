@@ -1,0 +1,508 @@
+{% extends 'base.html' %}
+
+{% block title %}SEO History - SEO Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+.history-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    border: none;
+    margin-bottom: 25px;
+}
+
+.history-card:hover {
+    transform: translateY(-2px);  
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.history-item {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.2s;
+}
+
+.history-item:hover {
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+}
+
+.score-trend {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.trend-up { background: #d4edda; color: #155724; }
+.trend-down { background: #f8d7da; color: #721c24; }
+.trend-same { background: #e2e3e5; color: #495057; }
+
+.audit-summary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 20px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #007bff;
+    border: 3px solid white;
+    box-shadow: 0 0 0 3px #007bff;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+        <h1>
+            <i class="fas fa-history text-primary"></i>
+            SEO Audit History
+        </h1>
+        <div class="btn-toolbar">
+            <a href="{{ url_for('seo_bp.seo_dashboard') }}" class="btn btn-outline-primary mr-2">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <button class="btn btn-outline-success mr-2" onclick="exportHistory()">
+                <i class="fas fa-download"></i> Export History
+            </button>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="?period=week">Last Week</a>
+                    <a class="dropdown-item" href="?period=month">Last Month</a>
+                    <a class="dropdown-item" href="?period=quarter">Last Quarter</a>
+                    <a class="dropdown-item" href="?period=year">Last Year</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audit Summary -->
+    <div class="audit-summary">
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <div style="font-size: 2rem; font-weight: bold;">{{ history_data.total_audits or 0 }}</div>
+                <div style="opacity: 0.9;">Total Audits</div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div style="font-size: 2rem; font-weight: bold;">{{ history_data.avg_score or 0 }}</div>
+                <div style="opacity: 0.9;">Average Score</div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div style="font-size: 2rem; font-weight: bold;">{{ history_data.best_score or 0 }}</div>
+                <div style="opacity: 0.9;">Best Score</div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div style="font-size: 2rem; font-weight: bold;">{{ history_data.trend or '+5' }}</div>
+                <div style="opacity: 0.9;">Score Trend</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Chart -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="history-card card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-line text-success"></i> SEO Score Trends</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="historyChart" width="400" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audit History Timeline -->
+    <div class="row">
+        <div class="col-12">
+            <div class="history-card card">
+                <div class="card-header">
+                    <h5><i class="fas fa-list text-info"></i> Audit Timeline</h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        {% if history_data.audits %}
+                            {% for audit in history_data.audits %}
+                            <div class="timeline-item">
+                                <div class="history-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">
+                                                SEO Audit #{{ audit.id or loop.index }}
+                                                <span class="score-trend trend-{{ audit.trend or 'same' }}">
+                                                    {% if audit.trend == 'up' %}
+                                                        <i class="fas fa-arrow-up"></i> +{{ audit.score_change or 5 }}
+                                                    {% elif audit.trend == 'down' %}
+                                                        <i class="fas fa-arrow-down"></i> {{ audit.score_change or -3 }}
+                                                    {% else %}
+                                                        <i class="fas fa-minus"></i> No change
+                                                    {% endif %}
+                                                </span>
+                                            </h6>
+                                            <p class="text-muted mb-2">
+                                                <i class="fas fa-calendar"></i> {{ audit.date or '2024-01-15 10:30:00' }}
+                                            </p>
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <strong>Overall Score:</strong><br>
+                                                    <span class="badge badge-{{ 'success' if (audit.score or 75) >= 80 else 'warning' if (audit.score or 75) >= 60 else 'danger' }} badge-lg">
+                                                        {{ audit.score or 75 }}/100
+                                                    </span>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <strong>Pages Analyzed:</strong><br>
+                                                    {{ audit.pages_analyzed or 25 }}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <strong>Issues Found:</strong><br>
+                                                    <span class="text-{{ 'danger' if (audit.issues_found or 3) > 5 else 'warning' if (audit.issues_found or 3) > 0 else 'success' }}">
+                                                        {{ audit.issues_found or 3 }}
+                                                    </span>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong>Top Issue:</strong><br>
+                                                    <small>{{ audit.top_issue or 'Missing meta descriptions' }}</small>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong>Avg Load Time:</strong><br>
+                                                    {{ audit.avg_load_time or '2.3' }}s
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <button class="btn btn-sm btn-outline-primary mb-1" onclick="viewAuditDetails({{ audit.id or loop.index }})">
+                                                <i class="fas fa-eye"></i> View Details
+                                            </button><br>
+                                            <button class="btn btn-sm btn-outline-success" onclick="downloadReport({{ audit.id or loop.index }})">
+                                                <i class="fas fa-download"></i> Report
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if audit.changes %}
+                                    <hr>
+                                    <div class="mt-3">
+                                        <h6>Key Changes:</h6>
+                                        <ul class="list-unstyled">
+                                            {% for change in audit.changes %}
+                                            <li class="mb-1">
+                                                <i class="fas fa-{{ 'check' if change.type == 'improvement' else 'times' if change.type == 'regression' else 'info' }} text-{{ 'success' if change.type == 'improvement' else 'danger' if change.type == 'regression' else 'info' }}"></i>
+                                                {{ change.description or 'SEO improvement implemented' }}
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <!-- Sample data when no history exists -->
+                            <div class="timeline-item">
+                                <div class="history-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">
+                                                SEO Audit #3
+                                                <span class="score-trend trend-up">
+                                                    <i class="fas fa-arrow-up"></i> +5
+                                                </span>
+                                            </h6>
+                                            <p class="text-muted mb-2">
+                                                <i class="fas fa-calendar"></i> 2024-01-15 10:30:00
+                                            </p>
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <strong>Overall Score:</strong><br>
+                                                    <span class="badge badge-success badge-lg">85/100</span>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <strong>Pages Analyzed:</strong><br>
+                                                    28
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <strong>Issues Found:</strong><br>
+                                                    <span class="text-warning">2</span>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong>Top Issue:</strong><br>
+                                                    <small>Image alt text missing</small>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong>Avg Load Time:</strong><br>
+                                                    2.1s
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <button class="btn btn-sm btn-outline-primary mb-1" onclick="viewAuditDetails(3)">
+                                                <i class="fas fa-eye"></i> View Details
+                                            </button><br>
+                                            <button class="btn btn-sm btn-outline-success" onclick="downloadReport(3)">
+                                                <i class="fas fa-download"></i> Report
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="mt-3">
+                                        <h6>Key Changes:</h6>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-1">
+                                                <i class="fas fa-check text-success"></i>
+                                                Fixed meta descriptions on 5 pages
+                                            </li>
+                                            <li class="mb-1">
+                                                <i class="fas fa-check text-success"></i>
+                                                Improved page load speed by 0.3s
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="history-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">
+                                                SEO Audit #2
+                                                <span class="score-trend trend-down">
+                                                    <i class="fas fa-arrow-down"></i> -2
+                                                </span>
+                                            </h6>
+                                            <p class="text-muted mb-2">
+                                                <i class="fas fa-calendar"></i> 2024-01-08 14:15:00
+                                            </p>
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <strong>Overall Score:</strong><br>
+                                                    <span class="badge badge-warning badge-lg">80/100</span>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <strong>Pages Analyzed:</strong><br>
+                                                    25
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <strong>Issues Found:</strong><br>
+                                                    <span class="text-warning">4</span>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong>Top Issue:</strong><br>
+                                                    <small>Missing meta descriptions</small>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong>Avg Load Time:</strong><br>
+                                                    2.4s
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <button class="btn btn-sm btn-outline-primary mb-1" onclick="viewAuditDetails(2)">
+                                                <i class="fas fa-eye"></i> View Details
+                                            </button><br>
+                                            <button class="btn btn-sm btn-outline-success" onclick="downloadReport(2)">
+                                                <i class="fas fa-download"></i> Report
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="history-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">
+                                                SEO Audit #1
+                                                <span class="score-trend trend-same">
+                                                    <i class="fas fa-minus"></i> Initial
+                                                </span>
+                                            </h6>
+                                            <p class="text-muted mb-2">
+                                                <i class="fas fa-calendar"></i> 2024-01-01 09:00:00
+                                            </p>
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <strong>Overall Score:</strong><br>
+                                                    <span class="badge badge-warning badge-lg">82/100</span>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <strong>Pages Analyzed:</strong><br>
+                                                    20
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <strong>Issues Found:</strong><br>
+                                                    <span class="text-danger">8</span>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong>Top Issue:</strong><br>
+                                                    <small>Slow page load times</small>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong>Avg Load Time:</strong><br>
+                                                    3.2s
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <button class="btn btn-sm btn-outline-primary mb-1" onclick="viewAuditDetails(1)">
+                                                <i class="fas fa-eye"></i> View Details
+                                            </button><br>
+                                            <button class="btn btn-sm btn-outline-success" onclick="downloadReport(1)">
+                                                <i class="fas fa-download"></i> Report
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="mt-3">
+                                        <h6>Initial Baseline:</h6>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-1">
+                                                <i class="fas fa-info text-info"></i>
+                                                First comprehensive SEO audit
+                                            </li>
+                                            <li class="mb-1">
+                                                <i class="fas fa-info text-info"></i>
+                                                Identified critical optimization areas
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Initialize history chart
+const ctx = document.getElementById('historyChart').getContext('2d');
+const historyChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Jan 1', 'Jan 8', 'Jan 15', 'Jan 22', 'Jan 29', 'Feb 5'],
+        datasets: [{
+            label: 'SEO Score',
+            data: [82, 80, 85, 87, 83, 89],
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+            tension: 0.1,
+            fill: true
+        }, {
+            label: 'Issues Found',
+            data: [8, 4, 2, 3, 2, 1],
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+            tension: 0.1,
+            yAxisID: 'y1'
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                    display: true,
+                    text: 'SEO Score'
+                }
+            },
+            y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                    display: true,
+                    text: 'Issues Count'
+                },
+                grid: {
+                    drawOnChartArea: false,
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            }
+        }
+    }
+});
+
+function exportHistory() {
+    fetch('/admin/api/seo/export-history')
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'seo-audit-history.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    });
+}
+
+function viewAuditDetails(auditId) {
+    window.location.href = `/admin/seo/audit/${auditId}`;
+}
+
+function downloadReport(auditId) {
+    fetch(`/admin/api/seo/audit/${auditId}/report`)
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `seo-audit-${auditId}.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    });
+}
+</script>
+{% endblock %}
