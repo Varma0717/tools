@@ -169,7 +169,9 @@ def send_newsletter_batch(self, newsletter_id: int, recipient_batch: List[str]):
         recipient_batch: List of email addresses
     """
     try:
-        newsletter = Subscriber.query.get(newsletter_id)
+        from utils.extensions import db
+
+        newsletter = db.session.get(Subscriber, newsletter_id)
         if not newsletter:
             return {"status": "failed", "error": "Newsletter not found"}
 

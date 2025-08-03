@@ -25,8 +25,22 @@ def admin_required(func):
     """Admin-only access decorator"""
 
     def wrapper(*args, **kwargs):
-        if not current_user.is_authenticated or current_user.role != "admin":
+        if not current_user.is_authenticated:
+            if request.is_json or request.path.startswith("/admin/api/"):
+                return (
+                    jsonify({"success": False, "message": "Authentication required"}),
+                    401,
+                )
             return redirect(url_for("users.dashboard"))
+
+        if current_user.role != "admin":
+            if request.is_json or request.path.startswith("/admin/api/"):
+                return (
+                    jsonify({"success": False, "message": "Admin access required"}),
+                    403,
+                )
+            return redirect(url_for("users.dashboard"))
+
         return func(*args, **kwargs)
 
     wrapper.__name__ = func.__name__

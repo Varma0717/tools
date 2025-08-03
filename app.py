@@ -118,7 +118,9 @@ register_tool_blueprints(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    from utils.extensions import db
+
+    return db.session.get(User, int(user_id))
 
 
 from routes.contact import contact_bp

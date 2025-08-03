@@ -16,6 +16,14 @@
     <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
     Refresh
   </button>
+  
+  <!-- Bulk Actions (Hidden by default) -->
+  <div id="bulk-actions" class="hidden">
+    <button onclick="openBulkActionsModal()" class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg shadow-sm transition-all duration-200">
+      <i data-lucide="check-square" class="w-4 h-4 mr-2"></i>
+      Actions (<span id="selected-count">0</span>)
+    </button>
+  </div>
 </div>
 
 <!-- Posts Overview Cards -->
@@ -86,9 +94,13 @@
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <input type="checkbox" id="select-all" onchange="toggleAllPosts()" class="rounded border-gray-300 text-[#DAAC40] focus:ring-[#DAAC40]">
+          </th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
           <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
         </tr>
@@ -96,6 +108,9 @@
       <tbody class="bg-white divide-y divide-gray-200">
         {% for post in posts.items %}
         <tr class="hover:bg-gray-50 transition-colors duration-150">
+          <td class="px-6 py-4">
+            <input type="checkbox" id="post-{{ post.id }}" onchange="togglePostSelection({{ post.id }})" class="rounded border-gray-300 text-[#DAAC40] focus:ring-[#DAAC40]">
+          </td>
           <td class="px-6 py-4">
             <div class="flex items-center">
               <div class="flex-shrink-0 h-10 w-10">
@@ -114,6 +129,13 @@
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
             {{ post.category or '—' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            {% if post.published %}
+              <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Published</span>
+            {% else %}
+              <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Draft</span>
+            {% endif %}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
             {{ post.created_at.strftime('%b %d, %Y') if post.created_at else 'N/A' }}
@@ -136,7 +158,7 @@
         </tr>
         {% else %}
         <tr>
-          <td colspan="5" class="px-6 py-12 text-center">
+          <td colspan="7" class="px-6 py-12 text-center">
             <div class="flex flex-col items-center">
               <i data-lucide="file-text" class="w-12 h-12 text-gray-300 mb-4"></i>
               <h3 class="text-lg font-medium text-gray-900 mb-2">No posts found</h3>
@@ -201,17 +223,202 @@
   {% endif %}
 </div>
 
+<!-- Bulk Actions Modal -->
+<div id="bulkActionsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+  <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">Bulk Actions</h3>
+        <button onclick="closeBulkActionsModal()" class="text-gray-400 hover:text-gray-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="space-y-4">
+        <button onclick="bulkAction('publish')" class="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors">
+          Publish Selected Posts
+        </button>
+        <button onclick="bulkAction('unpublish')" class="w-full px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors">
+          Unpublish Selected Posts
+        </button>
+        <button onclick="bulkAction('delete')" class="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+          Delete Selected Posts
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
+let selectedPosts = new Set();
+
 function refreshPosts() {
+  showLoadingState();
   window.location.reload();
+}
+
+function showLoadingState() {
+  const button = event.target;
+  const originalContent = button.innerHTML;
+  button.innerHTML = '<i data-lucide="loader" class="w-4 h-4 mr-2 animate-spin"></i>Loading...';
+  button.disabled = true;
+  
+  setTimeout(() => {
+    button.innerHTML = originalContent;
+    button.disabled = false;
+    lucide.createIcons();
+  }, 1000);
+}
+
+function togglePostSelection(postId) {
+  const checkbox = document.getElementById(`post-${postId}`);
+  if (checkbox.checked) {
+    selectedPosts.add(postId);
+  } else {
+    selectedPosts.delete(postId);
+  }
+  updateBulkActionsVisibility();
+}
+
+function toggleAllPosts() {
+  const masterCheckbox = document.getElementById('select-all');
+  const postCheckboxes = document.querySelectorAll('input[type="checkbox"][id^="post-"]');
+  
+  postCheckboxes.forEach(checkbox => {
+    checkbox.checked = masterCheckbox.checked;
+    const postId = checkbox.id.replace('post-', '');
+    if (masterCheckbox.checked) {
+      selectedPosts.add(postId);
+    } else {
+      selectedPosts.delete(postId);
+    }
+  });
+  updateBulkActionsVisibility();
+}
+
+function updateBulkActionsVisibility() {
+  const bulkActions = document.getElementById('bulk-actions');
+  if (selectedPosts.size > 0) {
+    bulkActions.classList.remove('hidden');
+    document.getElementById('selected-count').textContent = selectedPosts.size;
+  } else {
+    bulkActions.classList.add('hidden');
+  }
+}
+
+function openBulkActionsModal() {
+  document.getElementById('bulkActionsModal').classList.remove('hidden');
+  document.getElementById('bulkActionsModal').classList.add('flex');
+}
+
+function closeBulkActionsModal() {
+  document.getElementById('bulkActionsModal').classList.add('hidden');
+  document.getElementById('bulkActionsModal').classList.remove('flex');
+}
+
+function bulkAction(action) {
+  if (selectedPosts.size === 0) return;
+  
+  const actionText = action === 'delete' ? 'delete' : action;
+  if (confirm(`Are you sure you want to ${actionText} ${selectedPosts.size} selected posts?`)) {
+    // Show loading state
+    showNotification(`Processing ${actionText} action...`, 'info');
+    
+    // Send request to backend
+    fetch('/admin/api/posts/bulk-actions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: action,
+        post_ids: Array.from(selectedPosts)
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success) {
+        showNotification(`✅ ${data.message}`, 'success');
+        
+        // Clear selection and close modal
+        selectedPosts.clear();
+        updateBulkActionsVisibility();
+        closeBulkActionsModal();
+        
+        // Refresh the page to show updated data
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } else {
+        showNotification(`❌ Error: ${data.message}`, 'error');
+      }
+    })
+    .catch(error => {
+      console.error('Bulk action error:', error);
+      showNotification(`❌ Error: ${error.message}`, 'error');
+    });
+  }
+}
+
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-0 ${
+    type === 'success' ? 'bg-green-500 text-white' :
+    type === 'error' ? 'bg-red-500 text-white' :
+    'bg-blue-500 text-white'
+  }`;
+  
+  // Create notification content with icon
+  const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+  notification.innerHTML = `
+    <div class="flex items-center space-x-2">
+      <span class="text-lg">${icon}</span>
+      <span>${message.replace(/^[✅❌ℹ️]\s*/, '')}</span>
+    </div>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Animate in
+  setTimeout(() => {
+    notification.style.transform = 'translateX(0)';
+  }, 10);
+  
+  // Remove after 4 seconds
+  setTimeout(() => {
+    notification.style.transform = 'translateX(100%)';
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 300);
+  }, 4000);
 }
 
 // Initialize icons when page loads
 document.addEventListener('DOMContentLoaded', function() {
   lucide.createIcons();
+  
+  // Add loading states to form submissions
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        const originalText = submitBtn.textContent;
+        submitBtn.innerHTML = '<i class="w-4 h-4 mr-2 animate-spin">⟳</i>Processing...';
+        submitBtn.disabled = true;
+      }
+    });
+  });
 });
 </script>
 {% endblock %}

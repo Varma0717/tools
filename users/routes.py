@@ -33,6 +33,235 @@ from utils.extensions import mail
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
+
+@users_bp.route("/api_keys")
+@login_required
+def api_keys():
+    """User API keys management"""
+    return render_template("users/api_keys.html")
+
+
+@users_bp.route("/api/user-stats")
+@login_required
+def user_stats_api():
+    """API endpoint for user dashboard statistics"""
+    try:
+        user_id = current_user.id
+        thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+
+        # Mock data for demonstration (replace with real queries)
+        stats = {
+            "seo_score": 87,
+            "keywords_tracked": 245,
+            "backlinks": 1247,
+            "traffic_growth": 23,
+            "projects": 3,
+            "reports_generated": 24,
+            "api_calls_this_month": 1247,
+            "account_created": (
+                current_user.created_at.isoformat() if current_user.created_at else None
+            ),
+            "last_login": datetime.utcnow().isoformat(),
+            "subscription_status": "Professional",
+            "usage_stats": {
+                "projects_used": 3,
+                "projects_limit": 5,
+                "keywords_used": 1247,
+                "keywords_limit": 2500,
+                "reports_used": 24,
+                "reports_limit": 50,
+            },
+        }
+
+        return jsonify({"success": True, "data": stats})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@users_bp.route("/api/user-activity")
+@login_required
+def user_activity_api():
+    """API endpoint for user activity feed"""
+    try:
+        # Mock activity data (replace with real database queries)
+        activities = [
+            {
+                "id": 1,
+                "type": "seo_audit",
+                "description": "Completed SEO audit for example.com",
+                "timestamp": (datetime.utcnow() - timedelta(hours=2)).isoformat(),
+                "status": "completed",
+                "icon": "search",
+            },
+            {
+                "id": 2,
+                "type": "keyword_research",
+                "description": "Added 15 new keywords to tracking",
+                "timestamp": (datetime.utcnow() - timedelta(hours=5)).isoformat(),
+                "status": "completed",
+                "icon": "key",
+            },
+            {
+                "id": 3,
+                "type": "report_generated",
+                "description": "Generated monthly SEO report",
+                "timestamp": (datetime.utcnow() - timedelta(days=1)).isoformat(),
+                "status": "completed",
+                "icon": "file-text",
+            },
+            {
+                "id": 4,
+                "type": "backlink_check",
+                "description": "Found 18 new backlinks",
+                "timestamp": (datetime.utcnow() - timedelta(days=2)).isoformat(),
+                "status": "completed",
+                "icon": "link",
+            },
+        ]
+
+        return jsonify({"success": True, "data": activities})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@users_bp.route("/api/user-preferences", methods=["GET", "POST"])
+@login_required
+def user_preferences_api():
+    """API endpoint for user preferences management"""
+    try:
+        if request.method == "POST":
+            # Update user preferences
+            data = request.get_json()
+
+            # In a real app, you'd save these to a UserPreferences model
+            preferences = {
+                "theme": data.get("theme", "light"),
+                "language": data.get("language", "en"),
+                "timezone": data.get("timezone", "UTC"),
+                "dashboard_layout": data.get("dashboard_layout", "comfortable"),
+                "notifications": {
+                    "email_reports": data.get("email_reports", True),
+                    "email_keywords": data.get("email_keywords", True),
+                    "email_security": data.get("email_security", True),
+                    "email_marketing": data.get("email_marketing", False),
+                    "browser_notifications": data.get("browser_notifications", False),
+                    "sound_alerts": data.get("sound_alerts", False),
+                },
+                "display": {
+                    "show_tooltips": data.get("show_tooltips", True),
+                    "animations": data.get("animations", True),
+                    "auto_refresh": data.get("auto_refresh", True),
+                },
+            }
+
+            # Store in session for now (in production, save to database)
+            session[f"user_preferences_{current_user.id}"] = preferences
+
+            return jsonify(
+                {"success": True, "message": "Preferences updated successfully"}
+            )
+
+        else:
+            # Get user preferences
+            preferences = session.get(
+                f"user_preferences_{current_user.id}",
+                {
+                    "theme": "light",
+                    "language": "en",
+                    "timezone": "UTC",
+                    "dashboard_layout": "comfortable",
+                    "notifications": {
+                        "email_reports": True,
+                        "email_keywords": True,
+                        "email_security": True,
+                        "email_marketing": False,
+                        "browser_notifications": False,
+                        "sound_alerts": False,
+                    },
+                    "display": {
+                        "show_tooltips": True,
+                        "animations": True,
+                        "auto_refresh": True,
+                    },
+                },
+            )
+
+            return jsonify({"success": True, "data": preferences})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@users_bp.route("/api/user-sessions")
+@login_required
+def user_sessions_api():
+    """API endpoint for managing user sessions"""
+    try:
+        # Mock session data (in production, get from database/Redis)
+        sessions = [
+            {
+                "id": "current",
+                "device": "Windows • Chrome",
+                "ip_address": "192.168.1.100",
+                "location": "New York, US",
+                "last_active": datetime.utcnow().isoformat(),
+                "is_current": True,
+                "browser": "Chrome 118",
+                "os": "Windows 11",
+            },
+            {
+                "id": "mobile_session",
+                "device": "Mobile • Safari",
+                "ip_address": "192.168.1.105",
+                "location": "New York, US",
+                "last_active": (datetime.utcnow() - timedelta(hours=2)).isoformat(),
+                "is_current": False,
+                "browser": "Safari 17",
+                "os": "iOS 17",
+            },
+        ]
+
+        return jsonify({"success": True, "data": sessions})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@users_bp.route("/api/revoke-session", methods=["POST"])
+@login_required
+def revoke_session_api():
+    """API endpoint to revoke a user session"""
+    try:
+        data = request.get_json()
+        session_id = data.get("session_id")
+
+        if not session_id:
+            return jsonify({"success": False, "message": "Session ID is required"}), 400
+
+        # In production, you would remove the session from your session store
+        # For now, just return success
+
+        return jsonify(
+            {"success": True, "message": f"Session {session_id} revoked successfully"}
+        )
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+from utils.payment import create_order
+from flask_dance.contrib.google import google
+from datetime import datetime, timedelta
+import requests
+import re
+import secrets
+from flask_mail import Message
+from utils.extensions import mail
+
+users_bp = Blueprint("users", __name__, url_prefix="/users")
+
 # Rate limiting dictionary (in production, use Redis)
 login_attempts = {}
 
@@ -547,3 +776,69 @@ def change_password():
         return redirect(url_for("users.account"))
 
     return render_template("users/change_password.html", form=form)
+
+
+# ------------------------------
+# ✅ NEW ENHANCED USER DASHBOARD ROUTES
+
+
+@users_bp.route("/analytics")
+@login_required
+def analytics():
+    """User analytics page"""
+    return render_template("users/analytics.html")
+
+
+@users_bp.route("/reports")
+@login_required
+def reports():
+    """User reports page"""
+    return render_template("users/reports.html")
+
+
+@users_bp.route("/projects")
+@login_required
+def projects():
+    """User projects management"""
+    return render_template("users/projects.html")
+
+
+@users_bp.route("/billing")
+@login_required
+def billing():
+    """User billing and subscription management"""
+    return render_template("users/billing.html")
+
+
+@users_bp.route("/api-keys")
+@login_required
+def api_keys():
+    """User API keys management"""
+    return render_template("users/api_keys.html")
+
+
+@users_bp.route("/settings")
+@login_required
+def settings():
+    """User account settings"""
+    return render_template("users/settings.html")
+
+
+@users_bp.route("/api/user-stats")
+@login_required
+def user_stats():
+    """Get user statistics for dashboard"""
+    import random
+
+    # Mock data - in production, this would fetch real user data
+    stats = {
+        "seo_score": random.randint(70, 95),
+        "keywords_tracked": random.randint(100, 500),
+        "backlinks": random.randint(500, 2000),
+        "traffic_growth": random.randint(10, 50),
+        "reports_generated": random.randint(5, 25),
+        "api_calls_used": random.randint(50, 200),
+        "last_updated": datetime.now().isoformat(),
+    }
+
+    return jsonify(stats)

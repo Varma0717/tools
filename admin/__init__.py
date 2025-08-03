@@ -10,6 +10,10 @@ from .routes.analytics import analytics_bp
 from .routes.contacts import contacts_bp
 from .routes.orders import orders_bp
 from .routes.system import system_bp
+from .routes.api_management import api_bp
+from .routes.security import security_bp
+from .routes.insights import insights_bp
+from .routes.communications import communications_bp
 
 # Create main admin blueprint
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -25,3 +29,7 @@ def register_admin_routes(app):
     app.register_blueprint(contacts_bp)
     app.register_blueprint(orders_bp)
     app.register_blueprint(system_bp)
+    app.register_blueprint(api_bp)
+    app.register_blueprint(security_bp)
+    app.register_blueprint(insights_bp)
+    app.register_blueprint(communications_bp)

@@ -1,0 +1,341 @@
+{% extends 'users/base_dashboard.html' %}
+
+{% block title %}
+  Billing & Subscription - SuperSEO Toolkit
+{% endblock %}
+{% block page_title %}
+  Billing & Subscription
+{% endblock %}
+{% block page_subtitle %}
+  Manage your subscription and billing information
+{% endblock %}
+
+{% block content %}
+  <!-- Current Plan Overview -->
+  <div class="bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl shadow-lg text-white p-6 mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-2xl font-bold mb-2">Professional Plan</h2>
+        <p class="text-accent-100 mb-4">Your current subscription plan</p>
+        <div class="flex items-center space-x-6">
+          <div class="flex items-center">
+            <i data-lucide="calendar" class="w-5 h-5 mr-2"></i>
+            <span>Renews on March 15, 2024</span>
+          </div>
+          <div class="flex items-center">
+            <i data-lucide="credit-card" class="w-5 h-5 mr-2"></i>
+            <span>$29/month</span>
+          </div>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="text-3xl font-bold mb-2">$29.00</div>
+        <p class="text-accent-100">per month</p>
+        <button class="mt-4 px-6 py-2 bg-white text-accent-600 rounded-lg hover:bg-gray-100 transition-colors font-medium">Upgrade Plan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Usage Statistics -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+          <i data-lucide="globe" class="w-6 h-6 text-blue-600"></i>
+        </div>
+        <span class="text-2xl font-semibold text-gray-900">3/5</span>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Projects</h3>
+      <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+        <div class="bg-blue-500 h-2 rounded-full" style="width: 60%"></div>
+      </div>
+      <p class="text-sm text-gray-600">60% of limit used</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+          <i data-lucide="search" class="w-6 h-6 text-green-600"></i>
+        </div>
+        <span class="text-2xl font-semibold text-gray-900">1,247/2,500</span>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Keywords</h3>
+      <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+        <div class="bg-green-500 h-2 rounded-full" style="width: 50%"></div>
+      </div>
+      <p class="text-sm text-gray-600">50% of limit used</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+          <i data-lucide="file-text" class="w-6 h-6 text-purple-600"></i>
+        </div>
+        <span class="text-2xl font-semibold text-gray-900">24/50</span>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Reports</h3>
+      <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+        <div class="bg-purple-500 h-2 rounded-full" style="width: 48%"></div>
+      </div>
+      <p class="text-sm text-gray-600">48% of limit used</p>
+    </div>
+  </div>
+
+  <!-- Plan Comparison -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+    <div class="p-6 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-900">Available Plans</h3>
+      <p class="text-gray-600 mt-1">Choose the plan that best fits your needs</p>
+    </div>
+
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Basic Plan -->
+        <div class="border border-gray-200 rounded-lg p-6">
+          <div class="text-center mb-6">
+            <h4 class="text-xl font-semibold text-gray-900 mb-2">Basic</h4>
+            <div class="text-3xl font-bold text-gray-900 mb-1">$9</div>
+            <p class="text-gray-600">per month</p>
+          </div>
+          <ul class="space-y-3 mb-6">
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">1 Project</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">100 Keywords</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">10 Reports/month</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">Basic Support</span>
+            </li>
+          </ul>
+          <button class="w-full px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors">Downgrade</button>
+        </div>
+
+        <!-- Professional Plan (Current) -->
+        <div class="border-2 border-accent-500 rounded-lg p-6 relative">
+          <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+            <span class="bg-accent-500 text-white px-3 py-1 rounded-full text-sm font-medium">Current Plan</span>
+          </div>
+          <div class="text-center mb-6">
+            <h4 class="text-xl font-semibold text-gray-900 mb-2">Professional</h4>
+            <div class="text-3xl font-bold text-gray-900 mb-1">$29</div>
+            <p class="text-gray-600">per month</p>
+          </div>
+          <ul class="space-y-3 mb-6">
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">5 Projects</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">2,500 Keywords</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">50 Reports/month</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">Priority Support</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">API Access</span>
+            </li>
+          </ul>
+          <button class="w-full px-4 py-2 bg-accent-500 text-white rounded-lg cursor-default">Current Plan</button>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="border border-gray-200 rounded-lg p-6">
+          <div class="text-center mb-6">
+            <h4 class="text-xl font-semibold text-gray-900 mb-2">Enterprise</h4>
+            <div class="text-3xl font-bold text-gray-900 mb-1">$99</div>
+            <p class="text-gray-600">per month</p>
+          </div>
+          <ul class="space-y-3 mb-6">
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">Unlimited Projects</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">25,000 Keywords</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">Unlimited Reports</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">24/7 Support</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-3"></i>
+              <span class="text-gray-700">White-label Reports</span>
+            </li>
+          </ul>
+          <button onclick="upgradePlan('enterprise')" class="w-full px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg transition-colors">Upgrade</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Method & Billing History -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Payment Method -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Payment Method</h3>
+          <button onclick="openPaymentModal()" class="text-accent-600 hover:text-accent-700 text-sm font-medium">Update</button>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-8 bg-blue-600 rounded flex items-center justify-center">
+            <span class="text-white text-xs font-bold">VISA</span>
+          </div>
+          <div>
+            <p class="text-gray-900 font-medium">**** **** **** 4242</p>
+            <p class="text-gray-600 text-sm">Expires 12/25</p>
+          </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-600">Billing Address</span>
+            <button class="text-accent-600 hover:text-accent-700">Edit</button>
+          </div>
+          <p class="text-gray-900 mt-1">123 Main St, City, State 12345</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Billing History -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Billing History</h3>
+          <button class="text-accent-600 hover:text-accent-700 text-sm font-medium">View All</button>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="space-y-4">
+          <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+            <div>
+              <p class="text-gray-900 font-medium">Professional Plan</p>
+              <p class="text-gray-600 text-sm">Feb 15, 2024</p>
+            </div>
+            <div class="text-right">
+              <p class="text-gray-900 font-medium">$29.00</p>
+              <a href="#" class="text-accent-600 hover:text-accent-700 text-sm">Download</a>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+            <div>
+              <p class="text-gray-900 font-medium">Professional Plan</p>
+              <p class="text-gray-600 text-sm">Jan 15, 2024</p>
+            </div>
+            <div class="text-right">
+              <p class="text-gray-900 font-medium">$29.00</p>
+              <a href="#" class="text-accent-600 hover:text-accent-700 text-sm">Download</a>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+            <div>
+              <p class="text-gray-900 font-medium">Professional Plan</p>
+              <p class="text-gray-600 text-sm">Dec 15, 2023</p>
+            </div>
+            <div class="text-right">
+              <p class="text-gray-900 font-medium">$29.00</p>
+              <a href="#" class="text-accent-600 hover:text-accent-700 text-sm">Download</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Payment Method Modal -->
+  <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Update Payment Method</h3>
+          <button onclick="closePaymentModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+      </div>
+      <div class="p-6">
+        <form class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Card Number</label>
+            <input type="text" placeholder="1234 5678 9012 3456" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent" />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
+              <input type="text" placeholder="MM/YY" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">CVC</label>
+              <input type="text" placeholder="123" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Cardholder Name</label>
+            <input type="text" placeholder="John Doe" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent" />
+          </div>
+          <div class="flex space-x-3 pt-4">
+            <button type="button" onclick="closePaymentModal()" class="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors">Cancel</button>
+            <button type="submit" class="flex-1 px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg transition-colors">Update Card</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    function upgradePlan(plan) {
+      // Show confirmation dialog
+      if (confirm(`Are you sure you want to upgrade to the ${plan} plan?`)) {
+        // Simulate upgrade process
+        showNotification('Redirecting to payment processor...', 'info')
+    
+        setTimeout(() => {
+          showNotification('Plan upgrade successful!', 'success')
+        }, 2000)
+      }
+    }
+    
+    function openPaymentModal() {
+      document.getElementById('paymentModal').classList.remove('hidden')
+      document.getElementById('paymentModal').classList.add('flex')
+    }
+    
+    function closePaymentModal() {
+      document.getElementById('paymentModal').classList.add('hidden')
+      document.getElementById('paymentModal').classList.remove('flex')
+    }
+    
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div')
+      notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${type === 'success' ? 'bg-green-500 text-white' : type === 'error' ? 'bg-red-500 text-white' : 'bg-blue-500 text-white'}`
+      notification.textContent = message
+    
+      document.body.appendChild(notification)
+    
+      setTimeout(() => {
+        notification.remove()
+      }, 3000)
+    }
+  </script>
+{% endblock %}

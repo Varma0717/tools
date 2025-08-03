@@ -11,6 +11,10 @@ from .analytics import analytics_bp
 from .system import system_bp
 from .orders import orders_bp
 from .contacts import contacts_bp
+from .api_management import api_bp
+from .security import security_bp
+from .insights import insights_bp
+from .communications import communications_bp
 
 # Export all blueprints for easy importing
 __all__ = [
@@ -21,4 +25,8 @@ __all__ = [
     "system_bp",
     "orders_bp",
     "contacts_bp",
+    "api_bp",
+    "security_bp",
+    "insights_bp",
+    "communications_bp",
 ]

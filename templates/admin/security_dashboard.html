@@ -1,0 +1,182 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}
+  Security Dashboard - SuperSEO Admin
+{% endblock %}
+
+{% block content %}
+  <div class="min-h-screen bg-gray-50">
+    <!-- Page Header -->
+    <div class="bg-white shadow-sm border-b border-gray-200">
+      <div class="px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Security Center</h1>
+            <p class="text-gray-600 mt-1">Monitor security threats and system integrity</p>
+          </div>
+          <div class="flex space-x-3">
+            <div class="bg-green-100 px-3 py-1 rounded-full">
+              <span class="text-green-800 text-sm font-medium">{{ data.threat_level }} Risk</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Stats -->
+    <div class="px-6 py-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Active Sessions</p>
+              <p class="text-3xl font-bold text-gray-900 mt-2">{{ data.active_sessions }}</p>
+            </div>
+            <div class="bg-blue-100 p-3 rounded-full">
+              <i class="lucide-users w-6 h-6 text-blue-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Failed Logins (24h)</p>
+              <p class="text-3xl font-bold text-gray-900 mt-2">{{ data.failed_logins_24h }}</p>
+            </div>
+            <div class="bg-red-100 p-3 rounded-full">
+              <i class="lucide-shield-alert w-6 h-6 text-red-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Blocked IPs</p>
+              <p class="text-3xl font-bold text-gray-900 mt-2">{{ data.blocked_ips }}</p>
+            </div>
+            <div class="bg-orange-100 p-3 rounded-full">
+              <i class="lucide-ban w-6 h-6 text-orange-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Security Score</p>
+              <p class="text-3xl font-bold text-gray-900 mt-2">{{ data.security_metrics.vulnerability_score }}%</p>
+            </div>
+            <div class="bg-green-100 p-3 rounded-full">
+              <i class="lucide-shield-check w-6 h-6 text-green-600"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Security Events -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-semibold text-gray-900">Recent Security Events</h2>
+        </div>
+        <div class="p-6">
+          <div class="space-y-4">
+            {% for event in data.recent_events %}
+              <div class="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
+                <div class="flex-shrink-0">
+                  {% if event.severity == 'high' %}
+                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                  {% elif event.severity == 'medium' %}
+                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  {% else %}
+                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                  {% endif %}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900">{{ event.message }}</p>
+                  <p class="text-sm text-gray-500">{{ event.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                </div>
+                <div class="flex-shrink-0">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize
+                                {% if event.severity == 'high' %}
+                      bg-red-100 text-red-800
+
+                    {% elif event.severity == 'medium' %}
+                      bg-yellow-100 text-yellow-800
+
+                    {% else %}
+                      bg-green-100 text-green-800
+                    {% endif %}">
+                    {{ event.severity }}
+                  </span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Metrics -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">System Health</h3>
+          </div>
+          <div class="p-6">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-600">Uptime</span>
+                <span class="text-sm font-bold text-green-600">{{ data.security_metrics.uptime }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-600">SSL Rating</span>
+                <span class="text-sm font-bold text-green-600">{{ data.security_metrics.ssl_rating }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-600">Compliance Score</span>
+                <span class="text-sm font-bold text-blue-600">{{ data.security_metrics.compliance_score }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Quick Actions</h3>
+          </div>
+          <div class="p-6">
+            <div class="space-y-3">
+              <button onclick="viewAuditLogs()" class="w-full text-left px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                <i class="lucide-file-search w-4 h-4 inline mr-2"></i>
+                View Audit Logs
+              </button>
+              <button onclick="reviewLoginAttempts()" class="w-full text-left px-4 py-2 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors">
+                <i class="lucide-shield-alert w-4 h-4 inline mr-2"></i>
+                Review Login Attempts
+              </button>
+              <button onclick="manageBlockedIPs()" class="w-full text-left px-4 py-2 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+                <i class="lucide-ban w-4 h-4 inline mr-2"></i>
+                Manage Blocked IPs
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function viewAuditLogs() {
+      window.location.href = "{{ url_for('admin_security.audit_logs') }}"
+    }
+    
+    function reviewLoginAttempts() {
+      window.location.href = "{{ url_for('admin_security.login_attempts') }}"
+    }
+    
+    function manageBlockedIPs() {
+      window.location.href = "{{ url_for('admin_security.blocked_ips') }}"
+    }
+  </script>
+{% endblock %}

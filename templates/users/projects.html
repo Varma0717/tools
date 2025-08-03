@@ -1,0 +1,305 @@
+{% extends 'users/base_dashboard.html' %}
+
+{% block title %}
+  Projects - SuperSEO Toolkit
+{% endblock %}
+{% block page_title %}
+  Projects
+{% endblock %}
+{% block page_subtitle %}
+  Manage your SEO projects and websites
+{% endblock %}
+
+{% block content %}
+  <!-- Quick Actions -->
+  <div class="flex flex-wrap gap-3 mb-6">
+    <button onclick="openAddProjectModal()" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+      <i data-lucide="plus-circle" class="w-4 h-4 mr-2"></i>
+      Add New Project
+    </button>
+    <button class="inline-flex items-center px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-300 shadow-sm hover:shadow-md transition-all duration-200">
+      <i data-lucide="import" class="w-4 h-4 mr-2"></i>
+      Import from GSC
+    </button>
+  </div>
+
+  <!-- Projects Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <!-- Project Card 1 -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+              <i data-lucide="globe" class="w-5 h-5 text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">example.com</h3>
+              <p class="text-sm text-gray-600">E-commerce</p>
+            </div>
+          </div>
+          <div class="relative">
+            <button class="text-gray-400 hover:text-gray-600" onclick="toggleProjectMenu(1)"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
+            <div id="project-menu-1" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
+              <div class="py-1">
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit Project</a>
+                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3 mb-4">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">SEO Score</span>
+            <span class="text-sm font-medium text-gray-900">87/100</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-green-500 h-2 rounded-full" style="width: 87%"></div>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Keywords</span>
+            <span class="text-sm font-medium text-gray-900">143</span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Backlinks</span>
+            <span class="text-sm font-medium text-gray-900">1,247</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-gray-500">
+          <span>Last updated: 2 hours ago</span>
+          <div class="flex items-center space-x-1">
+            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span>Active</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-3 bg-gray-50 border-t border-gray-200 rounded-b-xl">
+        <div class="flex space-x-2">
+          <a href="{{ url_for('tools.seo_audit') }}" class="flex-1 text-center px-3 py-2 text-sm bg-accent-500 hover:bg-accent-600 text-white rounded-lg transition-colors">Audit</a>
+          <a href="{{ url_for('tools.rank_tracker') }}" class="flex-1 text-center px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors">Rankings</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Card 2 -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <i data-lucide="briefcase" class="w-5 h-5 text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">business-site.com</h3>
+              <p class="text-sm text-gray-600">Business</p>
+            </div>
+          </div>
+          <div class="relative">
+            <button class="text-gray-400 hover:text-gray-600" onclick="toggleProjectMenu(2)"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
+            <div id="project-menu-2" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
+              <div class="py-1">
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit Project</a>
+                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3 mb-4">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">SEO Score</span>
+            <span class="text-sm font-medium text-gray-900">72/100</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-yellow-500 h-2 rounded-full" style="width: 72%"></div>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Keywords</span>
+            <span class="text-sm font-medium text-gray-900">89</span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Backlinks</span>
+            <span class="text-sm font-medium text-gray-900">456</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-gray-500">
+          <span>Last updated: 1 day ago</span>
+          <div class="flex items-center space-x-1">
+            <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+            <span>Needs Attention</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-3 bg-gray-50 border-t border-gray-200 rounded-b-xl">
+        <div class="flex space-x-2">
+          <a href="{{ url_for('tools.seo_audit') }}" class="flex-1 text-center px-3 py-2 text-sm bg-accent-500 hover:bg-accent-600 text-white rounded-lg transition-colors">Audit</a>
+          <a href="{{ url_for('tools.rank_tracker') }}" class="flex-1 text-center px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors">Rankings</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Project Card -->
+    <div class="bg-white rounded-xl shadow-sm border-2 border-dashed border-gray-300 hover:border-accent-400 transition-colors duration-200">
+      <div class="p-6 text-center">
+        <button onclick="openAddProjectModal()" class="w-full h-full flex flex-col items-center justify-center space-y-4 text-gray-500 hover:text-accent-600 transition-colors">
+          <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+            <i data-lucide="plus" class="w-8 h-8"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium">Add New Project</h3>
+            <p class="text-sm">Start tracking a new website</p>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects Table View -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">All Projects</h3>
+        <div class="flex items-center space-x-3">
+          <div class="relative">
+            <input type="text" placeholder="Search projects..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent text-sm" />
+            <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SEO Score</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keywords</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Backlinks</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Updated</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
+                  <i data-lucide="globe" class="w-4 h-4 text-white"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-900">example.com</div>
+                  <div class="text-sm text-gray-500">E-commerce</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <span class="text-sm font-medium text-gray-900">87</span>
+                <div class="ml-2 w-16 bg-gray-200 rounded-full h-2">
+                  <div class="bg-green-500 h-2 rounded-full" style="width: 87%"></div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">143</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1,247</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Active</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2 hours ago</td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <div class="flex items-center justify-end space-x-2">
+                <a href="#" class="text-accent-600 hover:text-accent-900">View</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900">Edit</a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add Project Modal -->
+  <div id="addProjectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Add New Project</h3>
+          <button onclick="closeAddProjectModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+      </div>
+      <div class="p-6">
+        <form class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Website URL</label>
+            <input type="url" placeholder="https://example.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+            <input type="text" placeholder="My Website" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+              <option>E-commerce</option>
+              <option>Business</option>
+              <option>Blog</option>
+              <option>Portfolio</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="flex space-x-3 pt-4">
+            <button type="button" onclick="closeAddProjectModal()" class="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors">Cancel</button>
+            <button type="submit" class="flex-1 px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg transition-colors">Add Project</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    function toggleProjectMenu(projectId) {
+      const menu = document.getElementById(`project-menu-${projectId}`)
+      // Close all other menus
+      document.querySelectorAll('[id^="project-menu-"]').forEach((m) => {
+        if (m.id !== `project-menu-${projectId}`) {
+          m.classList.add('hidden')
+        }
+      })
+      menu.classList.toggle('hidden')
+    }
+    
+    function openAddProjectModal() {
+      document.getElementById('addProjectModal').classList.remove('hidden')
+      document.getElementById('addProjectModal').classList.add('flex')
+    }
+    
+    function closeAddProjectModal() {
+      document.getElementById('addProjectModal').classList.add('hidden')
+      document.getElementById('addProjectModal').classList.remove('flex')
+    }
+    
+    // Close menus when clicking outside
+    document.addEventListener('click', function (event) {
+      if (!event.target.closest('[onclick^="toggleProjectMenu"]') && !event.target.closest('[id^="project-menu-"]')) {
+        document.querySelectorAll('[id^="project-menu-"]').forEach((menu) => {
+          menu.classList.add('hidden')
+        })
+      }
+    })
+  </script>
+{% endblock %}

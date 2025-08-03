@@ -1,0 +1,382 @@
+{% extends "admin/base.html" %}
+
+{% block title %}API Management - SuperSEO Admin{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Page Header -->
+    <div class="bg-white shadow-sm border-b border-gray-200">
+        <div class="px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">API Management</h1>
+                    <p class="text-gray-600 mt-1">Manage API keys, webhooks, and integrations</p>
+                </div>
+                <div class="flex space-x-3">
+                    <button onclick="generateApiKey()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        <i class="lucide-plus w-4 h-4 inline mr-2"></i>Generate API Key
+                    </button>
+                    <button onclick="openWebhookModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        <i class="lucide-webhook w-4 h-4 inline mr-2"></i>Add Webhook
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="px-6 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Active API Keys</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ data.stats.active_keys }}</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="lucide-key w-6 h-6 text-blue-600"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-green-600 font-medium">+2</span>
+                    <span class="text-gray-600 ml-1">this month</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">API Requests (24h)</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ "{:,}".format(data.stats.requests_24h) }}</p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="lucide-activity w-6 h-6 text-green-600"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-green-600 font-medium">+12%</span>
+                    <span class="text-gray-600 ml-1">vs yesterday</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Active Webhooks</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ data.stats.active_webhooks }}</p>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <i class="lucide-webhook w-6 h-6 text-purple-600"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-gray-600">{{ data.stats.webhook_success_rate }}% success rate</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Rate Limit Hits</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ data.stats.rate_limit_hits }}</p>
+                    </div>
+                    <div class="bg-red-100 p-3 rounded-full">
+                        <i class="lucide-shield-alert w-6 h-6 text-red-600"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-red-600 font-medium">-5%</span>
+                    <span class="text-gray-600 ml-1">vs last week</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
+            <div class="border-b border-gray-200">
+                <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                    <button onclick="switchTab('api-keys')" id="tab-api-keys" class="tab-button active border-b-2 border-[#DAAC40] py-4 px-1 text-sm font-medium text-[#DAAC40]">
+                        API Keys
+                    </button>
+                    <button onclick="switchTab('webhooks')" id="tab-webhooks" class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Webhooks
+                    </button>
+                    <button onclick="switchTab('integrations')" id="tab-integrations" class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Integrations
+                    </button>
+                    <button onclick="switchTab('rate-limits')" id="tab-rate-limits" class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Rate Limits
+                    </button>
+                </nav>
+            </div>
+
+            <!-- API Keys Tab -->
+            <div id="content-api-keys" class="tab-content p-6">
+                <div class="space-y-4">
+                    {% for api_key in data.api_keys %}
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3">
+                                    <h3 class="font-medium text-gray-900">{{ api_key.name }}</h3>
+                                    <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                        {% if api_key.status == 'active' %}bg-green-100 text-green-800
+                                        {% else %}bg-red-100 text-red-800{% endif %}">
+                                        {{ api_key.status|title }}
+                                    </span>
+                                </div>
+                                <div class="mt-2 flex items-center space-x-4 text-sm text-gray-600">
+                                    <span>Key: {{ api_key.key_preview }}</span>
+                                    <span>•</span>
+                                    <span>Created: {{ api_key.created_at.strftime('%b %d, %Y') }}</span>
+                                    <span>•</span>
+                                    <span>Last Used: {{ api_key.last_used.strftime('%b %d, %Y') if api_key.last_used else 'Never' }}</span>
+                                </div>
+                                <div class="mt-2 flex items-center space-x-4 text-sm">
+                                    <span class="text-gray-600">Usage: {{ "{:,}".format(api_key.usage_count) }} requests</span>
+                                    <span class="text-gray-600">•</span>
+                                    <span class="text-gray-600">Rate Limit: {{ api_key.rate_limit }}/hour</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="viewApiKeyDetails({{ api_key.id }})" class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50">
+                                    <i class="lucide-eye w-4 h-4"></i>
+                                </button>
+                                <button onclick="editApiKey({{ api_key.id }})" class="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-50">
+                                    <i class="lucide-edit w-4 h-4"></i>
+                                </button>
+                                <button onclick="deleteApiKey({{ api_key.id }})" class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50">
+                                    <i class="lucide-trash-2 w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Webhooks Tab -->
+            <div id="content-webhooks" class="tab-content p-6 hidden">
+                <div class="space-y-4">
+                    {% for webhook in data.webhooks %}
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3">
+                                    <h3 class="font-medium text-gray-900">{{ webhook.name }}</h3>
+                                    <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                        {% if webhook.status == 'active' %}bg-green-100 text-green-800
+                                        {% else %}bg-red-100 text-red-800{% endif %}">
+                                        {{ webhook.status|title }}
+                                    </span>
+                                </div>
+                                <div class="mt-2 text-sm text-gray-600">
+                                    <p>{{ webhook.url }}</p>
+                                    <p class="mt-1">Events: {{ webhook.events|join(', ') }}</p>
+                                </div>
+                                <div class="mt-2 flex items-center space-x-4 text-sm text-gray-600">
+                                    <span>Success Rate: {{ webhook.success_rate }}%</span>
+                                    <span>•</span>
+                                    <span>Last Delivery: {{ webhook.last_delivery.strftime('%b %d, %Y %H:%M') if webhook.last_delivery else 'Never' }}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="testWebhook({{ webhook.id }})" class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50">
+                                    <i class="lucide-play w-4 h-4"></i>
+                                </button>
+                                <button onclick="editWebhook({{ webhook.id }})" class="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-50">
+                                    <i class="lucide-edit w-4 h-4"></i>
+                                </button>
+                                <button onclick="deleteWebhook({{ webhook.id }})" class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50">
+                                    <i class="lucide-trash-2 w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Integrations Tab -->
+            <div id="content-integrations" class="tab-content p-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for integration in data.integrations %}
+                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <i class="lucide-{{ integration.icon }} w-5 h-5 text-gray-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-gray-900">{{ integration.name }}</h3>
+                                <p class="text-sm text-gray-600">{{ integration.description }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                {% if integration.status == 'connected' %}bg-green-100 text-green-800
+                                {% elif integration.status == 'configured' %}bg-blue-100 text-blue-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ integration.status|title }}
+                            </span>
+                            <button onclick="configureIntegration('{{ integration.id }}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                Configure
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Rate Limits Tab -->
+            <div id="content-rate-limits" class="tab-content p-6 hidden">
+                <div class="space-y-6">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <div class="flex items-center">
+                            <i class="lucide-info w-5 h-5 text-yellow-600 mr-3"></i>
+                            <div>
+                                <h3 class="text-sm font-medium text-yellow-800">Rate Limiting Information</h3>
+                                <p class="text-sm text-yellow-700 mt-1">Monitor and manage API rate limits to ensure fair usage and system stability.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Current Rate Limits</h3>
+                            <div class="space-y-4">
+                                {% for limit in data.rate_limits %}
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ limit.endpoint }}</p>
+                                        <p class="text-sm text-gray-600">{{ limit.description }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-medium text-gray-900">{{ limit.limit }}/{{ limit.window }}</p>
+                                        <p class="text-sm text-gray-600">{{ limit.current_usage }} used</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Rate Limit Stats</h3>
+                            <canvas id="rateLimitChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals will be added here for API key generation, webhook configuration, etc. -->
+
+<script>
+// Tab switching functionality
+function switchTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    
+    // Remove active class from all tabs
+    document.querySelectorAll('.tab-button').forEach(tab => {
+        tab.classList.remove('active', 'border-[#DAAC40]', 'text-[#DAAC40]');
+        tab.classList.add('border-transparent', 'text-gray-500');
+    });
+    
+    // Show selected tab content
+    document.getElementById(`content-${tabName}`).classList.remove('hidden');
+    
+    // Add active class to selected tab
+    const activeTab = document.getElementById(`tab-${tabName}`);
+    activeTab.classList.add('active', 'border-[#DAAC40]', 'text-[#DAAC40]');
+    activeTab.classList.remove('border-transparent', 'text-gray-500');
+}
+
+// API Management functions
+function generateApiKey() {
+    // Show API key generation modal
+    console.log('Generate API Key');
+}
+
+function openWebhookModal() {
+    // Show webhook configuration modal
+    console.log('Open Webhook Modal');
+}
+
+function viewApiKeyDetails(keyId) {
+    console.log('View API Key Details:', keyId);
+}
+
+function editApiKey(keyId) {
+    console.log('Edit API Key:', keyId);
+}
+
+function deleteApiKey(keyId) {
+    if (confirm('Are you sure you want to delete this API key?')) {
+        console.log('Delete API Key:', keyId);
+    }
+}
+
+function testWebhook(webhookId) {
+    console.log('Test Webhook:', webhookId);
+}
+
+function editWebhook(webhookId) {
+    console.log('Edit Webhook:', webhookId);
+}
+
+function deleteWebhook(webhookId) {
+    if (confirm('Are you sure you want to delete this webhook?')) {
+        console.log('Delete Webhook:', webhookId);
+    }
+}
+
+function configureIntegration(integrationId) {
+    console.log('Configure Integration:', integrationId);
+}
+
+// Initialize rate limit chart
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('rateLimitChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+            datasets: [{
+                label: 'Rate Limit Hits',
+                data: [12, 19, 8, 15, 25, 18],
+                borderColor: '#DAAC40',
+                backgroundColor: 'rgba(218, 172, 64, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+});
+</script>
+
+<style>
+.tab-button.active {
+    border-bottom-color: #DAAC40 !important;
+    color: #DAAC40 !important;
+}
+</style>
+{% endblock %}

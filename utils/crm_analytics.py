@@ -348,10 +348,10 @@ class CRMInsights:
     def get_user_risk_score(user_id):
         """Calculate churn risk score for a user (0-100)"""
         try:
-            from models.subscription import UserSubscription
             from users.models.user import User
+            from models.subscription import UserSubscription
 
-            user = User.query.get(user_id)
+            user = db.session.get(User, user_id)
             if not user:
                 return 0
 

@@ -1,0 +1,461 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Enterprise Dashboard - SuperSEO Admin{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Real-time Status Bar -->
+    <div class="bg-white border-b border-gray-200 px-6 py-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-6">
+                <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-sm font-medium text-gray-700">System Healthy</span>
+                </div>
+                <div class="flex items-center space-x-2 text-sm text-gray-500">
+                    <i data-lucide="clock" class="w-4 h-4"></i>
+                    <span>Last updated: <span id="last-updated">Just now</span></span>
+                </div>
+                <div class="flex items-center space-x-2 text-sm text-gray-500">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    <span>Online: <span id="online-users">127</span></span>
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="refreshDashboard()" class="flex items-center px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 mr-1"></i>
+                    Refresh
+                </button>
+                <button onclick="showQuickActions()" class="flex items-center px-3 py-1.5 text-sm bg-[#DAAC40] hover:bg-[#b89627] text-white rounded-lg transition-colors">
+                    <i data-lucide="zap" class="w-4 h-4 mr-1"></i>
+                    Quick Actions
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="px-6 py-6">
+        <!-- Key Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Users Metric -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Total Users</p>
+                        <p class="text-3xl font-bold text-gray-900" id="total-users">
+                            {{ data.users.total if data and data.users else '1,247' }}
+                        </p>
+                        <div class="flex items-center mt-2">
+                            <span class="text-green-600 text-sm font-medium">+12.5%</span>
+                            <span class="text-gray-500 text-sm ml-1">vs last month</span>
+                        </div>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i data-lucide="users" class="w-6 h-6 text-blue-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Metric -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Revenue (MTD)</p>
+                        <p class="text-3xl font-bold text-gray-900" id="total-revenue">
+                            ${{ "{:,.0f}".format(data.subscriptions.total_revenue) if data and data.subscriptions else '45,670' }}
+                        </p>
+                        <div class="flex items-center mt-2">
+                            <span class="text-green-600 text-sm font-medium">+18.2%</span>
+                            <span class="text-gray-500 text-sm ml-1">vs last month</span>
+                        </div>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i data-lucide="dollar-sign" class="w-6 h-6 text-green-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Subscriptions -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Active Subscriptions</p>
+                        <p class="text-3xl font-bold text-gray-900" id="active-subscriptions">
+                            {{ data.subscriptions.active_subscriptions if data and data.subscriptions else '342' }}
+                        </p>
+                        <div class="flex items-center mt-2">
+                            <span class="text-green-600 text-sm font-medium">+8 today</span>
+                            <span class="text-gray-500 text-sm ml-1">new subscriptions</span>
+                        </div>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <i data-lucide="credit-card" class="w-6 h-6 text-purple-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Performance -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">System Health</p>
+                        <p class="text-3xl font-bold text-green-600" id="system-health">99.9%</p>
+                        <div class="flex items-center mt-2">
+                            <span class="text-green-600 text-sm font-medium">All systems operational</span>
+                        </div>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i data-lucide="activity" class="w-6 h-6 text-green-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <!-- Performance Charts -->
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900">Performance Overview</h3>
+                        <div class="flex space-x-2">
+                            <button onclick="updateChart('24h')" class="px-3 py-1 text-sm bg-[#DAAC40] text-white rounded-lg">24H</button>
+                            <button onclick="updateChart('7d')" class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-lg">7D</button>
+                            <button onclick="updateChart('30d')" class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-lg">30D</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <canvas id="performanceChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">System Status</h3>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm text-gray-700">CPU Usage</span>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900" id="cpu-usage">34%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-green-500 h-2 rounded-full" style="width: 34%"></div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span class="text-sm text-gray-700">Memory Usage</span>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900" id="memory-usage">58%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-500 h-2 rounded-full" style="width: 58%"></div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                            <span class="text-sm text-gray-700">Disk Usage</span>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900" id="disk-usage">72%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-yellow-500 h-2 rounded-full" style="width: 72%"></div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-200">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-600">Response Time</span>
+                            <span class="font-medium text-gray-900" id="response-time">0.23s</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm mt-2">
+                            <span class="text-gray-600">Database Connections</span>
+                            <span class="font-medium text-gray-900" id="db-connections">23/100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Recent Activities -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900">Recent Activities</h3>
+                        <a href="{{ url_for('admin_security.audit_logs') }}" class="text-sm text-[#DAAC40] hover:text-[#b89627]">View All</a>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4" id="recent-activities">
+                        {% if data and data.recent_activities %}
+                            {% for activity in data.recent_activities[:5] %}
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="user" class="w-4 h-4 text-blue-600"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm text-gray-900">{{ activity.message }}</p>
+                                    <p class="text-xs text-gray-500">{{ activity.timestamp.strftime('%b %d, %Y at %I:%M %p') if activity.timestamp else 'Just now' }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-8">
+                                <i data-lucide="activity" class="w-12 h-12 text-gray-300 mx-auto mb-4"></i>
+                                <p class="text-gray-500">No recent activities</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions & System Alerts -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Quick Actions & Alerts</h3>
+                </div>
+                <div class="p-6">
+                    <!-- System Alerts -->
+                    <div class="mb-6" id="system-alerts">
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                            <div class="flex items-center">
+                                <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-600 mr-3"></i>
+                                <div>
+                                    <h4 class="text-sm font-medium text-yellow-800">System Alert</h4>
+                                    <p class="text-sm text-yellow-700 mt-1">High traffic detected. Monitoring performance.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Action Buttons -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="quickAction('clear_cache')" class="flex items-center justify-center px-4 py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors">
+                            <i data-lucide="trash-2" class="w-4 h-4 mr-2"></i>
+                            Clear Cache
+                        </button>
+                        <button onclick="quickAction('backup_database')" class="flex items-center justify-center px-4 py-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg transition-colors">
+                            <i data-lucide="database" class="w-4 h-4 mr-2"></i>
+                            Backup DB
+                        </button>
+                        <button onclick="quickAction('send_test_email')" class="flex items-center justify-center px-4 py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg transition-colors">
+                            <i data-lucide="mail" class="w-4 h-4 mr-2"></i>
+                            Test Email
+                        </button>
+                        <button onclick="quickAction('system_health_check')" class="flex items-center justify-center px-4 py-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 rounded-lg transition-colors">
+                            <i data-lucide="heart" class="w-4 h-4 mr-2"></i>
+                            Health Check
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions Modal -->
+<div id="quickActionsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Quick Actions</h3>
+                <button onclick="hideQuickActions()" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-6" id="quickActionsContent">
+            <!-- Content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script>
+// Real-time Dashboard Updates
+let dashboardUpdateInterval;
+let performanceChart;
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDashboard();
+    startRealTimeUpdates();
+});
+
+function initializeDashboard() {
+    // Initialize performance chart
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    performanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+            datasets: [{
+                label: 'CPU Usage',
+                data: [30, 45, 35, 50, 40, 35],
+                borderColor: '#DAAC40',
+                backgroundColor: 'rgba(218, 172, 64, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }, {
+                label: 'Memory Usage',
+                data: [50, 55, 60, 58, 62, 58],
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            }
+        }
+    });
+}
+
+function startRealTimeUpdates() {
+    // Update every 30 seconds
+    dashboardUpdateInterval = setInterval(updateRealTimeData, 30000);
+}
+
+function updateRealTimeData() {
+    fetch('/admin/api/real-time-data')
+        .then(response => response.json())
+        .then(data => {
+            // Update online users
+            document.getElementById('online-users').textContent = data.active_users || '127';
+            
+            // Update system metrics
+            if (data.server_status) {
+                updateSystemMetrics(data.server_status);
+            }
+            
+            // Update last updated time
+            document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+        })
+        .catch(error => console.error('Error updating real-time data:', error));
+}
+
+function updateSystemMetrics(serverData) {
+    // This would update CPU, memory, disk usage in real-time
+    // For now, simulate some updates
+    const cpuElement = document.getElementById('cpu-usage');
+    const memoryElement = document.getElementById('memory-usage');
+    const diskElement = document.getElementById('disk-usage');
+    
+    if (cpuElement && serverData.cpu_usage) {
+        cpuElement.textContent = Math.round(serverData.cpu_usage) + '%';
+    }
+}
+
+function refreshDashboard() {
+    window.location.reload();
+}
+
+function quickAction(action) {
+    // Show loading state
+    showNotification(`Processing ${action.replace('_', ' ')}...`, 'info');
+    
+    fetch('/admin/api/quick-actions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ action: action })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showNotification(data.message, 'success');
+        } else {
+            showNotification(data.message, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Quick action error:', error);
+        showNotification('Action failed: ' + error.message, 'error');
+    });
+}
+
+function showNotification(message, type) {
+    // Create and show notification
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${
+        type === 'success' ? 'bg-green-500 text-white' : 
+        type === 'error' ? 'bg-red-500 text-white' :
+        type === 'info' ? 'bg-blue-500 text-white' :
+        'bg-gray-500 text-white'
+    }`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+function showQuickActions() {
+    document.getElementById('quickActionsModal').classList.remove('hidden');
+    document.getElementById('quickActionsModal').classList.add('flex');
+}
+
+function hideQuickActions() {
+    document.getElementById('quickActionsModal').classList.add('hidden');
+    document.getElementById('quickActionsModal').classList.remove('flex');
+}
+
+function updateChart(period) {
+    // Update chart based on selected period
+    console.log('Updating chart for period:', period);
+    
+    // Update button states
+    document.querySelectorAll('button[onclick^="updateChart"]').forEach(btn => {
+        btn.className = 'px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-lg';
+    });
+    event.target.className = 'px-3 py-1 text-sm bg-[#DAAC40] text-white rounded-lg';
+}
+
+// Cleanup interval on page unload
+window.addEventListener('beforeunload', function() {
+    clearInterval(dashboardUpdateInterval);
+});
+</script>
+
+<style>
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .5;
+    }
+}
+</style>
+{% endblock %}

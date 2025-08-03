@@ -1,0 +1,245 @@
+<!-- Dashboard -->
+<a href="{{ url_for('users.dashboard') }}"
+  class="{% if request.endpoint == 'users.dashboard' %}
+    sidebar-active
+  {% else %}
+    text-gray-600 hover:bg-gray-50 hover:text-gray-900
+  {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+  <i data-lucide="home" class="w-5 h-5 mr-3"></i>
+  Dashboard
+</a>
+
+<!-- SEO Tools Section -->
+<div class="mt-6">
+  <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">SEO Tools</div>
+
+  <a href="{{ url_for('tools.seo_audit') }}"
+    class="{% if 'seo_audit' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="search" class="w-5 h-5 mr-3"></i>
+    SEO Audit
+  </a>
+
+  <a href="{{ url_for('tools.keyword_research') }}"
+    class="{% if 'keyword_research' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="key" class="w-5 h-5 mr-3"></i>
+    Keyword Research
+  </a>
+
+  <a href="{{ url_for('tools.backlink_checker') }}"
+    class="{% if 'backlink_checker' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="link" class="w-5 h-5 mr-3"></i>
+    Backlink Checker
+  </a>
+
+  <a href="{{ url_for('tools.rank_tracker') }}"
+    class="{% if 'rank_tracker' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="trending-up" class="w-5 h-5 mr-3"></i>
+    Rank Tracker
+  </a>
+
+  <a href="{{ url_for('tools.competitor_analysis') }}"
+    class="{% if 'competitor_analysis' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="target" class="w-5 h-5 mr-3"></i>
+    Competitor Analysis
+  </a>
+</div>
+
+<!-- Content Tools Section -->
+<div class="mt-6">
+  <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Content Tools</div>
+
+  <a href="{{ url_for('tools.content_optimizer') }}"
+    class="{% if 'content_optimizer' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="file-text" class="w-5 h-5 mr-3"></i>
+    Content Optimizer
+  </a>
+
+  <a href="{{ url_for('tools.meta_generator') }}"
+    class="{% if 'meta_generator' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="tag" class="w-5 h-5 mr-3"></i>
+    Meta Generator
+  </a>
+
+  <a href="{{ url_for('tools.schema_generator') }}"
+    class="{% if 'schema_generator' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="code" class="w-5 h-5 mr-3"></i>
+    Schema Generator
+  </a>
+</div>
+
+<!-- Technical SEO Section -->
+<div class="mt-6">
+  <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Technical SEO</div>
+
+  <a href="{{ url_for('tools.sitemap_generator') }}"
+    class="{% if 'sitemap_generator' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="map" class="w-5 h-5 mr-3"></i>
+    Sitemap Generator
+  </a>
+
+  <a href="{{ url_for('tools.robots_generator') }}"
+    class="{% if 'robots_generator' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="bot" class="w-5 h-5 mr-3"></i>
+    Robots.txt Generator
+  </a>
+
+  <a href="{{ url_for('tools.page_speed') }}"
+    class="{% if 'page_speed' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="zap" class="w-5 h-5 mr-3"></i>
+    Page Speed Test
+  </a>
+
+  <a href="{{ url_for('tools.ssl_checker') }}"
+    class="{% if 'ssl_checker' in request.endpoint %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="shield" class="w-5 h-5 mr-3"></i>
+    SSL Checker
+  </a>
+</div>
+
+<!-- Analytics & Reports Section -->
+<div class="mt-6">
+  <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Analytics & Reports</div>
+
+  <a href="{{ url_for('users.analytics') }}"
+    class="{% if request.endpoint == 'users.analytics' %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="bar-chart-3" class="w-5 h-5 mr-3"></i>
+    Analytics
+  </a>
+
+  <a href="{{ url_for('users.reports') }}"
+    class="{% if request.endpoint == 'users.reports' %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="file-bar-chart" class="w-5 h-5 mr-3"></i>
+    Reports
+  </a>
+
+  <a href="{{ url_for('users.projects') }}"
+    class="{% if request.endpoint == 'users.projects' %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="folder" class="w-5 h-5 mr-3"></i>
+    Projects
+  </a>
+</div>
+
+<!-- Account Section -->
+<div class="mt-6">
+  <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Account</div>
+
+  <a href="{{ url_for('users.profile') }}"
+    class="{% if request.endpoint == 'users.profile' %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="user" class="w-5 h-5 mr-3"></i>
+    Profile
+  </a>
+
+  <a href="{{ url_for('users.billing') }}"
+    class="{% if request.endpoint == 'users.billing' %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="credit-card" class="w-5 h-5 mr-3"></i>
+    Billing & Plans
+  </a>
+
+  <a href="{{ url_for('users.api_keys') }}"
+    class="{% if request.endpoint == 'users.api_keys' %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="key" class="w-5 h-5 mr-3"></i>
+    API Keys
+  </a>
+
+  <a href="{{ url_for('users.settings') }}"
+    class="{% if request.endpoint == 'users.settings' %}
+      sidebar-active
+    {% else %}
+      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+    {% endif %} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+    Settings
+  </a>
+</div>
+
+<!-- Quick Actions -->
+<div class="mt-6 pt-6 border-t border-gray-200">
+  <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Quick Actions</div>
+
+  <button onclick="openHelpModal()" class="w-full text-left text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="help-circle" class="w-5 h-5 mr-3"></i>
+    Help & Support
+  </button>
+
+  <a href="{{ url_for('contact.contact') }}" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="message-circle" class="w-5 h-5 mr-3"></i>
+    Contact Support
+  </a>
+
+  <a href="{{ url_for('auth.logout') }}" class="text-red-600 hover:bg-red-50 hover:text-red-700 group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
+    <i data-lucide="log-out" class="w-5 h-5 mr-3"></i>
+    Logout
+  </a>
+</div>

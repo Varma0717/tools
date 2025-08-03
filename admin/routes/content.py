@@ -14,6 +14,7 @@ from flask import (
     url_for,
     flash,
     current_app,
+    jsonify,
 )
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
@@ -35,8 +36,22 @@ def admin_required(func):
     """Admin-only access decorator"""
 
     def wrapper(*args, **kwargs):
-        if not current_user.is_authenticated or current_user.role != "admin":
+        if not current_user.is_authenticated:
+            if request.is_json or request.path.startswith("/admin/api/"):
+                return (
+                    jsonify({"success": False, "message": "Authentication required"}),
+                    401,
+                )
             return redirect(url_for("users.dashboard"))
+
+        if current_user.role != "admin":
+            if request.is_json or request.path.startswith("/admin/api/"):
+                return (
+                    jsonify({"success": False, "message": "Admin access required"}),
+                    403,
+                )
+            return redirect(url_for("users.dashboard"))
+
         return func(*args, **kwargs)
 
     wrapper.__name__ = func.__name__
@@ -260,3 +275,76 @@ def get_content_stats():
     except Exception as e:
         logger.error(f"Error getting content stats: {e}")
         return {"total_posts": 0, "published_posts": 0, "draft_posts": 0}
+
+
+@content_bp.route("/api/posts/bulk-actions", methods=["POST"])
+@admin_required
+def bulk_post_actions():
+    """Handle bulk actions on posts"""
+    try:
+        request_data = request.get_json()
+        if not request_data:
+            return jsonify({"success": False, "message": "No JSON data provided"}), 400
+
+        action = request_data.get("action")
+        post_ids = request_data.get("post_ids", [])
+
+        if not action or not post_ids:
+            return (
+                jsonify(
+                    {"success": False, "message": "Action and post_ids are required"}
+                ),
+                400,
+            )
+
+        # Convert post_ids to integers
+        try:
+            post_ids = [int(pid) for pid in post_ids]
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "message": "Invalid post IDs"}), 400
+
+        # Get posts to modify
+        posts = Post.query.filter(Post.id.in_(post_ids)).all()
+        if not posts:
+            return jsonify({"success": False, "message": "No posts found"}), 404
+
+        processed_count = 0
+
+        if action == "publish":
+            for post in posts:
+                if hasattr(post, "published"):
+                    post.published = True
+                    processed_count += 1
+            message = f"Published {processed_count} posts successfully"
+
+        elif action == "unpublish":
+            for post in posts:
+                if hasattr(post, "published"):
+                    post.published = False
+                    processed_count += 1
+            message = f"Unpublished {processed_count} posts successfully"
+
+        elif action == "delete":
+            for post in posts:
+                db.session.delete(post)
+                processed_count += 1
+            message = f"Deleted {processed_count} posts successfully"
+
+        else:
+            return jsonify({"success": False, "message": "Invalid action"}), 400
+
+        # Commit changes
+        db.session.commit()
+
+        logger.info(
+            f"Bulk action '{action}' performed on {processed_count} posts by user {current_user.id}"
+        )
+        return jsonify(
+            {"success": True, "message": message, "processed_count": processed_count}
+        )
+
+    except Exception as e:
+        db.session.rollback()
+        error_msg = f"Error performing bulk action: {str(e)}"
+        logger.error(error_msg)
+        return jsonify({"success": False, "message": error_msg}), 500
