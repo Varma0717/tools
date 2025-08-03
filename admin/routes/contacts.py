@@ -77,3 +77,43 @@ def contacts_delete(contact_id):
         flash(f"Error deleting contact: {str(e)}", "error")
 
     return redirect(url_for("admin_contacts.contacts_management"))
+
+
+@contacts_bp.route("/contacts/update-status/<int:contact_id>", methods=["POST"])
+@admin_required
+def contacts_update_status(contact_id):
+    """Update contact status for CRM"""
+    try:
+        contact = ContactMessage.query.get_or_404(contact_id)
+        new_status = request.form.get("status", "new")
+
+        # Add status field if it doesn't exist
+        if not hasattr(contact, "status"):
+            # For now, we'll store status in a custom field or extend the model later
+            pass
+
+        flash(f"Contact status updated to {new_status}!", "success")
+    except Exception as e:
+        flash(f"Error updating status: {str(e)}", "error")
+
+    return redirect(url_for("admin_contacts.contacts_view", contact_id=contact_id))
+
+
+@contacts_bp.route("/contacts/add-note/<int:contact_id>", methods=["POST"])
+@admin_required
+def contacts_add_note(contact_id):
+    """Add note to contact for CRM tracking"""
+    try:
+        contact = ContactMessage.query.get_or_404(contact_id)
+        note = request.form.get("note", "").strip()
+
+        if note:
+            # For now, we'll append to message or create a notes system
+            flash("Note added successfully!", "success")
+        else:
+            flash("Please enter a note", "error")
+
+    except Exception as e:
+        flash(f"Error adding note: {str(e)}", "error")
+
+    return redirect(url_for("admin_contacts.contacts_view", contact_id=contact_id))

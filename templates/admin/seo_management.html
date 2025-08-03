@@ -1,53 +1,76 @@
 {% extends "admin/base.html" %}
 
-{% block title %}SEO Management - Admin Dashboard{% endblock %}
+{% block title %}SEO Management - Admin Panel{% endblock %}
+{% block header %}SEO Management{% endblock %}
+{% block subtitle %}Monitor and optimize your website's SEO performance{% endblock %}
 
 {% block content %}
-  <!-- Include Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-
-  <div class="min-h-screen bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Header -->
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900 flex items-center">
-            <i data-lucide="search" class="w-8 h-8 mr-3 text-[#DAAC40]"></i>
-            SEO Management
-          </h1>
-          <p class="text-gray-600 mt-2">Monitor and optimize your SEO performance</p>
-        </div>
-        <div class="flex flex-wrap gap-3 mt-4 sm:mt-0">
-          <button onclick="runBulkAnalysis()" class="inline-flex items-center px-4 py-2 bg-[#DAAC40] text-white font-medium rounded-lg hover:bg-[#b89627] transition-colors duration-200">
-            <i data-lucide="play" class="w-4 h-4 mr-2"></i>
-            Run Bulk Analysis
-          </button>
-          <button onclick="exportSEOReport()" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200">
-            <i data-lucide="download" class="w-4 h-4 mr-2"></i>
-            Export Report
-          </button>
-        </div>
-      </div>
-
-      <!-- SEO Metrics -->
+      <!-- SEO Overview Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-green-100 text-sm font-medium">Total Analyses</p>
-              <p class="text-2xl font-bold">{{ data.total_analyses or 0 }}</p>
+              <p class="text-sm font-medium text-gray-600">Total Posts</p>
+              <p class="text-2xl font-bold text-gray-900">{{ data.overview.total_posts if data.overview else 0 }}</p>
             </div>
-            <i data-lucide="bar-chart-3" class="w-8 h-8 text-green-200"></i>
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i data-lucide="file-text" class="w-6 h-6 text-blue-600"></i>
+            </div>
           </div>
         </div>
         
-        <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-6 text-white">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-blue-100 text-sm font-medium">Average Score</p>
-              <p class="text-2xl font-bold">{{ data.avg_score or 0 }}</p>
+              <p class="text-sm font-medium text-gray-600">SEO Optimized</p>
+              <p class="text-2xl font-bold text-gray-900">{{ data.overview.seo_optimized if data.overview else 0 }}</p>
             </div>
-            <i data-lucide="trending-up" class="w-8 h-8 text-blue-200"></i>
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Optimization Rate</p>
+              <p class="text-2xl font-bold text-gray-900">{{ data.overview.optimization_rate if data.overview else 0 }}%</p>
+            </div>
+            <div class="w-12 h-12 bg-[#DAAC40]/10 rounded-lg flex items-center justify-center">
+              <i data-lucide="trending-up" class="w-6 h-6 text-[#DAAC40]"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Need Attention</p>
+              <p class="text-2xl font-bold text-gray-900">{{ data.overview.posts_needing_attention if data.overview else 0 }}</p>
+            </div>
+            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+              <i data-lucide="alert-triangle" class="w-6 h-6 text-red-600"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <button onclick="generateSitemap()" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#DAAC40] to-[#b89627] hover:from-[#b89627] hover:to-[#DAAC40] text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+          <i data-lucide="map" class="w-4 h-4 mr-2"></i>
+          Generate Sitemap
+        </button>
+        <button onclick="bulkOptimize()" class="inline-flex items-center px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-300 shadow-sm hover:shadow-md transition-all duration-200">
+          <i data-lucide="zap" class="w-4 h-4 mr-2"></i>
+          Bulk Optimize
+        </button>
+        <a href="{{ data.seo_tools.sitemap_url if data.seo_tools else '/sitemap.xml' }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-300 shadow-sm hover:shadow-md transition-all duration-200">
+          <i data-lucide="external-link" class="w-4 h-4 mr-2"></i>
+          View Sitemap
+        </a>
+      </div>
           </div>
         </div>
         

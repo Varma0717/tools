@@ -68,6 +68,14 @@ def settings_management():
     return render_template("admin/settings.html", data=settings_data)
 
 
+@system_bp.route("/seo")
+@admin_required
+def seo_management():
+    """SEO management and optimization tools"""
+    seo_data = get_seo_data()
+    return render_template("admin/seo_management.html", data=seo_data)
+
+
 @system_bp.route("/api/cache/clear", methods=["POST"])
 @admin_required
 def clear_cache():
@@ -325,3 +333,73 @@ def get_settings_data():
                 "debug_mode": False,
             }
         }
+
+
+def get_seo_data():
+    """Get SEO management data"""
+    try:
+        # Get SEO stats from posts
+        total_posts = Post.query.count()
+        posts_with_meta = Post.query.filter(
+            Post.meta_title.isnot(None) | Post.meta_description.isnot(None)
+        ).count()
+
+        # Calculate SEO optimization percentage
+        seo_optimization = (
+            (posts_with_meta / total_posts * 100) if total_posts > 0 else 0
+        )
+
+        # Get recent posts needing SEO attention
+        posts_needing_seo = (
+            Post.query.filter(
+                Post.meta_title.is_(None) | Post.meta_description.is_(None)
+            )
+            .order_by(Post.created_at.desc())
+            .limit(10)
+            .all()
+        )
+
+        return {
+            "overview": {
+                "total_posts": total_posts,
+                "seo_optimized": posts_with_meta,
+                "optimization_rate": round(seo_optimization, 1),
+                "posts_needing_attention": len(posts_needing_seo),
+            },
+            "posts_needing_seo": posts_needing_seo,
+            "seo_tools": {
+                "sitemap_url": "/sitemap.xml",
+                "robots_url": "/robots.txt",
+                "google_analytics": get_setting("google_analytics_id", ""),
+                "search_console": get_setting("google_search_console", ""),
+            },
+            "meta_defaults": {
+                "default_title_template": get_setting(
+                    "default_meta_title", "{page_title} - {site_name}"
+                ),
+                "default_description": get_setting("default_meta_description", ""),
+                "site_name": get_setting("site_name", "Super SEO Toolkit"),
+            },
+        }
+    except Exception as e:
+        logger.error(f"Error getting SEO data: {e}")
+        return {
+            "overview": {
+                "total_posts": 0,
+                "seo_optimized": 0,
+                "optimization_rate": 0,
+                "posts_needing_attention": 0,
+            },
+            "posts_needing_seo": [],
+            "seo_tools": {},
+            "meta_defaults": {},
+        }
+
+
+def get_setting(key, default=None):
+    """Get a setting value"""
+    try:
+        setting = Setting.query.filter_by(key=key).first()
+        return setting.value if setting else default
+    except:
+        return default
