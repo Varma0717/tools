@@ -98,16 +98,21 @@ app.register_blueprint(blog_bp)
 
 # Register CRM and Analytics blueprints
 from routes.analytics import analytics_bp
+from routes.pricing import pricing_bp
 from routes.crm import crm_bp
 from routes.subscription import subscription_bp
+from routes.business import business_bp
 
 app.register_blueprint(analytics_bp, name="analytics_main")
 app.register_blueprint(crm_bp)
 app.register_blueprint(subscription_bp)
+app.register_blueprint(pricing_bp)
+app.register_blueprint(business_bp)
 
 
-# User loader
+# Import models to ensure SQLAlchemy recognizes them
 from users.models import User
+from models.tool_usage import ToolUsage, Subscription, ToolAnalytics
 
 register_tool_blueprints(app)
 

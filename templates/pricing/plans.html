@@ -1,0 +1,492 @@
+{% extends "base.html" %}
+
+{% block title %}Pricing Plans - Super SEO Toolkit{% endblock %}
+{% block meta_description %}Choose the perfect plan for your SEO needs. From free daily tools to unlimited premium access with advanced features.{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .pricing-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 80px 0 60px;
+    }
+    
+    .pricing-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        padding: 40px 30px;
+        text-align: center;
+        position: relative;
+        margin-bottom: 30px;
+        transition: transform 0.3s ease;
+    }
+    
+    .pricing-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .pricing-card.featured {
+        transform: scale(1.05);
+        border: 3px solid #DAAC40;
+        background: linear-gradient(135deg, #fff 0%, #f8f9ff 100%);
+    }
+    
+    .pricing-card.featured::before {
+        content: "MOST POPULAR";
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #DAAC40;
+        color: white;
+        padding: 8px 24px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+    
+    .plan-name {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    
+    .plan-price {
+        font-size: 48px;
+        font-weight: bold;
+        color: #DAAC40;
+        margin-bottom: 5px;
+    }
+    
+    .plan-price .currency {
+        font-size: 24px;
+        vertical-align: top;
+    }
+    
+    .plan-price .period {
+        font-size: 16px;
+        color: #666;
+        font-weight: normal;
+    }
+    
+    .plan-features {
+        list-style: none;
+        padding: 0;
+        margin: 30px 0;
+    }
+    
+    .plan-features li {
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+        color: #555;
+        display: flex;
+        align-items: center;
+    }
+    
+    .plan-features li:last-child {
+        border-bottom: none;
+    }
+    
+    .plan-features li::before {
+        content: "✓";
+        color: #28a745;
+        font-weight: bold;
+        margin-right: 12px;
+        font-size: 16px;
+    }
+    
+    .plan-button {
+        background: linear-gradient(135deg, #DAAC40 0%, #b89627 100%);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        width: 100%;
+    }
+    
+    .plan-button:hover {
+        background: linear-gradient(135deg, #b89627 0%, #9d7f1f 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(218, 172, 64, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .free-plan .plan-button {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+    
+    .free-plan .plan-button:hover {
+        background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+        box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+    }
+    
+    .usage-stats {
+        background: rgba(255,255,255,0.9);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    
+    .usage-bar {
+        background: #e9ecef;
+        border-radius: 10px;
+        height: 8px;
+        margin: 10px 0;
+        overflow: hidden;
+    }
+    
+    .usage-fill {
+        background: linear-gradient(90deg, #DAAC40, #b89627);
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+    
+    .comparison-table {
+        background: white;
+        border-radius: 15px;
+        margin-top: 60px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .faq-section {
+        margin-top: 80px;
+        color: white;
+    }
+    
+    .faq-item {
+        background: rgba(255,255,255,0.1);
+        border-radius: 10px;
+        margin-bottom: 15px;
+        overflow: hidden;
+    }
+    
+    .faq-question {
+        padding: 20px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .faq-answer {
+        padding: 0 20px 20px;
+        display: none;
+    }
+    
+    .competitive-advantage {
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        padding: 40px;
+        margin: 60px 0;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pricing-container">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-white font-weight-bold mb-3">
+                Choose Your SEO Power Level
+            </h1>
+            <p class="lead text-white mb-4">
+                Access 168+ professional SEO tools with flexible pricing that grows with your needs
+            </p>
+        </div>
+
+        {% if user_stats %}
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="usage-stats">
+                    <h5 class="mb-3">Your Current Usage</h5>
+                    {% if user_stats.type == 'anonymous' %}
+                        <p class="mb-2">Daily Usage: <strong>{{ user_stats.daily_usage }}/{{ user_stats.daily_limit }}</strong></p>
+                        <div class="usage-bar">
+                            <div class="usage-fill" style="width: {{ (user_stats.daily_usage / user_stats.daily_limit * 100) if user_stats.daily_limit > 0 else 0 }}%"></div>
+                        </div>
+                        <small class="text-muted">Create an account for 5 monthly uses!</small>
+                    {% else %}
+                        {% if user_stats.is_premium %}
+                            <p class="text-success"><strong>✓ Unlimited Access</strong></p>
+                            <p class="text-muted">{{ user_stats.subscription_type|title }} Plan Active</p>
+                        {% else %}
+                            <p class="mb-2">Monthly Usage: <strong>{{ user_stats.monthly_usage }}/{{ user_stats.monthly_limit }}</strong></p>
+                            <div class="usage-bar">
+                                <div class="usage-fill" style="width: {{ (user_stats.monthly_usage / user_stats.monthly_limit * 100) if user_stats.monthly_limit > 0 else 0 }}%"></div>
+                            </div>
+                            {% if user_stats.monthly_usage >= user_stats.monthly_limit %}
+                                <small class="text-warning">Upgrade for unlimited access!</small>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <!-- Free Plan -->
+            <div class="col-lg-4 mb-4">
+                <div class="pricing-card free-plan">
+                    <div class="plan-name">Free</div>
+                    <div class="plan-price">
+                        <span class="currency">$</span>0
+                        <span class="period">/month</span>
+                    </div>
+                    <ul class="plan-features">
+                        <li>1 tool use per day (anonymous)</li>
+                        <li>5 tools per month (with account)</li>
+                        <li>All 168+ SEO tools available</li>
+                        <li>Basic support</li>
+                        <li>Community access</li>
+                    </ul>
+                    {% if current_user.is_authenticated %}
+                        <div class="plan-button" style="background: #6c757d; cursor: not-allowed;">
+                            Current Plan
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('auth.register') }}" class="plan-button">
+                            Sign Up Free
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="col-lg-4 mb-4">
+                <div class="pricing-card">
+                    <div class="plan-name">{{ plans.pro.name }}</div>
+                    <div class="plan-price">
+                        <span class="currency">$</span>{{ plans.pro.price }}
+                        <span class="period">/month</span>
+                    </div>
+                    <ul class="plan-features">
+                        {% for feature in plans.pro.features %}
+                        <li>{{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{{ url_for('pricing.subscribe', plan_type='pro') }}" class="plan-button">
+                        {% if current_user.is_authenticated %}
+                            Upgrade to Pro
+                        {% else %}
+                            Start Pro Trial
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Premium Plan -->
+            <div class="col-lg-4 mb-4">
+                <div class="pricing-card featured">
+                    <div class="plan-name">{{ plans.premium.name }}</div>
+                    <div class="plan-price">
+                        <span class="currency">$</span>{{ plans.premium.price }}
+                        <span class="period">/month</span>
+                    </div>
+                    <ul class="plan-features">
+                        {% for feature in plans.premium.features %}
+                        <li>{{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{{ url_for('pricing.subscribe', plan_type='premium') }}" class="plan-button">
+                        {% if current_user.is_authenticated %}
+                            Upgrade to Premium
+                        {% else %}
+                            Start Premium Trial
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enterprise Plan (Full Width) -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="pricing-card" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white;">
+                    <div class="plan-name" style="color: white;">{{ plans.enterprise.name }}</div>
+                    <div class="plan-price" style="color: #DAAC40;">
+                        <span class="currency">$</span>{{ plans.enterprise.price }}
+                        <span class="period">/month</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="plan-features">
+                                {% for feature in plans.enterprise.features[:4] %}
+                                <li style="color: white;">{{ feature }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="plan-features">
+                                {% for feature in plans.enterprise.features[4:] %}
+                                <li style="color: white;">{{ feature }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('pricing.subscribe', plan_type='enterprise') }}" class="plan-button">
+                        Contact Sales
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Competitive Advantage -->
+        <div class="competitive-advantage">
+            <h3 class="mb-4" style="color: #333;">Why Choose Super SEO Toolkit?</h3>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="h5" style="color: #DAAC40;">168+ Tools</div>
+                    <p class="text-muted">vs 15-20 tools in competitors</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="h5" style="color: #DAAC40;">80% Lower Cost</div>
+                    <p class="text-muted">vs SEOptimer & similar tools</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="h5" style="color: #DAAC40;">All-in-One</div>
+                    <p class="text-muted">SEO + Content + Technical + Security</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h3 class="text-center mb-5">Frequently Asked Questions</h3>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Can I change plans anytime?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Yes! You can upgrade, downgrade, or cancel your subscription at any time. Changes take effect at your next billing cycle.
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>What happens if I exceed my usage limits?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            You'll receive a friendly reminder to upgrade. Your access isn't blocked permanently - limits reset daily (free) or monthly (registered users).
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Do you offer refunds?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Yes! We offer a 30-day money-back guarantee. If you're not satisfied, contact support for a full refund.
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Are there any setup fees or hidden costs?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            No hidden fees! The price you see is exactly what you pay. No setup fees, no per-tool charges, no surprises.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+function toggleFaq(element) {
+    const answer = element.nextElementSibling;
+    const icon = element.querySelector('i');
+    
+    if (answer.style.display === 'block') {
+        answer.style.display = 'none';
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+    } else {
+        // Close all other FAQ items
+        document.querySelectorAll('.faq-answer').forEach(item => {
+            item.style.display = 'none';
+        });
+        document.querySelectorAll('.faq-question i').forEach(icon => {
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        });
+        
+        // Open clicked item
+        answer.style.display = 'block';
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+    }
+}
+
+// Auto-show upgrade prompts for high usage
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/pricing/api/upgrade-prompt')
+        .then(response => response.json())
+        .then(data => {
+            if (data.show_prompt) {
+                setTimeout(() => showUpgradeModal(data), 2000);
+            }
+        });
+});
+
+function showUpgradeModal(data) {
+    // Create modal HTML
+    const modal = document.createElement('div');
+    modal.className = 'modal fade';
+    modal.innerHTML = `
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <h5 class="mb-3">${data.title}</h5>
+                    <p class="mb-4">${data.message}</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="${data.primary_action.url}" class="btn btn-primary">
+                            ${data.primary_action.text}
+                        </a>
+                        <a href="${data.secondary_action.url}" class="btn btn-outline-secondary">
+                            ${data.secondary_action.text}
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            Later
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Show modal using Bootstrap
+    if (typeof bootstrap !== 'undefined') {
+        new bootstrap.Modal(modal).show();
+    }
+}
+</script>
+{% endblock %}
