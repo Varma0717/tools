@@ -20,11 +20,11 @@
           <p class="text-gray-600 mt-2">Manage posts, pages, and media content</p>
         </div>
         <div class="flex flex-wrap gap-3 mt-4 sm:mt-0">
-          <button data-modal-target="addContentModal" class="inline-flex items-center px-4 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors duration-200">
+          <button data-modal-target="addContentModal" class="inline-flex items-center px-4 py-2 bg-[#DAAC40] text-white font-medium rounded-lg hover:bg-[#b89627] transition-colors duration-200">
             <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
             Add Content
           </button>
-          <button onclick="bulkActions()" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors duration-200">
+          <button onclick="bulkActions()" class="inline-flex items-center px-4 py-2 bg-[#DAAC40] text-white font-medium rounded-lg hover:bg-[#b89627] transition-colors duration-200">
             <i data-lucide="list-checks" class="w-4 h-4 mr-2"></i>
             Bulk Actions
           </button>
@@ -188,7 +188,7 @@
                 <td class="px-6 py-4 text-sm text-gray-600">{{ post.updated_at.strftime('%b %d, %Y') if post.updated_at else 'N/A' }}</td>
                 <td class="px-6 py-4">
                   <div class="flex space-x-2">
-                    <button onclick="editContent({{ post.id }})" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200">
+                    <button onclick="editContent({{ post.id }})" class="p-2 text-[#DAAC40] hover:bg-[#DAAC40]/10 rounded-lg transition-colors duration-200">
                       <i data-lucide="edit" class="w-4 h-4"></i>
                     </button>
                     <button onclick="viewContent({{ post.id }})" class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors duration-200">

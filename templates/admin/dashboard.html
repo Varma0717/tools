@@ -1,43 +1,27 @@
-{% extends 'base.html' %}
-{% block title %}
-  Admin Dashboard - Super SEO Toolkit
-{% endblock %}
+{% extends "admin/base.html" %}
+
+{% block title %}Admin Dashboard - Super SEO Toolkit{% endblock %}
+
+{% block header %}Admin Dashboard{% endblock %}
+{% block subtitle %}Comprehensive system management and analytics{% endblock %}
 
 {% block content %}
-  <!-- Professional Admin Dashboard -->
-  <div class="min-h-screen bg-gray-50">
-    <!-- Dashboard Header -->
-    <div class="bg-white border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
-            </div>
-            <div>
-              <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p class="text-sm text-gray-600">Comprehensive system management and analytics</p>
-            </div>
-          </div>
-          <div class="flex items-center space-x-4">
-            <div class="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
-              <i data-lucide="clock" class="w-4 h-4"></i>
-              <span>Last updated: <span id="last-updated">Just now</span></span>
-            </div>
-            <button onclick="refreshDashboard()" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">
-              <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
-              Refresh Data
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- Quick Actions -->
+<div class="flex flex-wrap gap-3 mb-6">
+  <div class="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
+    <i data-lucide="clock" class="w-4 h-4"></i>
+    <span>Last updated: <span id="last-updated">Just now</span></span>
+  </div>
+  <button onclick="refreshDashboard()" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#DAAC40] to-[#b89627] hover:from-[#b89627] hover:to-[#DAAC40] text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+    <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
+    Refresh Data
+  </button>
+</div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- System Status Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<!-- System Status Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Total Users -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-600">Total Users</p>
@@ -50,14 +34,14 @@
               </p>
               <p class="text-xs text-green-600 font-medium">+12% this month</p>
             </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <i data-lucide="users" class="w-6 h-6 text-blue-600"></i>
+            <div class="w-12 h-12 bg-[#DAAC40]/10 rounded-lg flex items-center justify-center">
+              <i data-lucide="users" class="w-6 h-6 text-[#DAAC40]"></i>
             </div>
           </div>
         </div>
 
         <!-- Active Sessions -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-600">Active Sessions</p>
@@ -68,7 +52,7 @@
                   89
                 {% endif %}
               </p>
-              <p class="text-xs text-blue-600 font-medium">Real-time activity</p>
+              <p class="text-xs text-green-600 font-medium">Real-time activity</p>
             </div>
             <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
               <i data-lucide="activity" class="w-6 h-6 text-green-600"></i>
@@ -77,7 +61,7 @@
         </div>
 
         <!-- Total Revenue -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-600">Monthly Revenue</p>
@@ -90,20 +74,20 @@
               </p>
               <p class="text-xs text-green-600 font-medium">+8.3% from last month</p>
             </div>
-            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <i data-lucide="dollar-sign" class="w-6 h-6 text-purple-600"></i>
+            <div class="w-12 h-12 bg-[#DAAC40]/10 rounded-lg flex items-center justify-center">
+              <i data-lucide="dollar-sign" class="w-6 h-6 text-[#DAAC40]"></i>
             </div>
           </div>
         </div>
 
         <!-- System Health -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-600">System Health</p>
               <p class="text-2xl font-bold text-green-600">99.9%</p>
               <p class="text-xs text-green-600 font-medium flex items-center">
-                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-1"></div>All systems operational
+                <div class="w-2 h-2 bg-[#DAAC40] rounded-full animate-pulse mr-1"></div>All systems operational
               </p>
             </div>
             <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -121,15 +105,15 @@
           <div class="bg-white rounded-xl shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <h2 class="text-lg font-semibold text-gray-900 flex items-center">
-                <i data-lucide="zap" class="w-5 h-5 mr-2 text-blue-500"></i>
+                <i data-lucide="zap" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
                 Quick Management Actions
               </h2>
             </div>
             <div class="p-6">
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <a href="{{ url_for('admin_users.users_management') }}" class="group p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all duration-200">
-                  <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors duration-200">
-                    <i data-lucide="users" class="w-5 h-5 text-blue-600"></i>
+                  <div class="w-10 h-10 bg-[#DAAC40]/10 rounded-lg flex items-center justify-center mb-3 group-hover:bg-[#DAAC40]/20 transition-colors duration-200">
+                    <i data-lucide="users" class="w-5 h-5 text-[#DAAC40]"></i>
                   </div>
                   <p class="font-medium text-gray-900 text-sm">User Management</p>
                   <p class="text-xs text-gray-500 mt-1">Manage users & roles</p>
@@ -144,8 +128,8 @@
                 </a>
 
                 <a href="{{ url_for('admin_system.settings_management') }}" class="group p-4 rounded-lg border border-gray-200 hover:border-purple-500 hover:shadow-md transition-all duration-200">
-                  <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-purple-200 transition-colors duration-200">
-                    <i data-lucide="settings" class="w-5 h-5 text-purple-600"></i>
+                  <div class="w-10 h-10 bg-[#DAAC40]/10 rounded-lg flex items-center justify-center mb-3 group-hover:bg-[#DAAC40]/20 transition-colors duration-200">
+                    <i data-lucide="settings" class="w-5 h-5 text-[#DAAC40]"></i>
                   </div>
                   <p class="font-medium text-gray-900 text-sm">System Settings</p>
                   <p class="text-xs text-gray-500 mt-1">Configure platform</p>
@@ -166,7 +150,7 @@
           <div class="bg-white rounded-xl shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <h2 class="text-lg font-semibold text-gray-900 flex items-center">
-                <i data-lucide="activity" class="w-5 h-5 mr-2 text-blue-500"></i>
+                <i data-lucide="activity" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
                 Recent System Activity
               </h2>
             </div>
@@ -184,8 +168,8 @@
                 </div>
 
                 <div class="flex items-center space-x-4 p-3 rounded-lg bg-gray-50">
-                  <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <i data-lucide="credit-card" class="w-5 h-5 text-blue-600"></i>
+                  <div class="w-10 h-10 bg-[#DAAC40]/10 rounded-full flex items-center justify-center">
+                    <i data-lucide="credit-card" class="w-5 h-5 text-[#DAAC40]"></i>
                   </div>
                   <div class="flex-1">
                     <p class="text-sm font-medium text-gray-900">Payment Processed</p>
@@ -206,8 +190,8 @@
                 </div>
 
                 <div class="flex items-center space-x-4 p-3 rounded-lg bg-gray-50">
-                  <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                    <i data-lucide="shield-check" class="w-5 h-5 text-purple-600"></i>
+                  <div class="w-10 h-10 bg-[#DAAC40]/10 rounded-full flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-[#DAAC40]"></i>
                   </div>
                   <div class="flex-1">
                     <p class="text-sm font-medium text-gray-900">Security Scan</p>
@@ -217,7 +201,7 @@
                 </div>
               </div>
               <div class="mt-4 pt-4 border-t border-gray-200">
-                <a href="{{ url_for('admin_system.system_management') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">View all system logs →</a>
+                <a href="{{ url_for('admin_system.system_management') }}" class="text-sm text-[#DAAC40] hover:text-[#b89627] font-medium">View all system logs →</a>
               </div>
             </div>
           </div>
@@ -226,20 +210,20 @@
           <div class="bg-white rounded-xl shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <h2 class="text-lg font-semibold text-gray-900 flex items-center">
-                <i data-lucide="trending-up" class="w-5 h-5 mr-2 text-blue-500"></i>
+                <i data-lucide="trending-up" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
                 Performance Metrics
               </h2>
             </div>
             <div class="p-6">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="text-center">
-                  <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <i data-lucide="cpu" class="w-8 h-8 text-blue-600"></i>
+                  <div class="w-16 h-16 bg-[#DAAC40]/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i data-lucide="cpu" class="w-8 h-8 text-[#DAAC40]"></i>
                   </div>
                   <p class="text-2xl font-bold text-gray-900">23%</p>
                   <p class="text-sm text-gray-600">CPU Usage</p>
                   <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                    <div class="bg-blue-500 h-2 rounded-full" style="width: 23%"></div>
+                    <div class="bg-[#DAAC40] h-2 rounded-full" style="width: 23%"></div>
                   </div>
                 </div>
                 <div class="text-center">
@@ -249,12 +233,12 @@
                   <p class="text-2xl font-bold text-gray-900">67%</p>
                   <p class="text-sm text-gray-600">Memory Usage</p>
                   <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                    <div class="bg-green-500 h-2 rounded-full" style="width: 67%"></div>
+                    <div class="bg-[#DAAC40] h-2 rounded-full" style="width: 67%"></div>
                   </div>
                 </div>
                 <div class="text-center">
-                  <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <i data-lucide="database" class="w-8 h-8 text-purple-600"></i>
+                  <div class="w-16 h-16 bg-[#DAAC40]/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i data-lucide="database" class="w-8 h-8 text-[#DAAC40]"></i>
                   </div>
                   <p class="text-2xl font-bold text-gray-900">45%</p>
                   <p class="text-sm text-gray-600">Storage Used</p>
@@ -273,26 +257,26 @@
           <div class="bg-white rounded-xl shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <h2 class="text-lg font-semibold text-gray-900 flex items-center">
-                <i data-lucide="server" class="w-5 h-5 mr-2 text-blue-500"></i>
+                <i data-lucide="server" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
                 System Status
               </h2>
             </div>
             <div class="p-6 space-y-4">
               <div class="flex justify-between items-center">
                 <span class="text-sm text-gray-600">Database</span>
-                <span class="text-sm font-medium text-green-600 flex items-center"><div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>Healthy</span>
+                <span class="text-sm font-medium text-green-600 flex items-center"><div class="w-2 h-2 bg-[#DAAC40] rounded-full mr-2"></div>Healthy</span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-sm text-gray-600">Cache System</span>
-                <span class="text-sm font-medium text-green-600 flex items-center"><div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>Active</span>
+                <span class="text-sm font-medium text-green-600 flex items-center"><div class="w-2 h-2 bg-[#DAAC40] rounded-full mr-2"></div>Active</span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-sm text-gray-600">Email Service</span>
-                <span class="text-sm font-medium text-green-600 flex items-center"><div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>Online</span>
+                <span class="text-sm font-medium text-green-600 flex items-center"><div class="w-2 h-2 bg-[#DAAC40] rounded-full mr-2"></div>Online</span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-sm text-gray-600">Backup System</span>
-                <span class="text-sm font-medium text-green-600 flex items-center"><div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>Running</span>
+                <span class="text-sm font-medium text-green-600 flex items-center"><div class="w-2 h-2 bg-[#DAAC40] rounded-full mr-2"></div>Running</span>
               </div>
               <div class="pt-4 border-t border-gray-200">
                 <a href="{{ url_for('admin_system.system_management') }}" class="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
@@ -307,13 +291,13 @@
           <div class="bg-white rounded-xl shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <h2 class="text-lg font-semibold text-gray-900 flex items-center">
-                <i data-lucide="user-plus" class="w-5 h-5 mr-2 text-blue-500"></i>
+                <i data-lucide="user-plus" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
                 Recent Users
               </h2>
             </div>
             <div class="p-6 space-y-4">
               <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">JD</div>
+                <div class="w-8 h-8 bg-[#DAAC40] rounded-full flex items-center justify-center text-white text-sm font-medium">JD</div>
                 <div class="flex-1">
                   <p class="text-sm font-medium text-gray-900">John Doe</p>
                   <p class="text-xs text-gray-500">Joined 2 hours ago</p>
@@ -326,10 +310,10 @@
                   <p class="text-sm font-medium text-gray-900">Sarah Miller</p>
                   <p class="text-xs text-gray-500">Joined 5 hours ago</p>
                 </div>
-                <span class="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">Free</span>
+                <span class="text-xs text-[#DAAC40] bg-[#DAAC40]/10 px-2 py-1 rounded-full">Free</span>
               </div>
               <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-medium">MJ</div>
+                <div class="w-8 h-8 bg-[#DAAC40] rounded-full flex items-center justify-center text-white text-sm font-medium">MJ</div>
                 <div class="flex-1">
                   <p class="text-sm font-medium text-gray-900">Mike Johnson</p>
                   <p class="text-xs text-gray-500">Joined 1 day ago</p>
@@ -337,7 +321,7 @@
                 <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">Premium</span>
               </div>
               <div class="pt-4 border-t border-gray-200">
-                <a href="{{ url_for('admin_users.users_management') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">View all users →</a>
+                <a href="{{ url_for('admin_users.users_management') }}" class="text-sm text-[#DAAC40] hover:text-[#b89627] font-medium">View all users →</a>
               </div>
             </div>
           </div>
@@ -346,7 +330,7 @@
           <div class="bg-white rounded-xl shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <h2 class="text-lg font-semibold text-gray-900 flex items-center">
-                <i data-lucide="pie-chart" class="w-5 h-5 mr-2 text-blue-500"></i>
+                <i data-lucide="pie-chart" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
                 Quick Stats
               </h2>
             </div>
@@ -357,7 +341,7 @@
                   <span class="font-medium">99.9%</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2">
-                  <div class="bg-green-500 h-2 rounded-full" style="width: 99.9%"></div>
+                  <div class="bg-[#DAAC40] h-2 rounded-full" style="width: 99.9%"></div>
                 </div>
               </div>
               <div>
@@ -366,7 +350,7 @@
                   <span class="font-medium">94%</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2">
-                  <div class="bg-blue-500 h-2 rounded-full" style="width: 94%"></div>
+                  <div class="bg-[#DAAC40] h-2 rounded-full" style="width: 94%"></div>
                 </div>
               </div>
               <div>
@@ -383,7 +367,6 @@
         </div>
       </div>
     </div>
-  </div>
 {% endblock %}
 
 {% block scripts %}
@@ -432,11 +415,11 @@ document.addEventListener('DOMContentLoaded', function() {
     notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white transition-all duration-300 transform translate-x-full`;
     
     if (type === 'success') {
-      notification.classList.add('bg-green-500');
+      notification.classList.add('bg-[#DAAC40]');
     } else if (type === 'error') {
       notification.classList.add('bg-red-500');
     } else {
-      notification.classList.add('bg-blue-500');
+      notification.classList.add('bg-[#DAAC40]');
     }
     
     notification.innerHTML = `

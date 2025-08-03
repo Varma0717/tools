@@ -1,55 +1,217 @@
-{% extends "base.html" %}
+{% extends "admin/base.html" %}
+
 {% block title %}Manage Posts - Admin Panel{% endblock %}
+{% block header %}Posts Management{% endblock %}
+{% block subtitle %}Create, edit and manage your blog posts{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-6 py-8 bg-gray-900 rounded-xl shadow-lg ring-4 ring-[#DAAC40]/50">
-  <h1 class="text-4xl font-extrabold text-[#DAAC40] mb-6 flex items-center gap-3">
-    <i data-lucide="file-text" class="w-8 h-8"></i> Manage Posts
-  </h1>
-
+<!-- Quick Actions -->
+<div class="flex flex-wrap gap-3 mb-6">
   <a href="{{ url_for('admin_content.posts_create') }}" 
-     class="inline-flex items-center gap-2 mb-6 px-5 py-3 bg-[#DAAC40] hover:bg-[#b48828] rounded-lg text-white font-semibold transition">
-    <i data-lucide="plus-circle" class="w-5 h-5"></i> Create New Post
+     class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#DAAC40] to-[#b89627] hover:from-[#b89627] hover:to-[#DAAC40] text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+    <i data-lucide="plus-circle" class="w-4 h-4 mr-2"></i>
+    Create New Post
   </a>
+  <button onclick="refreshPosts()" class="inline-flex items-center px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-300 shadow-sm hover:shadow-md transition-all duration-200">
+    <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
+    Refresh
+  </button>
+</div>
 
-  <div class="overflow-x-auto rounded-lg shadow-lg ring-2 ring-[#DAAC40]/40 bg-gray-800">
-    <table class="min-w-full text-left text-gray-300">
-      <thead class="bg-[#DAAC40]/20 text-[#DAAC40] uppercase tracking-wider">
+<!-- Posts Overview Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600">Total Posts</p>
+        <p class="text-2xl font-bold text-gray-900">{{ posts.total if posts.total else 0 }}</p>
+      </div>
+      <div class="w-12 h-12 bg-[#DAAC40]/10 rounded-lg flex items-center justify-center">
+        <i data-lucide="file-text" class="w-6 h-6 text-[#DAAC40]"></i>
+      </div>
+    </div>
+  </div>
+  
+  <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600">Current Page</p>
+        <p class="text-2xl font-bold text-gray-900">{{ posts.items|length if posts.items else 0 }}</p>
+      </div>
+      <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+        <i data-lucide="file" class="w-6 h-6 text-blue-600"></i>
+      </div>
+    </div>
+  </div>
+  
+  <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600">Pages</p>
+        <p class="text-2xl font-bold text-gray-900">{{ posts.pages if posts.pages else 1 }}</p>
+      </div>
+      <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+        <i data-lucide="edit-3" class="w-6 h-6 text-yellow-600"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Posts Table -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-semibold text-gray-900">All Posts</h3>
+      <div class="flex items-center space-x-3">
+        <form method="GET" action="{{ url_for('admin_content.posts_list') }}" class="flex items-center space-x-2">
+          <div class="relative">
+            <input type="text" name="search" value="{{ search or '' }}" placeholder="Search posts..." 
+                   class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent text-sm">
+            <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+          </div>
+          <button type="submit" class="px-4 py-2 bg-gradient-to-r from-[#DAAC40] to-[#b89627] hover:from-[#b89627] hover:to-[#DAAC40] text-white text-sm rounded-lg transition-all duration-200">
+            Search
+          </button>
+          {% if search %}
+            <a href="{{ url_for('admin_content.posts_list') }}" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm rounded-lg transition-all duration-200">
+              Clear
+            </a>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
         <tr>
-          <th class="p-4">Title</th>
-          <th class="p-4">Slug</th>
-          <th class="p-4">Author</th>
-          <th class="p-4">Created At</th>
-          <th class="p-4">Actions</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
         </tr>
       </thead>
-      <tbody>
-        {% for post in posts %}
-        <tr class="border-b border-[#DAAC40]/30 hover:bg-[#DAAC40]/10 transition">
-          <td class="p-4 font-semibold">{{ post.title }}</td>
-          <td class="p-4">{{ post.slug }}</td>
-          <td class="p-4">{{ post.author or '—' }}</td>
-          <td class="p-4">{{ post.created_at|date if post.created_at else 'N/A' }}</td>
-          <td class="p-4 flex gap-4">
-            <a href="{{ url_for('admin_content.posts_edit', post_id=post.id) }}" 
-               class="text-[#DAAC40] hover:text-[#b48828] flex items-center gap-1">
-              <i data-lucide="edit-2" class="w-5 h-5"></i> Edit
-            </a>
-            <form action="{{ url_for('admin_content.posts_delete', post_id=post.id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-              <button type="submit" class="text-red-500 hover:text-red-700 flex items-center gap-1">
-                <i data-lucide="trash-2" class="w-5 h-5"></i> Delete
-              </button>
-            </form>
+      <tbody class="bg-white divide-y divide-gray-200">
+        {% for post in posts.items %}
+        <tr class="hover:bg-gray-50 transition-colors duration-150">
+          <td class="px-6 py-4">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 h-10 w-10">
+                <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-[#DAAC40] to-[#b89627] flex items-center justify-center">
+                  <i data-lucide="file-text" class="h-5 w-5 text-white"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <div class="text-sm font-medium text-gray-900">{{ post.title }}</div>
+                <div class="text-sm text-gray-500">{{ post.slug }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {{ post.author or '—' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {{ post.category or '—' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ post.created_at.strftime('%b %d, %Y') if post.created_at else 'N/A' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <div class="flex items-center justify-end space-x-3">
+              <a href="{{ url_for('admin_content.posts_edit', post_id=post.id) }}" 
+                 class="text-[#DAAC40] hover:text-[#b89627] transition-colors duration-200" title="Edit Post">
+                <i data-lucide="edit-2" class="w-4 h-4"></i>
+              </a>
+              <form action="{{ url_for('admin_content.posts_delete', post_id=post.id) }}" method="POST" 
+                    onsubmit="return confirm('Are you sure you want to delete this post?');" class="inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <button type="submit" class="text-red-500 hover:text-red-700 transition-colors duration-200" title="Delete Post">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </form>
+            </div>
           </td>
         </tr>
         {% else %}
         <tr>
-          <td colspan="5" class="p-6 text-center text-gray-500">No posts found.</td>
+          <td colspan="5" class="px-6 py-12 text-center">
+            <div class="flex flex-col items-center">
+              <i data-lucide="file-text" class="w-12 h-12 text-gray-300 mb-4"></i>
+              <h3 class="text-lg font-medium text-gray-900 mb-2">No posts found</h3>
+              <p class="text-gray-500 mb-6">Get started by creating your first blog post.</p>
+              <a href="{{ url_for('admin_content.posts_create') }}" 
+                 class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#DAAC40] to-[#b89627] hover:from-[#b89627] hover:to-[#DAAC40] text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                <i data-lucide="plus-circle" class="w-4 h-4 mr-2"></i>
+                Create Your First Post
+              </a>
+            </div>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+  
+  <!-- Pagination -->
+  {% if posts.pages > 1 %}
+  <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+    <div class="flex items-center justify-between">
+      <div class="text-sm text-gray-700">
+        Showing {{ posts.per_page * (posts.page - 1) + 1 }} to 
+        {{ posts.per_page * (posts.page - 1) + posts.items|length }} of 
+        {{ posts.total }} posts
+      </div>
+      
+      <div class="flex space-x-2">
+        {% if posts.has_prev %}
+          <a href="{{ url_for('admin_content.posts_list', page=posts.prev_num, search=search) }}" 
+             class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          </a>
+        {% endif %}
+        
+        {% for page_num in posts.iter_pages() %}
+          {% if page_num %}
+            {% if page_num != posts.page %}
+              <a href="{{ url_for('admin_content.posts_list', page=page_num, search=search) }}" 
+                 class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200">
+                {{ page_num }}
+              </a>
+            {% else %}
+              <span class="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#DAAC40] to-[#b89627] border border-transparent rounded-md">
+                {{ page_num }}
+              </span>
+            {% endif %}
+          {% else %}
+            <span class="px-3 py-2 text-sm font-medium text-gray-500">…</span>
+          {% endif %}
+        {% endfor %}
+        
+        {% if posts.has_next %}
+          <a href="{{ url_for('admin_content.posts_list', page=posts.next_num, search=search) }}" 
+             class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200">
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function refreshPosts() {
+  window.location.reload();
+}
+
+// Initialize icons when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  lucide.createIcons();
+});
+</script>
 {% endblock %}

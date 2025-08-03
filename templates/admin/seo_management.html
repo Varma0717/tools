@@ -18,7 +18,7 @@
           <p class="text-gray-600 mt-2">Monitor and optimize your SEO performance</p>
         </div>
         <div class="flex flex-wrap gap-3 mt-4 sm:mt-0">
-          <button onclick="runBulkAnalysis()" class="inline-flex items-center px-4 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors duration-200">
+          <button onclick="runBulkAnalysis()" class="inline-flex items-center px-4 py-2 bg-[#DAAC40] text-white font-medium rounded-lg hover:bg-[#b89627] transition-colors duration-200">
             <i data-lucide="play" class="w-4 h-4 mr-2"></i>
             Run Bulk Analysis
           </button>
@@ -104,7 +104,7 @@
                       <td class="px-6 py-4">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                {% if analysis.score_category == 'excellent' %}bg-green-100 text-green-800{% endif %}
-                               {% if analysis.score_category == 'good' %}bg-blue-100 text-blue-800{% endif %}
+                               {% if analysis.score_category == 'good' %}bg-[#DAAC40]/10 text-blue-800{% endif %}
                                {% if analysis.score_category == 'fair' %}bg-yellow-100 text-yellow-800{% endif %}
                                {% if analysis.score_category == 'poor' %}bg-red-100 text-red-800{% endif %}">
                           {{ analysis.score or 0 }}/100
@@ -114,7 +114,7 @@
                       <td class="px-6 py-4 text-sm text-gray-600">{{ analysis.analyzed_at|datetime if analysis.analyzed_at else 'N/A' }}</td>
                       <td class="px-6 py-4">
                         <div class="flex space-x-2">
-                          <button onclick="viewAnalysis({{ analysis.id }})" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200">
+                          <button onclick="viewAnalysis({{ analysis.id }})" class="p-2 text-[#DAAC40] hover:bg-[#DAAC40]/10 rounded-lg transition-colors duration-200">
                             <i data-lucide="eye" class="w-4 h-4"></i>
                           </button>
                           <button onclick="reanalyze('{{ analysis.url }}')" class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors duration-200">
@@ -212,9 +212,9 @@
 
     function showToast(message, type) {
       const toast = document.createElement('div');
-      const bgColor = type === 'success' ? 'bg-green-500' : 
+      const bgColor = type === 'success' ? 'bg-[#DAAC40]' : 
                      type === 'error' ? 'bg-red-500' : 
-                     type === 'info' ? 'bg-blue-500' : 'bg-gray-500';
+                     type === 'info' ? 'bg-[#DAAC40]' : 'bg-gray-500';
       
       toast.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-white ${bgColor} shadow-lg transform transition-all duration-300`;
       toast.textContent = message;

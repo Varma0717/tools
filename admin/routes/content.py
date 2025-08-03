@@ -81,6 +81,12 @@ def posts_list():
     posts = query.order_by(Post.created_at.desc()).paginate(
         page=page, per_page=20, error_out=False
     )
+
+    # Debug logging
+    logger.info(f"Posts list accessed by user: {current_user.username}")
+    logger.info(f"Posts count: {posts.total}")
+    logger.info(f"Template: admin/posts_list.html")
+
     return render_template("admin/posts_list.html", posts=posts, search=search)
 
 

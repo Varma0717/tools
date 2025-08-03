@@ -9,7 +9,7 @@
   <!-- Quick Actions -->
   <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
     <div class="flex flex-wrap gap-3">
-      <a href="{{ url_for('admin_users.users_create') }}" class="inline-flex items-center px-4 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors duration-200">
+      <a href="{{ url_for('admin_users.users_create') }}" class="inline-flex items-center px-4 py-2 bg-[#DAAC40] text-white font-medium rounded-lg hover:bg-[#b89627] transition-colors duration-200">
         <i data-lucide="plus" class="w-4 h-4 mr-2"></i>Add User
       </a>
     </div>
@@ -19,8 +19,8 @@
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div class="flex items-center">
-        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-          <i data-lucide="users" class="w-6 h-6 text-blue-600"></i>
+        <div class="w-12 h-12 bg-[#DAAC40]/10 rounded-lg flex items-center justify-center">
+          <i data-lucide="users" class="w-6 h-6 text-[#DAAC40]"></i>
         </div>
         <div class="ml-4">
           <p class="text-sm font-medium text-gray-600">Total Users</p>
@@ -46,8 +46,8 @@
         
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div class="flex items-center">
-        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-          <i data-lucide="shield" class="w-6 h-6 text-purple-600"></i>
+        <div class="w-12 h-12 bg-[#DAAC40]/10 rounded-lg flex items-center justify-center">
+          <i data-lucide="shield" class="w-6 h-6 text-[#DAAC40]"></i>
         </div>
         <div class="ml-4">
           <p class="text-sm font-medium text-gray-600">Admins</p>
@@ -139,7 +139,7 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
-                    {% if user.role == 'admin' %}bg-purple-100 text-purple-800{% elif user.role == 'moderator' %}bg-blue-100 text-blue-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                    {% if user.role == 'admin' %}bg-[#DAAC40]/10 text-purple-800{% elif user.role == 'moderator' %}bg-[#DAAC40]/10 text-blue-800{% else %}bg-gray-100 text-gray-800{% endif %}">
                     {{ user.role.title() }}
                   </span>
                 </td>
@@ -158,7 +158,7 @@
                   </a>
                   
                   <button onclick="toggleUserStatus({{ user.id }}, {{ user.is_active|lower }})" 
-                          class="text-blue-600 hover:text-blue-800 transition">
+                          class="text-[#DAAC40] hover:text-blue-800 transition">
                     <i data-lucide="{{ 'user-x' if user.is_active else 'user-check' }}" class="w-4 h-4"></i>
                   </button>
                   

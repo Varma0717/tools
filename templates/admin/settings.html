@@ -10,7 +10,7 @@
   <!-- Quick Actions -->
   <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
     <div class="flex flex-wrap gap-3">
-      <button onclick="saveAllSettings()" class="inline-flex items-center px-4 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors duration-200">
+      <button onclick="saveAllSettings()" class="inline-flex items-center px-4 py-2 bg-[#DAAC40] text-white font-medium rounded-lg hover:bg-[#b89627] transition-colors duration-200">
         <i data-lucide="save" class="w-4 h-4 mr-2"></i>
         Save All Settings
       </button>
@@ -286,7 +286,7 @@
 
     function showToast(message, type) {
       const toast = document.createElement('div');
-      toast.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-white ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+      toast.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-white ${type === 'success' ? 'bg-[#DAAC40]' : 'bg-red-500'}`;
       toast.textContent = message;
       document.body.appendChild(toast);
       
