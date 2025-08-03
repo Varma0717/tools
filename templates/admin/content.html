@@ -1,283 +1,450 @@
-{% extends 'base.html' %}
+{% extends "admin/base.html" %}
 
 {% block title %}Content Management - Admin Dashboard{% endblock %}
 
-{% block extra_css %}
-<style>
-.content-card {
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: all 0.3s;
-    border: none;
-    margin-bottom: 25px;
-}
-
-.content-card:hover {
-    transform: translateY(-2px);  
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.content-metric {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-}
-
-.metric-value {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.metric-label {
-    font-size: 0.9rem;
-    opacity: 0.9;
-}
-
-.content-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background: white;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    transition: all 0.2s;
-}
-
-.content-item:hover {
-    background: #f8f9fa;
-    border-color: #007bff;
-}
-
-.status-badge {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-}
-
-.status-published { background: #d4edda; color: #155724; }
-.status-draft { background: #fff3cd; color: #856404; }
-.status-archived { background: #f8d7da; color: #721c24; }
-</style>
-{% endblock %}
+{% block header %}Content Management{% endblock %}
+{% block subtitle %}Manage posts, pages, and media content{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
-        <h1>
-            <i class="fas fa-file-alt text-primary"></i>
+<!-- Include Lucide Icons CDN -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<div class="space-y-6">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+            <i data-lucide="file-text" class="w-8 h-8 mr-3 text-[#DAAC40]"></i>
             Content Management
-        </h1>
-        <div class="btn-toolbar">
-            <button class="btn btn-success mr-2" data-toggle="modal" data-target="#addContentModal">
-                <i class="fas fa-plus"></i> Add Content
-            </button>
-            <button class="btn btn-outline-primary mr-2" onclick="bulkActions()">
-                <i class="fas fa-tasks"></i> Bulk Actions
-            </button>
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-                    <i class="fas fa-filter"></i> Filter
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="?type=all">All Content</a>
-                    <a class="dropdown-item" href="?type=posts">Blog Posts</a>
-                    <a class="dropdown-item" href="?type=pages">Pages</a>
-                    <a class="dropdown-item" href="?type=drafts">Drafts</a>
-                </div>
-            </div>
+          </h1>
+          <p class="text-gray-600 mt-2">Manage posts, pages, and media content</p>
         </div>
+        <div class="flex flex-wrap gap-3 mt-4 sm:mt-0">
+          <button data-modal-target="addContentModal" class="inline-flex items-center px-4 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors duration-200">
+            <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+            Add Content
+          </button>
+          <button onclick="bulkActions()" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors duration-200">
+            <i data-lucide="list-checks" class="w-4 h-4 mr-2"></i>
+            Bulk Actions
+          </button>
+          <div class="relative">
+            <button onclick="toggleDropdown('filterDropdown')" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200">
+              <i data-lucide="filter" class="w-4 h-4 mr-2"></i>
+              Filter
+            </button>
+            <div id="filterDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+              <a href="?type=all" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">All Content</a>
+              <a href="?type=posts" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Blog Posts</a>
+              <a href="?type=pages" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Pages</a>
+              <a href="?type=drafts" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Drafts</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="relative bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-2xl font-bold mb-1">{{ stats.total_posts or 0 }}</div>
+            <div class="text-blue-100">Total Posts</div>
+          </div>
+          <div class="bg-white bg-opacity-20 p-3 rounded-full">
+            <i data-lucide="file-text" class="w-6 h-6"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="relative bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-2xl font-bold mb-1">{{ stats.published_posts or 0 }}</div>
+            <div class="text-green-100">Published</div>
+          </div>
+          <div class="bg-white bg-opacity-20 p-3 rounded-full">
+            <i data-lucide="check-circle" class="w-6 h-6"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="relative bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-2xl font-bold mb-1">{{ stats.draft_posts or 0 }}</div>
+            <div class="text-yellow-100">Drafts</div>
+          </div>
+          <div class="bg-white bg-opacity-20 p-3 rounded-full">
+            <i data-lucide="edit-3" class="w-6 h-6"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="relative bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-2xl font-bold mb-1">{{ stats.total_views or 0 }}</div>
+            <div class="text-purple-100">Total Views</div>
+          </div>
+          <div class="bg-white bg-opacity-20 p-3 rounded-full">
+            <i data-lucide="eye" class="w-6 h-6"></i>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Content Statistics -->
-    <div class="row mb-4">
-        <div class="col-lg-3 col-md-6">
-            <div class="content-metric" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
-                <div class="metric-value">{{ data.total_posts or 0 }}</div>
-                <div class="metric-label">Total Posts</div>
-            </div>
+    <!-- Search and Filters -->
+    <div class="bg-white rounded-xl shadow-sm p-6 mb-8 border border-gray-200">
+      <form method="GET" class="flex flex-wrap items-center gap-4">
+        <div class="flex-1 min-w-64">
+          <input type="text" name="search" value="{{ search }}" placeholder="Search content..."
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:outline-none" />
         </div>
         
-        <div class="col-lg-3 col-md-6">
-            <div class="content-metric" style="background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);">
-                <div class="metric-value">{{ data.published_posts or 0 }}</div>
-                <div class="metric-label">Published</div>
-            </div>
+        <div>
+          <select name="status" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+            <option value="">All Status</option>
+            <option value="published" {{ 'selected' if status_filter == 'published' }}>Published</option>
+            <option value="draft" {{ 'selected' if status_filter == 'draft' }}>Draft</option>
+            <option value="archived" {{ 'selected' if status_filter == 'archived' }}>Archived</option>
+          </select>
         </div>
         
-        <div class="col-lg-3 col-md-6">
-            <div class="content-metric" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
-                <div class="metric-value">{{ data.draft_posts or 0 }}</div>
-                <div class="metric-label">Drafts</div>
-            </div>
+        <div>
+          <select name="category" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+            <option value="{{ category.id }}" {{ 'selected' if category_filter == category.id|string }}>{{ category.name }}</option>
+            {% endfor %}
+          </select>
         </div>
         
-        <div class="col-lg-3 col-md-6">
-            <div class="content-metric" style="background: linear-gradient(135deg, #dc3545 0%, #e83f6f 100%);">
-                <div class="metric-value">{{ data.total_views or 0 }}</div>
-                <div class="metric-label">Total Views</div>
-            </div>
-        </div>
+        <button type="submit" class="bg-[#DAAC40] text-gray-900 px-6 py-2 rounded-lg hover:bg-[#b89627] transition-colors duration-200">
+          <i data-lucide="search" class="w-4 h-4 mr-2"></i>Search
+        </button>
+        
+        <a href="{{ url_for('admin_content.content_management') }}" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-200">
+          <i data-lucide="x" class="w-4 h-4 mr-2"></i>Clear
+        </a>
+      </form>
     </div>
-
-    <!-- Content List -->
-    <div class="row">
-        <div class="col-12">
-            <div class="content-card card">
-                <div class="card-header d-flex justify-content-between">
-                    <h5><i class="fas fa-list text-info"></i> Recent Content</h5>
-                    <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-secondary active" onclick="showContent('recent')">Recent</button>
-                        <button class="btn btn-outline-secondary" onclick="showContent('popular')">Popular</button>
-                        <button class="btn btn-outline-secondary" onclick="showContent('drafts')">Drafts</button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
-                                    </th>
-                                    <th>Title</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th>Views</th>
-                                    <th>Last Modified</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if data.posts %}
-                                    {% for post in data.posts %}
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" name="selected_posts" value="{{ post.id }}">
-                                        </td>
-                                        <td>
-                                            <strong>{{ post.title }}</strong><br>
-                                            <small class="text-muted">{{ post.slug }}</small>
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-secondary">{{ post.type or 'Post' }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="status-badge status-{{ post.status }}">
-                                                {{ post.status|title if post.status else 'Draft' }}
-                                            </span>
-                                        </td>
-                                        <td>{{ post.views or 0 }}</td>
-                                        <td>{{ post.updated_at|date if post.updated_at else 'N/A' }}</td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-primary" onclick="editContent({{ post.id }})">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button class="btn btn-outline-info" onclick="viewContent({{ post.id }})">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button class="btn btn-outline-danger" onclick="deleteContent({{ post.id }})">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">
-                                            <i class="fas fa-file-alt fa-3x mb-3"></i><br>
-                                            No content found
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Pagination -->
-                    {% if data.pagination %}
-                    <nav aria-label="Content pagination">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item {{ 'disabled' if not data.pagination.has_prev else '' }}">
-                                <a class="page-link" href="?page={{ data.pagination.prev_num if data.pagination.has_prev else 1 }}">Previous</a>
-                            </li>
-                            {% for page_num in data.pagination.iter_pages() %}
-                                {% if page_num %}
-                                    {% if page_num != data.pagination.page %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item active">
-                                            <span class="page-link">{{ page_num }}</span>
-                                        </li>
-                                    {% endif %}
-                                {% else %}
-                                    <li class="page-item disabled">
-                                        <span class="page-link">...</span>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                            <li class="page-item {{ 'disabled' if not data.pagination.has_next else '' }}">
-                                <a class="page-link" href="?page={{ data.pagination.next_num if data.pagination.has_next else data.pagination.pages }}">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+    <!-- Content Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+            <i data-lucide="list" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+            Content List
+          </h3>
+          <div class="flex space-x-2">
+            <button onclick="showContent('recent')" class="px-3 py-1 text-sm bg-[#DAAC40] text-gray-900 rounded-lg font-medium">Recent</button>
+            <button onclick="showContent('popular')" class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Popular</button>
+            <button onclick="showContent('drafts')" class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Drafts</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left">
+                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" class="rounded border-gray-300 text-[#DAAC40] focus:ring-[#DAAC40]" />
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Views</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modified</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            {% if content.items %}
+              {% for post in content.items %}
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4">
+                  <input type="checkbox" name="selected_posts" value="{{ post.id }}" class="rounded border-gray-300 text-[#DAAC40] focus:ring-[#DAAC40]" />
+                </td>
+                <td class="px-6 py-4">
+                  <div>
+                    <p class="font-medium text-gray-900">{{ post.title }}</p>
+                    <p class="text-sm text-gray-600">{{ post.slug }}</p>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
+                    {{ post.type or 'Post' }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full
+                         {% if post.status == 'published' %}bg-green-100 text-green-800{% elif post.status == 'draft' %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %}">
+                    {{ post.status|title if post.status else 'Draft' }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-900">{{ post.views or 0 }}</td>
+                <td class="px-6 py-4 text-sm text-gray-600">{{ post.updated_at.strftime('%b %d, %Y') if post.updated_at else 'N/A' }}</td>
+                <td class="px-6 py-4">
+                  <div class="flex space-x-2">
+                    <button onclick="editContent({{ post.id }})" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200">
+                      <i data-lucide="edit" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="viewContent({{ post.id }})" class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors duration-200">
+                      <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="deleteContent({{ post.id }})" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200">
+                      <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="7" class="px-6 py-12 text-center">
+                  <i data-lucide="file-text" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                  <p class="text-lg font-medium text-gray-500">No content found</p>
+                  <p class="text-gray-400">Create your first post or page to get started.</p>
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      {% if content.pages > 1 %}
+      <div class="bg-gray-50 px-6 py-3 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+          <div class="flex-1 flex justify-between sm:hidden">
+            {% if content.has_prev %}
+              <a href="{{ url_for('admin_content.content_management', page=content.prev_num, search=search, status=status_filter, category=category_filter) }}" 
+                 class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Previous
+              </a>
+            {% endif %}
+            {% if content.has_next %}
+              <a href="{{ url_for('admin_content.content_management', page=content.next_num, search=search, status=status_filter, category=category_filter) }}" 
+                 class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Next
+              </a>
+            {% endif %}
+          </div>
+          <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+              <p class="text-sm text-gray-700">
+                Showing <span class="font-medium">{{ content.per_page * (content.page - 1) + 1 }}</span> to 
+                <span class="font-medium">{{ content.per_page * content.page if content.has_next else content.total }}</span> of 
+                <span class="font-medium">{{ content.total }}</span> results
+              </p>
+            </div>
+            <div>
+              <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                {% for page_num in content.iter_pages() %}
+                  {% if page_num %}
+                    {% if page_num != content.page %}
+                      <a href="{{ url_for('admin_content.content_management', page=page_num, search=search, status=status_filter, category=category_filter) }}" 
+                         class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        {{ page_num }}
+                      </a>
+                    {% else %}
+                      <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-[#DAAC40] text-sm font-medium text-gray-900">
+                        {{ page_num }}
+                      </span>
                     {% endif %}
-                </div>
+                  {% else %}
+                    <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                      ...
+                    </span>
+                  {% endif %}
+                {% endfor %}
+              </nav>
             </div>
+          </div>
         </div>
+      </div>
+      {% endif %}
     </div>
+
+  </div>
 </div>
 
 <!-- Add Content Modal -->
-<div class="modal fade" id="addContentModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add New Content</h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="addContentForm">
-                    <div class="form-group">
-                        <label for="contentTitle">Title *</label>
-                        <input type="text" class="form-control" id="contentTitle" required>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="contentType">Content Type</label>
-                                <select class="form-control" id="contentType">
-                                    <option value="post">Blog Post</option>
-                                    <option value="page">Page</option>
-                                    <option value="tool">Tool Description</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="contentStatus">Status</label>
-                                <select class="form-control" id="contentStatus">
-                                    <option value="draft">Draft</option>
-                                    <option value="published">Published</option>
-                                </select>
+<div id="addContentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
+    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-900">Add New Content</h3>
+      <button onclick="closeModal('addContentModal')" class="text-gray-400 hover:text-gray-600">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+    </div>
+    <div class="p-6">
+      <form id="addContentForm">
+        <div class="mb-4">
+          <label for="contentTitle" class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+          <input type="text" id="contentTitle" required 
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:outline-none" />
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label for="contentType" class="block text-sm font-medium text-gray-700 mb-2">Content Type</label>
+            <select id="contentType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+              <option value="post">Blog Post</option>
+              <option value="page">Page</option>
+              <option value="tool">Tool Description</option>
+            </select>
+          </div>
+          <div>
+            <label for="contentStatus" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <select id="contentStatus" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <label for="contentSummary" class="block text-sm font-medium text-gray-700 mb-2">Summary</label>
+          <textarea id="contentSummary" rows="3" 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:outline-none"></textarea>
+        </div>
+        
+        <div class="flex justify-end space-x-4">
+          <button type="button" onclick="closeModal('addContentModal')" 
+                  class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 bg-[#DAAC40] text-gray-900 rounded-lg hover:bg-[#b89627]">
+            Create Content
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+
+  function toggleDropdown(id) {
+    const dropdown = document.getElementById(id);
+    dropdown.classList.toggle('hidden');
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.add('hidden');
+  }
+
+  function showContent(type) {
+    // Update active button
+    document.querySelectorAll('button[onclick^="showContent"]').forEach(btn => {
+      btn.className = 'px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300';
+    });
+    event.target.className = 'px-3 py-1 text-sm bg-[#DAAC40] text-gray-900 rounded-lg font-medium';
+    
+    // Filter content (implement AJAX call here)
+    console.log('Showing:', type);
+  }
+
+  function toggleSelectAll() {
+    const checkboxes = document.querySelectorAll('input[name="selected_posts"]');
+    const selectAll = document.getElementById('selectAll');
+    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+  }
+
+  function bulkActions() {
+    const selected = document.querySelectorAll('input[name="selected_posts"]:checked');
+    if (selected.length === 0) {
+      alert('Please select items to perform bulk actions');
+      return;
+    }
+    
+    const action = prompt('Choose action: delete, publish, archive');
+    if (action) {
+      console.log(`Bulk ${action} for`, Array.from(selected).map(cb => cb.value));
+    }
+  }
+
+  function editContent(id) {
+    window.location.href = `/admin/content/${id}/edit`;
+  }
+
+  function viewContent(id) {
+    window.open(`/admin/content/${id}/preview`, '_blank');
+  }
+
+  function deleteContent(id) {
+    if (confirm('Are you sure you want to delete this content?')) {
+      fetch(`/admin/content/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          location.reload();
+        } else {
+          alert('Error: ' + data.message);
+        }
+      })
+      .catch(error => {
+        alert('Error deleting content');
+      });
+    }
+  }
+
+  // Form submission
+  document.getElementById('addContentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+      title: document.getElementById('contentTitle').value,
+      type: document.getElementById('contentType').value,
+      status: document.getElementById('contentStatus').value,
+      summary: document.getElementById('contentSummary').value
+    };
+    
+    fetch('/admin/content', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        closeModal('addContentModal');
+        location.reload();
+      } else {
+        alert('Error: ' + data.message);
+      }
+    })
+    .catch(error => {
+      alert('Error creating content');
+    });
+  });
+
+  // Close modal when clicking outside
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('bg-opacity-50')) {
+      e.target.classList.add('hidden');
+    }
+  });
+</script>
+{% endblock %}
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="contentSlug">Slug</label>
-                        <input type="text" class="form-control" id="contentSlug">
+                        <input type="text" class="form-control" id="contentSlug" />
                         <small class="form-text text-muted">Auto-generated from title if left empty</small>
                     </div>
                     <div class="form-group">

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %}DNS Lookup Tool - Super SEO Toolkit{% endblock %}
 
@@ -22,7 +22,7 @@
 
       <div class="relative z-10 text-center">
 
-        <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="mx-auto w-[50px] mb-3">
+        <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="mx-auto w-[50px] mb-3" />
 
         <h1 class="text-2xl font-bold text-gray-800">DNS Lookup Tool</h1>
 
@@ -36,7 +36,7 @@
 
         <form @submit.prevent="submit" class="space-y-4">
 
-          <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+          <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
 
 
 
@@ -46,7 +46,7 @@
 
             <input x-model="url" id="domain" type="url" placeholder="example.com" required
 
-              class="mt-1 w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#DAAC40]">
+              class="mt-1 w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#DAAC40]" />
 
           </div>
 

@@ -1,235 +1,233 @@
-{% extends 'base.html' %}
+{% extends "admin/base.html" %}
 
 {% block title %}SEO Management - Admin Dashboard{% endblock %}
 
-{% block extra_css %}
-<style>
-.seo-card {
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: all 0.3s;
-    border: none;
-    margin-bottom: 25px;
-}
-
-.seo-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.seo-metric {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-}
-
-.metric-value {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.metric-label {
-    font-size: 0.9rem;
-    opacity: 0.9;
-}
-
-.seo-analysis-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
-    background: white;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.score-badge {
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-}
-
-.score-excellent { background: #28a745; color: white; }
-.score-good { background: #17a2b8; color: white; }
-.score-fair { background: #ffc107; color: #333; }
-.score-poor { background: #dc3545; color: white; }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="container-fluid">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
-        <h1>
-            <i class="fas fa-search text-primary"></i>
+  <!-- Include Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <div class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+            <i data-lucide="search" class="w-8 h-8 mr-3 text-[#DAAC40]"></i>
             SEO Management
-        </h1>
-        <div class="btn-toolbar">
-            <button class="btn btn-success mr-2" onclick="runBulkAnalysis()">
-                <i class="fas fa-play"></i> Run Bulk Analysis
-            </button>
-            <button class="btn btn-outline-primary" onclick="exportSEOReport()">
-                <i class="fas fa-download"></i> Export Report
-            </button>
+          </h1>
+          <p class="text-gray-600 mt-2">Monitor and optimize your SEO performance</p>
         </div>
-    </div>
+        <div class="flex flex-wrap gap-3 mt-4 sm:mt-0">
+          <button onclick="runBulkAnalysis()" class="inline-flex items-center px-4 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors duration-200">
+            <i data-lucide="play" class="w-4 h-4 mr-2"></i>
+            Run Bulk Analysis
+          </button>
+          <button onclick="exportSEOReport()" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200">
+            <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+            Export Report
+          </button>
+        </div>
+      </div>
 
-    <!-- SEO Metrics -->
-    <div class="row mb-4">
-        <div class="col-lg-3 col-md-6">
-            <div class="seo-metric" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
-                <div class="metric-value">{{ data.total_analyses or 0 }}</div>
-                <div class="metric-label">Total Analyses</div>
+      <!-- SEO Metrics -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-green-100 text-sm font-medium">Total Analyses</p>
+              <p class="text-2xl font-bold">{{ data.total_analyses or 0 }}</p>
             </div>
+            <i data-lucide="bar-chart-3" class="w-8 h-8 text-green-200"></i>
+          </div>
         </div>
         
-        <div class="col-lg-3 col-md-6">
-            <div class="seo-metric" style="background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);">
-                <div class="metric-value">{{ data.avg_score or 0 }}</div>
-                <div class="metric-label">Average Score</div>
+        <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-blue-100 text-sm font-medium">Average Score</p>
+              <p class="text-2xl font-bold">{{ data.avg_score or 0 }}</p>
             </div>
+            <i data-lucide="trending-up" class="w-8 h-8 text-blue-200"></i>
+          </div>
         </div>
         
-        <div class="col-lg-3 col-md-6">
-            <div class="seo-metric" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
-                <div class="metric-value">{{ data.issues_found or 0 }}</div>
-                <div class="metric-label">Issues Found</div>
+        <div class="bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-yellow-100 text-sm font-medium">Issues Found</p>
+              <p class="text-2xl font-bold">{{ data.issues_found or 0 }}</p>
             </div>
+            <i data-lucide="alert-triangle" class="w-8 h-8 text-yellow-200"></i>
+          </div>
         </div>
         
-        <div class="col-lg-3 col-md-6">
-            <div class="seo-metric" style="background: linear-gradient(135deg, #dc3545 0%, #e83f6f 100%);">
-                <div class="metric-value">{{ data.sites_monitored or 0 }}</div>
-                <div class="metric-label">Sites Monitored</div>
+        <div class="bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-purple-100 text-sm font-medium">Optimization Rate</p>
+              <p class="text-2xl font-bold">{{ data.optimization_rate or 0 }}%</p>
             </div>
+            <i data-lucide="zap" class="w-8 h-8 text-purple-200"></i>
+          </div>
         </div>
-    </div>
+      <!-- SEO Analysis Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i data-lucide="file-text" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+                Recent SEO Analyses
+              </h3>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">URL</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issues</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Analyzed</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  {% if data.recent_analyses %}
+                    {% for analysis in data.recent_analyses %}
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-6 py-4">
+                        <div>
+                          <p class="font-medium text-gray-900">{{ analysis.url }}</p>
+                          <p class="text-sm text-gray-600">{{ analysis.title or 'No title' }}</p>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                               {% if analysis.score_category == 'excellent' %}bg-green-100 text-green-800{% endif %}
+                               {% if analysis.score_category == 'good' %}bg-blue-100 text-blue-800{% endif %}
+                               {% if analysis.score_category == 'fair' %}bg-yellow-100 text-yellow-800{% endif %}
+                               {% if analysis.score_category == 'poor' %}bg-red-100 text-red-800{% endif %}">
+                          {{ analysis.score or 0 }}/100
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 text-sm text-gray-900">{{ analysis.issues_count or 0 }}</td>
+                      <td class="px-6 py-4 text-sm text-gray-600">{{ analysis.analyzed_at|datetime if analysis.analyzed_at else 'N/A' }}</td>
+                      <td class="px-6 py-4">
+                        <div class="flex space-x-2">
+                          <button onclick="viewAnalysis({{ analysis.id }})" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                          </button>
+                          <button onclick="reanalyze('{{ analysis.url }}')" class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors duration-200">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    <tr>
+                      <td colspan="5" class="px-6 py-12 text-center">
+                        <i data-lucide="search" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                        <p class="text-gray-500">No SEO analyses found</p>
+                      </td>
+                    </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
 
-    <!-- Recent SEO Analyses -->
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="seo-card card">
-                <div class="card-header">
-                    <h5><i class="fas fa-chart-line text-success"></i> Recent SEO Analyses</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>URL</th>
-                                    <th>Score</th>
-                                    <th>Issues</th>
-                                    <th>Analyzed</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if data.recent_analyses %}
-                                    {% for analysis in data.recent_analyses %}
-                                    <tr>
-                                        <td>
-                                            <strong>{{ analysis.url }}</strong><br>
-                                            <small class="text-muted">{{ analysis.title or 'No title' }}</small>
-                                        </td>
-                                        <td>
-                                            <span class="score-badge score-{{ analysis.score_category or 'fair' }}">
-                                                {{ analysis.score or 0 }}/100
-                                            </span>
-                                        </td>
-                                        <td>{{ analysis.issues_count or 0 }}</td>
-                                        <td>{{ analysis.analyzed_at|datetime if analysis.analyzed_at else 'N/A' }}</td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-primary" onclick="viewAnalysis({{ analysis.id }})">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button class="btn btn-outline-success" onclick="reanalyze('{{ analysis.url }}')">
-                                                    <i class="fas fa-redo"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted py-4">
-                                            <i class="fas fa-search fa-3x mb-3"></i><br>
-                                            No SEO analyses found
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i data-lucide="alert-triangle" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+                Common Issues
+              </h3>
+            </div>
+            <div class="p-6">
+              {% if data.common_issues %}
+                <div class="space-y-4">
+                  {% for issue in data.common_issues %}
+                  <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                      <p class="font-medium text-gray-900">{{ issue.title }}</p>
+                      <p class="text-sm text-gray-600 mt-1">{{ issue.description }}</p>
                     </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 ml-3">
+                      {{ issue.count }}
+                    </span>
+                  </div>
+                  {% endfor %}
                 </div>
+              {% else %}
+                <div class="text-center py-8">
+                  <i data-lucide="check-circle" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                  <p class="text-gray-500">No common issues found</p>
+                </div>
+              {% endif %}
             </div>
+          </div>
         </div>
-
-        <div class="col-lg-4">
-            <div class="seo-card card">
-                <div class="card-header">
-                    <h5><i class="fas fa-exclamation-triangle text-warning"></i> Common Issues</h5>
-                </div>
-                <div class="card-body">
-                    {% if data.common_issues %}
-                        {% for issue in data.common_issues %}
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <strong>{{ issue.title }}</strong><br>
-                                <small class="text-muted">{{ issue.description }}</small>
-                            </div>
-                            <span class="badge badge-warning">{{ issue.count }}</span>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="text-center text-muted py-4">
-                            <i class="fas fa-check-circle fa-3x mb-3"></i><br>
-                            No common issues found
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-</div>
-{% endblock %}
+  </div>
 
-{% block extra_js %}
-<script>
-function runBulkAnalysis() {
-    alert('Bulk SEO analysis will be implemented!');
-}
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
 
-function exportSEOReport() {
-    window.open('/admin/api/seo/export', '_blank');
-}
+    function runBulkAnalysis() {
+      showToast('Bulk SEO analysis will be implemented!', 'info');
+    }
 
-function viewAnalysis(analysisId) {
-    window.open(`/seo/report/${analysisId}`, '_blank');
-}
+    function exportSEOReport() {
+      window.open('/admin/api/seo/export', '_blank');
+    }
 
-function reanalyze(url) {
-    if (confirm(`Re-analyze ${url}?`)) {
+    function viewAnalysis(analysisId) {
+      window.open(`/seo/report/${analysisId}`, '_blank');
+    }
+
+    function reanalyze(url) {
+      if (confirm(`Re-analyze ${url}?`)) {
         fetch('/seo/analyze/ajax', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({url: url})
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({url: url})
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
-            }
-        });
+          if (data.success) {
+            showToast('Analysis started successfully', 'success');
+            setTimeout(() => location.reload(), 2000);
+          } else {
+            showToast('Error: ' + data.message, 'error');
+          }
+        })
+        .catch(error => showToast('Error starting analysis', 'error'));
+      }
     }
-}
-</script>
+
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      const bgColor = type === 'success' ? 'bg-green-500' : 
+                     type === 'error' ? 'bg-red-500' : 
+                     type === 'info' ? 'bg-blue-500' : 'bg-gray-500';
+      
+      toast.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-white ${bgColor} shadow-lg transform transition-all duration-300`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      // Animate in
+      setTimeout(() => toast.style.transform = 'translateY(0)', 100);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+  </script>
 {% endblock %}

@@ -1,571 +1,301 @@
-{% extends 'base.html' %}
+{% extends "admin/base.html" %}
 
-{% block title %}System Settings - Admin Dashboard{% endblock %}
+{% block title %}System Settings - Admin Panel{% endblock %}
 
-{% block extra_css %}
-<style>
-.settings-card {
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: all 0.3s;
-    border: none;
-    margin-bottom: 25px;
-}
-
-.settings-card:hover {
-    transform: translateY(-2px);  
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.settings-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.setting-item {
-    background: white;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 15px;
-    transition: all 0.2s;
-}
-
-.setting-item:hover {
-    border-color: #007bff;
-    box-shadow: 0 2px 8px rgba(0,123,255,0.15);
-}
-
-.setting-label {
-    font-weight: 600;
-    color: #495057;
-    margin-bottom: 5px;
-}
-
-.setting-description {
-    font-size: 0.9rem;
-    color: #6c757d;
-    margin-bottom: 15px;
-}
-
-.tab-pane {
-    padding: 20px 0;
-}
-
-.nav-pills .nav-link {
-    border-radius: 50px;
-    margin-right: 10px;
-    padding: 10px 20px;
-}
-
-.nav-pills .nav-link.active {
-    background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
-}
-
-.btn-save-settings {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    border: none;
-    border-radius: 50px;
-    padding: 12px 30px;
-    color: white;
-    font-weight: 600;
-}
-
-.btn-save-settings:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(40,167,69,0.3);
-    color: white;
-}
-</style>
-{% endblock %}
+{% block header %}System Settings{% endblock %}
+{% block subtitle %}Configure application settings and preferences{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
-        <h1>
-            <i class="fas fa-cogs text-primary"></i>
-            System Settings
-        </h1>
-        <div class="btn-toolbar">
-            <button class="btn btn-success btn-save-settings mr-2" onclick="saveAllSettings()">
-                <i class="fas fa-save"></i> Save All Settings
-            </button>
-            <button class="btn btn-outline-primary mr-2" onclick="exportSettings()">
-                <i class="fas fa-download"></i> Export
-            </button>
-            <button class="btn btn-outline-secondary" onclick="resetToDefaults()">
-                <i class="fas fa-undo"></i> Reset to Defaults
-            </button>
-        </div>
+<div class="space-y-6">
+  <!-- Quick Actions -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="flex flex-wrap gap-3">
+      <button onclick="saveAllSettings()" class="inline-flex items-center px-4 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors duration-200">
+        <i data-lucide="save" class="w-4 h-4 mr-2"></i>
+        Save All Settings
+      </button>
+      <button onclick="exportSettings()" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200">
+        <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+        Export
+      </button>
     </div>
+  </div>
 
-    <!-- Settings Navigation -->
-    <ul class="nav nav-pills mb-4" id="settingsTabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="general-tab" data-toggle="pill" href="#general" role="tab">
-                <i class="fas fa-cog"></i> General
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="seo-tab" data-toggle="pill" href="#seo" role="tab">
-                <i class="fas fa-search"></i> SEO
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="email-tab" data-toggle="pill" href="#email" role="tab">
-                <i class="fas fa-envelope"></i> Email
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="security-tab" data-toggle="pill" href="#security" role="tab">
-                <i class="fas fa-shield-alt"></i> Security
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="backup-tab" data-toggle="pill" href="#backup" role="tab">
-                <i class="fas fa-database"></i> Backup
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="advanced-tab" data-toggle="pill" href="#advanced" role="tab">
-                <i class="fas fa-code"></i> Advanced
-            </a>
-        </li>
-    </ul>
-
-    <!-- Settings Content -->
-    <div class="tab-content" id="settingsTabContent">
+  <!-- Settings Categories Navigation -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div class="flex border-b border-gray-200">
+      <button onclick="showCategory('general')" class="category-tab active px-6 py-4 text-sm font-medium border-b-2 border-[#DAAC40] text-[#DAAC40] flex items-center">
+        <i data-lucide="settings" class="w-4 h-4 mr-2"></i>General
+      </button>
+      <button onclick="showCategory('security')" class="category-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center">
+        <i data-lucide="shield" class="w-4 h-4 mr-2"></i>Security
+      </button>
+      <button onclick="showCategory('email')" class="category-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center">
+        <i data-lucide="mail" class="w-4 h-4 mr-2"></i>Email
+      </button>
+      <button onclick="showCategory('analytics')" class="category-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center">
+        <i data-lucide="bar-chart" class="w-4 h-4 mr-2"></i>Analytics
+      </button>
+      <button onclick="showCategory('advanced')" class="category-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center">
+        <i data-lucide="sliders" class="w-4 h-4 mr-2"></i>Advanced
+      </button>
+        </div>
+      </div>
+          </button>
+          <button onclick="showTab('backup')" class="settings-tab" data-tab="backup">
+            <i data-lucide="database" class="w-4 h-4 mr-2"></i>
+            Backup
+          </button>
+          <button onclick="showTab('advanced')" class="settings-tab" data-tab="advanced">
+            <i data-lucide="code" class="w-4 h-4 mr-2"></i>
+            Advanced
+          </button>
+        </nav>
+      </div>
+      <!-- Settings Content -->
+      <div class="settings-content">
         <!-- General Settings -->
-        <div class="tab-pane fade show active" id="general" role="tabpanel">
-            <div class="settings-card card">
-                <div class="card-header">
-                    <h5><i class="fas fa-cog text-info"></i> General Settings</h5>
-                </div>
-                <div class="card-body">
-                    <div class="setting-item">
-                        <div class="setting-label">Site Name</div>
-                        <div class="setting-description">The name of your website</div>
-                        <input type="text" class="form-control" name="site_name" value="{{ settings.site_name or 'My Website' }}">
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Site Description</div>
-                        <div class="setting-description">A brief description of your website</div>
-                        <textarea class="form-control" name="site_description" rows="3">{{ settings.site_description or 'A powerful web application' }}</textarea>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="setting-item">
-                                <div class="setting-label">Admin Email</div>
-                                <div class="setting-description">Primary admin contact email</div>
-                                <input type="email" class="form-control" name="admin_email" value="{{ settings.admin_email or 'admin@example.com' }}">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="setting-item">
-                                <div class="setting-label">Timezone</div>
-                                <div class="setting-description">Default timezone for the application</div>
-                                <select class="form-control" name="timezone">
-                                    <option value="UTC" {{ 'selected' if settings.timezone == 'UTC' else '' }}>UTC</option>
-                                    <option value="America/New_York" {{ 'selected' if settings.timezone == 'America/New_York' else '' }}>Eastern Time</option>
-                                    <option value="America/Chicago" {{ 'selected' if settings.timezone == 'America/Chicago' else '' }}>Central Time</option>
-                                    <option value="America/Denver" {{ 'selected' if settings.timezone == 'America/Denver' else '' }}>Mountain Time</option>
-                                    <option value="America/Los_Angeles" {{ 'selected' if settings.timezone == 'America/Los_Angeles' else '' }}>Pacific Time</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Maintenance Mode</div>
-                        <div class="setting-description">Put the site in maintenance mode</div>
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="maintenanceMode" name="maintenance_mode" {{ 'checked' if settings.maintenance_mode else '' }}>
-                            <label class="custom-control-label" for="maintenanceMode">Enable maintenance mode</label>
-                        </div>
-                    </div>
-                </div>
+        <div id="general" class="tab-content active">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i data-lucide="globe" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+                General Settings
+              </h2>
             </div>
+            <div class="p-6 space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Site Name</label>
+                  <input type="text" name="site_name" value="{{ data.settings.site_name or 'Super SEO Toolkit' }}" 
+                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Admin Email</label>
+                  <input type="email" name="admin_email" value="{{ data.settings.admin_email or 'admin@superseo.com' }}" 
+                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Site Description</label>
+                <textarea name="site_description" rows="3" 
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">{{ data.settings.site_description or 'Professional SEO tools for better website optimization' }}</textarea>
+              </div>
+              <div class="flex items-center">
+                <input type="checkbox" id="maintenance_mode" name="maintenance_mode" {{ 'checked' if data.settings.maintenance_mode else '' }} 
+                       class="rounded border-gray-300 text-[#DAAC40] focus:ring-[#DAAC40]">
+                <label for="maintenance_mode" class="ml-2 text-sm text-gray-700">Enable maintenance mode</label>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- SEO Settings -->
-        <div class="tab-pane fade" id="seo" role="tabpanel">
-            <div class="settings-card card">
-                <div class="card-header">
-                    <h5><i class="fas fa-search text-info"></i> SEO Settings</h5>
-                </div>
-                <div class="card-body">
-                    <div class="setting-item">
-                        <div class="setting-label">Default Meta Title</div>
-                        <div class="setting-description">Default title template for pages</div>
-                        <input type="text" class="form-control" name="default_meta_title" value="{{ settings.default_meta_title or '{page_title} - {site_name}' }}">
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Default Meta Description</div>
-                        <div class="setting-description">Default meta description for pages</div>
-                        <textarea class="form-control" name="default_meta_description" rows="3">{{ settings.default_meta_description or 'Discover powerful web tools and services' }}</textarea>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="setting-item">
-                                <div class="setting-label">Google Analytics ID</div>
-                                <div class="setting-description">Google Analytics tracking ID</div>
-                                <input type="text" class="form-control" name="google_analytics_id" value="{{ settings.google_analytics_id or '' }}" placeholder="GA-XXXXXXXXX-X">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="setting-item">
-                                <div class="setting-label">Google Search Console</div>
-                                <div class="setting-description">Search Console verification code</div>
-                                <input type="text" class="form-control" name="google_search_console" value="{{ settings.google_search_console or '' }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Robots.txt Settings</div>
-                        <div class="setting-description">Custom robots.txt content</div>
-                        <textarea class="form-control" name="robots_txt" rows="6">{{ settings.robots_txt or 'User-agent: *\nDisallow: /admin/\nDisallow: /api/\n\nSitemap: /sitemap.xml' }}</textarea>
-                    </div>
-                </div>
+        <div id="seo" class="tab-content hidden">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i data-lucide="search" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+                SEO Settings
+              </h2>
             </div>
-        </div>
-
-        <!-- Email Settings -->
-        <div class="tab-pane fade" id="email" role="tabpanel">
-            <div class="settings-card card">
-                <div class="card-header">
-                    <h5><i class="fas fa-envelope text-info"></i> Email Settings</h5>
+            <div class="p-6 space-y-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Default Meta Title</label>
+                <input type="text" name="default_meta_title" value="{{ data.settings.default_meta_title or '{page_title} - {site_name}' }}" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Default Meta Description</label>
+                <textarea name="default_meta_description" rows="3" 
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">{{ data.settings.default_meta_description or 'Discover powerful SEO tools and services' }}</textarea>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Google Analytics ID</label>
+                  <input type="text" name="google_analytics_id" value="{{ data.settings.google_analytics_id or '' }}" 
+                         placeholder="GA-XXXXXXXXX-X" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="setting-item">
-                                <div class="setting-label">SMTP Server</div>
-                                <div class="setting-description">SMTP server hostname</div>
-                                <input type="text" class="form-control" name="smtp_server" value="{{ settings.smtp_server or 'smtp.gmail.com' }}">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="setting-item">
-                                <div class="setting-label">SMTP Port</div>
-                                <div class="setting-description">SMTP server port</div>
-                                <input type="number" class="form-control" name="smtp_port" value="{{ settings.smtp_port or 587 }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="setting-item">
-                                <div class="setting-label">SMTP Username</div>
-                                <div class="setting-description">SMTP authentication username</div>
-                                <input type="text" class="form-control" name="smtp_username" value="{{ settings.smtp_username or '' }}">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="setting-item">
-                                <div class="setting-label">SMTP Password</div>
-                                <div class="setting-description">SMTP authentication password</div>
-                                <input type="password" class="form-control" name="smtp_password" value="{{ settings.smtp_password or '' }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Email Encryption</div>
-                        <div class="setting-description">Email encryption method</div>
-                        <select class="form-control" name="email_encryption">
-                            <option value="tls" {{ 'selected' if settings.email_encryption == 'tls' else '' }}>TLS</option>
-                            <option value="ssl" {{ 'selected' if settings.email_encryption == 'ssl' else '' }}>SSL</option>
-                            <option value="none" {{ 'selected' if settings.email_encryption == 'none' else '' }}>None</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Test Email</div>
-                        <div class="setting-description">Send a test email to verify settings</div>
-                        <div class="input-group">
-                            <input type="email" class="form-control" id="testEmailAddress" placeholder="test@example.com">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-primary" onclick="sendTestEmail()">Send Test</button>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Google Search Console</label>
+                  <input type="text" name="google_search_console" value="{{ data.settings.google_search_console or '' }}" 
+                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">
                 </div>
+              </div>
             </div>
+          </div>
         </div>
 
         <!-- Security Settings -->
-        <div class="tab-pane fade" id="security" role="tabpanel">
-            <div class="settings-card card">
-                <div class="card-header">
-                    <h5><i class="fas fa-shield-alt text-info"></i> Security Settings</h5>
-                </div>
-                <div class="card-body">
-                    <div class="setting-item">
-                        <div class="setting-label">Session Timeout</div>
-                        <div class="setting-description">Session timeout in minutes</div>
-                        <input type="number" class="form-control" name="session_timeout" value="{{ settings.session_timeout or 30 }}" min="5" max="1440">
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Login Attempts</div>
-                        <div class="setting-description">Maximum failed login attempts before lockout</div>
-                        <input type="number" class="form-control" name="max_login_attempts" value="{{ settings.max_login_attempts or 5 }}" min="3" max="10">
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Two-Factor Authentication</div>
-                        <div class="setting-description">Enable 2FA for admin accounts</div>
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="twoFactorAuth" name="two_factor_auth" {{ 'checked' if settings.two_factor_auth else '' }}>
-                            <label class="custom-control-label" for="twoFactorAuth">Require 2FA for admins</label>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">HTTPS Redirect</div>
-                        <div class="setting-description">Force HTTPS for all connections</div>
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="httpsRedirect" name="https_redirect" {{ 'checked' if settings.https_redirect else '' }}>
-                            <label class="custom-control-label" for="httpsRedirect">Force HTTPS</label>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Content Security Policy</div>
-                        <div class="setting-description">CSP header configuration</div>
-                        <textarea class="form-control" name="csp_policy" rows="4">{{ settings.csp_policy or "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';" }}</textarea>
-                    </div>
-                </div>
+        <div id="security" class="tab-content hidden">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i data-lucide="shield" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+                Security Settings
+              </h2>
             </div>
+            <div class="p-6 space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
+                  <input type="number" name="session_timeout" value="{{ data.settings.session_timeout or '30' }}" min="5" max="1440"
+                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Max Login Attempts</label>
+                  <input type="number" name="max_login_attempts" value="{{ data.settings.max_login_attempts or '5' }}" min="3" max="10"
+                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">
+                </div>
+              </div>
+              
+              <div class="space-y-4">
+                <div class="flex items-center">
+                  <input type="checkbox" id="two_factor_auth" name="two_factor_auth" {{ 'checked' if data.settings.two_factor_auth else '' }} 
+                         class="rounded border-gray-300 text-[#DAAC40] focus:ring-[#DAAC40]">
+                  <label for="two_factor_auth" class="ml-2 text-sm text-gray-700">Require 2FA for admins</label>
+                </div>
+                <div class="flex items-center">
+                  <input type="checkbox" id="https_redirect" name="https_redirect" {{ 'checked' if data.settings.https_redirect else '' }} 
+                         class="rounded border-gray-300 text-[#DAAC40] focus:ring-[#DAAC40]">
+                  <label for="https_redirect" class="ml-2 text-sm text-gray-700">Force HTTPS connections</label>
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Content Security Policy</label>
+                <textarea name="csp_policy" rows="4" 
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">{{ data.settings.csp_policy or "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';" }}</textarea>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Backup Settings -->
-        <div class="tab-pane fade" id="backup" role="tabpanel">
-            <div class="settings-card card">
-                <div class="card-header">
-                    <h5><i class="fas fa-database text-info"></i> Backup Settings</h5>
-                </div>
-                <div class="card-body">
-                    <div class="setting-item">
-                        <div class="setting-label">Automatic Backups</div>
-                        <div class="setting-description">Enable automatic database backups</div>
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="autoBackup" name="auto_backup" {{ 'checked' if settings.auto_backup else '' }}>
-                            <label class="custom-control-label" for="autoBackup">Enable automatic backups</label>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Backup Frequency</div>
-                        <div class="setting-description">How often to create backups</div>
-                        <select class="form-control" name="backup_frequency">
-                            <option value="daily" {{ 'selected' if settings.backup_frequency == 'daily' else '' }}>Daily</option>
-                            <option value="weekly" {{ 'selected' if settings.backup_frequency == 'weekly' else '' }}>Weekly</option>
-                            <option value="monthly" {{ 'selected' if settings.backup_frequency == 'monthly' else '' }}>Monthly</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Backup Retention</div>
-                        <div class="setting-description">Number of backups to keep</div>
-                        <input type="number" class="form-control" name="backup_retention" value="{{ settings.backup_retention or 30 }}" min="1" max="365">
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Backup Location</div>
-                        <div class="setting-description">Where to store backup files</div>
-                        <input type="text" class="form-control" name="backup_location" value="{{ settings.backup_location or './backups' }}">
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Manual Backup</div>
-                        <div class="setting-description">Create a backup right now</div>
-                        <button class="btn btn-primary" onclick="createBackup()">
-                            <i class="fas fa-download"></i> Create Backup Now
-                        </button>
-                    </div>
-                </div>
+        <!-- System Settings -->
+        <div id="system" class="tab-content hidden">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i data-lucide="server" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+                System Settings
+              </h2>
             </div>
-        </div>
-
-        <!-- Advanced Settings -->
-        <div class="tab-pane fade" id="advanced" role="tabpanel">
-            <div class="settings-card card">
-                <div class="card-header">
-                    <h5><i class="fas fa-code text-info"></i> Advanced Settings</h5>
+            <div class="p-6 space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">API Rate Limit (per minute)</label>
+                  <input type="number" name="api_rate_limit" value="{{ data.settings.api_rate_limit or '100' }}" min="10" max="1000"
+                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">
                 </div>
-                <div class="card-body">
-                    <div class="setting-item">
-                        <div class="setting-label">Debug Mode</div>
-                        <div class="setting-description">Enable debug logging and error display</div>
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="debugMode" name="debug_mode" {{ 'checked' if settings.debug_mode else '' }}>
-                            <label class="custom-control-label" for="debugMode">Enable debug mode</label>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">API Rate Limiting</div>
-                        <div class="setting-description">Requests per minute for API endpoints</div>
-                        <input type="number" class="form-control" name="api_rate_limit" value="{{ settings.api_rate_limit or 100 }}" min="10" max="1000">
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Cache Settings</div>
-                        <div class="setting-description">Cache configuration</div>
-                        <select class="form-control" name="cache_type">
-                            <option value="simple" {{ 'selected' if settings.cache_type == 'simple' else '' }}>Simple</option>
-                            <option value="redis" {{ 'selected' if settings.cache_type == 'redis' else '' }}>Redis</option>
-                            <option value="memcached" {{ 'selected' if settings.cache_type == 'memcached' else '' }}>Memcached</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Custom CSS</div>
-                        <div class="setting-description">Additional CSS for customization</div>
-                        <textarea class="form-control" name="custom_css" rows="8">{{ settings.custom_css or '/* Add your custom CSS here */' }}</textarea>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">Custom JavaScript</div>
-                        <div class="setting-description">Additional JavaScript for customization</div>
-                        <textarea class="form-control" name="custom_js" rows="8">{{ settings.custom_js or '// Add your custom JavaScript here' }}</textarea>
-                    </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Backup Frequency</label>
+                  <select name="backup_frequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">
+                    <option value="daily" {{ 'selected' if data.settings.backup_frequency == 'daily' else '' }}>Daily</option>
+                    <option value="weekly" {{ 'selected' if data.settings.backup_frequency == 'weekly' else '' }}>Weekly</option>
+                    <option value="monthly" {{ 'selected' if data.settings.backup_frequency == 'monthly' else '' }}>Monthly</option>
+                  </select>
                 </div>
-            </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cache Type</label>
+                <select name="cache_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent">
+                  <option value="simple" {{ 'selected' if data.settings.cache_type == 'simple' else '' }}>Simple</option>
+                  <option value="redis" {{ 'selected' if data.settings.cache_type == 'redis' else '' }}>Redis</option>
+                  <option value="memcached" {{ 'selected' if data.settings.cache_type == 'memcached' else '' }}>Memcached</option>
+                </select>
+              </div>
+              
+              <div class="space-y-4">
+                <div class="flex items-center">
+                  <input type="checkbox" id="auto_backup" name="auto_backup" {{ 'checked' if data.settings.auto_backup else '' }} 
+                         class="rounded border-gray-300 text-[#DAAC40] focus:ring-[#DAAC40]">
+                  <label for="auto_backup" class="ml-2 text-sm text-gray-700">Enable automatic backups</label>
+                </div>
+                <div class="flex items-center">
+                  <input type="checkbox" id="debug_mode" name="debug_mode" {{ 'checked' if data.settings.debug_mode else '' }} 
+                         class="rounded border-gray-300 text-[#DAAC40] focus:ring-[#DAAC40]">
+                  <label for="debug_mode" class="ml-2 text-sm text-gray-700">Enable debug mode</label>
+                </div>
+              </div>
+              
+              <div class="pt-4 border-t border-gray-200">
+                <button type="button" onclick="createBackup()" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                  <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+                  Create Backup Now
+                </button>
+              </div>
+          </div>
         </div>
-    </div>
+      </div>
+
+      <!-- Save Button -->
+      <div class="mt-8 text-right">
+        <button type="submit" class="inline-flex items-center px-6 py-3 bg-[#DAAC40] text-white font-medium rounded-lg hover:bg-[#C49A36] transition-colors duration-200">
+          <i data-lucide="save" class="w-4 h-4 mr-2"></i>
+          Save Settings
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
 <script>
-function saveAllSettings() {
-    const formData = new FormData();
-    
-    // Collect all form inputs
-    document.querySelectorAll('input, textarea, select').forEach(input => {
-        if (input.name) {
-            if (input.type === 'checkbox') {
-                formData.append(input.name, input.checked);
-            } else {
-                formData.append(input.name, input.value);
-            }
-        }
+  // Tab switching functionality
+  document.querySelectorAll('.tab-button').forEach(button => {
+      button.addEventListener('click', function() {
+        const targetTab = this.getAttribute('data-tab');
+        
+        // Remove active classes
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+        
+        // Add active classes
+        this.classList.add('active');
+        document.getElementById(targetTab).classList.remove('hidden');
+      });
     });
 
-    fetch('/admin/api/settings/save', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showToast('Settings saved successfully!', 'success');
-        } else {
-            showToast('Error saving settings: ' + data.message, 'error');
-        }
-    })
-    .catch(error => {
-        showToast('Error saving settings', 'error');
-    });
-}
+    // API Functions
+    function createBackup() {
+      const btn = event.target;
+      const originalContent = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 mr-2 animate-spin"></i>Creating...';
 
-function exportSettings() {
-    fetch('/admin/api/settings/export')
-    .then(response => response.blob())
-    .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'settings-backup.json';
-        a.click();
-        window.URL.revokeObjectURL(url);
-    });
-}
-
-function resetToDefaults() {
-    if (confirm('Reset all settings to defaults? This cannot be undone.')) {
-        fetch('/admin/api/settings/reset', {
-            method: 'POST'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                showToast('Error resetting settings', 'error');
-            }
-        });
-    }
-}
-
-function sendTestEmail() {
-    const email = document.getElementById('testEmailAddress').value;
-    if (!email) {
-        alert('Please enter an email address');
-        return;
-    }
-
-    fetch('/admin/api/settings/test-email', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email: email})
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showToast('Test email sent successfully!', 'success');
-        } else {
-            showToast('Failed to send test email: ' + data.message, 'error');
-        }
-    });
-}
-
-function createBackup() {
-    const btn = event.target;
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
-
-    fetch('/admin/api/backup/create', {
+      fetch('/admin/api/backup/create', {
         method: 'POST'
-    })
-    .then(response => response.json())
-    .then(data => {
+      })
+      .then(response => response.json())
+      .then(data => {
         if (data.success) {
-            showToast('Backup created successfully!', 'success');
+          showToast('Backup created successfully!', 'success');
         } else {
-            showToast('Backup failed: ' + data.message, 'error');
+          showToast('Backup failed: ' + data.message, 'error');
         }
-    })
-    .finally(() => {
+      })
+      .catch(error => {
+        showToast('Error creating backup', 'error');
+      })
+      .finally(() => {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-download"></i> Create Backup Now';
-    });
-}
+        btn.innerHTML = originalContent;
+        lucide.createIcons();
+      });
+    }
 
-function showToast(message, type) {
-    // Simple toast notification
-    const toast = document.createElement('div');
-    toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
-    toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999;';
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-white ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
         toast.remove();
-    }, 3000);
-}
-</script>
+      }, 3000);
+    }
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
 {% endblock %}

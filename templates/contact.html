@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block title %}Contact Us — Super SEO Toolkit{% endblock %}
 
 {% block content %}
@@ -34,8 +34,8 @@
     <div class="grid md:grid-cols-2 gap-10">
       <!-- Form -->
       <form method="POST" class="space-y-6 relative z-10" id="contactForm" autocomplete="off">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" style="display:none">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" style="display:none" />
         <div>
           <label for="name" class="block text-sm font-semibold text-gray-800 mb-1">Full Name</label>
           <input name="name" id="name" required placeholder="Your Name"

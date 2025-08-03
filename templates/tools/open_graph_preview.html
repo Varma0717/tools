@@ -20,7 +20,7 @@
 
       <div class="relative z-10 text-center">
 
-        <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="mx-auto w-[50px] mb-3">
+        <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="mx-auto w-[50px] mb-3" />
 
         <h1 class="text-3xl font-bold text-gray-900 mb-2">Open Graph Preview</h1>
 
@@ -32,7 +32,7 @@
 
       <form id="ogForm" class="space-y-4">
 
-        <input type="hidden" id="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
 
 
 
@@ -40,7 +40,7 @@
 
         <input type="url" id="url" name="url" required placeholder="https://example.com"
 
-               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#DAAC40]">
+               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#DAAC40]" />
 
 
 
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         imgContainer.innerHTML = p.image
 
-          ? `<img src="${p.image}" alt="Preview Image" class="w-full max-h-52 object-contain rounded shadow mb-2">`
+          ? `<img src="${p.image}" alt="Preview Image" class="w-full max-h-52 object-contain rounded shadow mb-2" />`
 
           : '';
 

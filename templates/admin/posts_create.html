@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block title %}Create Post - Admin Panel{% endblock %}
 
 {% block content %}
@@ -7,8 +7,8 @@
     <i data-lucide="plus-circle" class="w-8 h-8"></i> Create New Post
   </h1>
 
-  <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.posts_create') }}" class="space-y-6 text-gray-200">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin_content.posts_create') }}" class="space-y-6 text-gray-200">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
     <div>
       <label for="title" class="block mb-2 font-semibold">Title <span class="text-red-600">*</span></label>

@@ -14,13 +14,13 @@
 
   <title>{% block title %}Super SEO Toolkit: Free SEO Tools, Backlink Checker, Website Audit, Meta Tag Analyzer{% endblock %}</title>
 
-  <meta name="title" content="{% block og_title %}Super SEO Toolkit: #1 Free SEO Analyzer, Backlink Checker, Keyword Tools, Site Audit Platform{% endblock %}">
+  <meta name="title" content="{% block og_title %}Super SEO Toolkit: #1 Free SEO Analyzer, Backlink Checker, Keyword Tools, Site Audit Platform{% endblock %}" />
 
-  <meta name="description" content="{% block meta_description %}Super SEO Toolkit offers 250+ advanced free SEO tools for real-time website audits, backlink checking, keyword research, meta tag analysis, plagiarism detection, and performance optimization. Instantly boost your Google ranking and website traffic with AI-powered reports and actionable insights.{% endblock %}">
+  <meta name="description" content="{% block meta_description %}Super SEO Toolkit offers 250+ advanced free SEO tools for real-time website audits, backlink checking, keyword research, meta tag analysis, plagiarism detection, and performance optimization. Instantly boost your Google ranking and website traffic with AI-powered reports and actionable insights.{% endblock %}" />
 
-  <meta name="keywords" content="{% block meta_keywords %}super seo toolkit, seo tools, free seo tools, seo analyzer, website audit, backlink checker, keyword research, meta tag analyzer, site speed checker, on-page seo, ai seo tools, google serp analysis, content optimization, rank tracking, seo report, sitemap generator, broken link checker, competitor analysis{% endblock %}">
+  <meta name="keywords" content="{% block meta_keywords %}super seo toolkit, seo tools, free seo tools, seo analyzer, website audit, backlink checker, keyword research, meta tag analyzer, site speed checker, on-page seo, ai seo tools, google serp analysis, content optimization, rank tracking, seo report, sitemap generator, broken link checker, competitor analysis{% endblock %}" />
 
-  <meta name="author" content="Super SEO Toolkit">
+  <meta name="author" content="Super SEO Toolkit" />
 
   <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}" />
 
@@ -28,17 +28,17 @@
 
   <!-- Open Graph / Facebook -->
 
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="website" />
 
-  <meta property="og:site_name" content="Super SEO Toolkit">
+  <meta property="og:site_name" content="Super SEO Toolkit" />
 
-  <meta property="og:url" content="{% block og_url %}{{ request.url if request else 'https://superseotoolkit.com/' }}{% endblock %}">
+  <meta property="og:url" content="{% block og_url %}{{ request.url if request else 'https://superseotoolkit.com/' }}{% endblock %}" />
 
-  <meta property="og:title" content="{% block og_title_fb %}Super SEO Toolkit — Free SEO Analyzer, Backlink Checker, Keyword Tools{% endblock %}">
+  <meta property="og:title" content="{% block og_title_fb %}Super SEO Toolkit — Free SEO Analyzer, Backlink Checker, Keyword Tools{% endblock %}" />
 
-  <meta property="og:description" content="{% block og_description %}Boost your Google ranking instantly with the Super SEO Toolkit — 250+ free SEO tools for site audit, backlink checking, content optimization, and meta tag analysis. AI-powered and AdSense-friendly!{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Boost your Google ranking instantly with the Super SEO Toolkit — 250+ free SEO tools for site audit, backlink checking, content optimization, and meta tag analysis. AI-powered and AdSense-friendly!{% endblock %}" />
 
-  <meta property="og:image" content="{% block og_image %}{% if post and post.featured_image %}{{ url_for('static', filename='images/' ~ post.featured_image) }}{% else %}https://superseotoolkit.com/static/og-preview.png{% endif %}{% endblock %}">
+  <meta property="og:image" content="{% block og_image %}{% if post and post.featured_image %}{{ url_for('static', filename='images/' ~ post.featured_image) }}{% else %}https://superseotoolkit.com/static/og-preview.png{% endif %}{% endblock %}" />
 
 
   <meta property="og:image:alt" content="Super SEO Toolkit Screenshot" />
@@ -49,19 +49,19 @@
 
   <!-- Twitter -->
 
-  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary_large_image" />
 
-  <meta name="twitter:site" content="@superseotoolkit">
+  <meta name="twitter:site" content="@superseotoolkit" />
 
-  <meta name="twitter:url" content="{% block twitter_url %}{{ request.url if request else 'https://superseotoolkit.com/' }}{% endblock %}">
+  <meta name="twitter:url" content="{% block twitter_url %}{{ request.url if request else 'https://superseotoolkit.com/' }}{% endblock %}" />
 
-  <meta name="twitter:title" content="{% block twitter_title %}Super SEO Toolkit — Free SEO Tools, SEO Analyzer & Website Audit{% endblock %}">
+  <meta name="twitter:title" content="{% block twitter_title %}Super SEO Toolkit — Free SEO Tools, SEO Analyzer & Website Audit{% endblock %}" />
 
-  <meta name="twitter:description" content="{% block twitter_description %}Run SEO audits, check backlinks, analyze keywords, and boost your traffic with Super SEO Toolkit’s 250+ real-time AI-powered SEO tools. Trusted by marketers, bloggers & agencies.{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}Run SEO audits, check backlinks, analyze keywords, and boost your traffic with Super SEO Toolkit’s 250+ real-time AI-powered SEO tools. Trusted by marketers, bloggers & agencies.{% endblock %}" />
 
   <meta name="twitter:image:alt" content="Super SEO Toolkit Screenshot" />
 
-  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="csrf-token" content="{{ csrf_token }}" />
 
 
 
@@ -96,7 +96,7 @@
 
    {# Uncomment below and edit if using custom Tailwind build #}
 
-   <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+   <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet" />
 
 
 
@@ -132,8 +132,8 @@
 
 <body class="bg-white text-gray-900 antialiased min-h-screen flex flex-col">
 
-  {% include 'partials/loading.html' %}
-  {% include 'partials/toast.html' %}
+  {% include "partials/loading.html" %}
+  {% include "partials/toast.html" %}
 
     
 
@@ -168,16 +168,16 @@
 
 
 
-  {% include 'partials/header.html' %}
+  {% include "partials/header.html" %}
 
 
 
   <main class="flex-grow mx-auto w-full">{% block content %}{% endblock %}</main>
 
   <!-- Google AdSense Integration -->
-  {% include 'partials/adsense.html' %}
+  {% include "partials/adsense.html" %}
 
-  {% include 'partials/footer.html' %}
+  {% include "partials/footer.html" %}
 
 
 
@@ -270,7 +270,62 @@
 
 </script>
 
+<!-- Dynamic Secondary Header Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const messages = [
+    { icon: 'shield-check', color: 'text-green-400', text: '100% GDPR Compliant & SSL Secured' },
+    { icon: 'users', color: 'text-blue-400', text: 'Trusted by 50,000+ SEO Professionals' },
+    { icon: 'zap', color: 'text-yellow-400', text: '168+ Professional SEO Tools Available' },
+    { icon: 'trending-up', color: 'text-green-400', text: 'Real-Time SEO Analytics & Insights' },
+    { icon: 'globe', color: 'text-cyan-400', text: 'Serving SEO Experts in 80+ Countries' },
+    { icon: 'award', color: 'text-purple-400', text: 'Award-Winning SEO Platform Since 2020' }
+  ];
+  
+  const messageElement = document.getElementById('rotating-message');
+  const iconElement = document.getElementById('rotating-icon');
+  
+  if (messageElement && iconElement) {
+    let currentIndex = 0;
+    
+    function rotateMessage() {
+      const currentMessage = messages[currentIndex];
+      
+      // Fade out
+      messageElement.style.opacity = '0';
+      iconElement.style.opacity = '0';
+      
+      setTimeout(() => {
+        // Update content
+        iconElement.setAttribute('data-lucide', currentMessage.icon);
+        iconElement.className = `w-4 h-4 mr-2 ${currentMessage.color}`;
+        messageElement.textContent = currentMessage.text;
+        
+        // Recreate icon
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+        
+        // Fade in
+        messageElement.style.opacity = '1';
+        iconElement.style.opacity = '1';
+        
+        currentIndex = (currentIndex + 1) % messages.length;
+      }, 300);
+    }
+    
+    // Initial load
+    rotateMessage();
+    
+    // Rotate every 4 seconds
+    setInterval(rotateMessage, 4000);
+  }
+});
+</script>
+
+{% block scripts %}
+{% endblock %}
+
 </body>
 
 </html>
-

@@ -1,4 +1,36 @@
-<header class="sticky top-0 left-0 w-full z-50 glass border-b border-gray-100 transition-all duration-300" id="main-header">
+<!-- Secondary Header - Professional Information Bar -->
+<div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-2 px-4 text-sm">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-2">
+        <i data-lucide="shield-check" class="lucide w-4 h-4 text-green-400"></i>
+        <span>SSL Secured • GDPR Compliant</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i id="rotating-icon" data-lucide="users" class="lucide w-4 h-4 text-blue-400" style="transition: opacity 0.3s ease;"></i>
+        <span id="rotating-message" class="font-medium" style="transition: opacity 0.3s ease;">Trusted by 50,000+ SEO Professionals</span>
+      </div>
+      <div class="flex items-center gap-2 hidden lg:flex">
+        <i data-lucide="zap" class="lucide w-4 h-4 text-yellow-400 animate-pulse"></i>
+        <span>168+ Professional SEO Tools</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <i data-lucide="headphones" class="lucide w-4 h-4 text-accent-500"></i>
+        <span class="hidden sm:inline">24/7 Expert Support</span>
+        <span class="sm:hidden">Support</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+        <span class="text-green-400 font-medium">All Systems Operational</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Header -->
+<header class="sticky top-0 left-0 w-full z-50 bg-white shadow-md border-b border-gray-200 transition-all duration-300" id="main-header">
   <!-- Glowing animated element behind logo -->
   <div class="absolute left-0 top-0 h-20 w-40 pointer-events-none z-0">
     <span class="absolute inset-0 rounded-full blur-2xl opacity-40 bg-[#DAAC40] animate-pulse"></span>
@@ -22,15 +54,15 @@
       <a href="/" class="nav-link">Home</a>
       <a href="{{ url_for('tools.list_tools') }}" class="nav-link">Tools</a>
       <a href="{{ url_for('about_us') }}" class="nav-link">About Us</a>
-      <a href="{{ url_for('pricing') }}" class="nav-link">Pricing</a>
+      <a href="{{ url_for('pricing.pricing') }}" class="nav-link">Pricing</a>
       <a href="{{ url_for('blog.blog_index') }}" class="nav-link">Blog</a>
       <a href="{{ url_for('contact.contact') }}" class="nav-link">Contact</a>
 
       {% if current_user.is_authenticated %}
         {% if current_user.role == 'admin' %}
-          <a href="{{ url_for('admin.panel') }}" class="nav-link text-[#DAAC40] font-semibold hover:underline">Admin</a>
+          <a href="{{ url_for('admin_dashboard.panel') }}" class="nav-link text-[#DAAC40] font-semibold hover:underline">Admin</a>
         {% else %}
-          <a href="{{ url_for('users.account') }}" class="nav-link text-[#DAAC40] font-semibold hover:underline">Dashboard</a>
+          <a href="{{ url_for('users.dashboard') }}" class="nav-link text-[#DAAC40] font-semibold hover:underline">Dashboard</a>
         {% endif %}
         <form method="POST" action="{{ url_for('users.logout') }}" class="inline ml-2">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
@@ -50,7 +82,7 @@
   </div>
 
   <!-- Mobile Dropdown (slide down, animated) -->
-  <div id="mobile-menu" class="md:hidden absolute left-0 w-full glass shadow-xl border-b border-[#DAAC40]/20 z-40 origin-top transform -translate-y-4 opacity-0 invisible transition-all duration-300">
+  <div id="mobile-menu" class="md:hidden absolute left-0 w-full bg-white shadow-xl border-b border-gray-200 z-40 origin-top transform -translate-y-4 opacity-0 invisible transition-all duration-300">
     <div class="flex flex-col items-center gap-2 py-6">
       <a href="/" class="mobile-nav-link">Home</a>
       <a href="{{ url_for('tools.list_tools') }}" class="mobile-nav-link">Tools</a>
@@ -59,9 +91,9 @@
       <a href="{{ url_for('contact.contact') }}" class="mobile-nav-link">Contact</a>
       {% if current_user.is_authenticated %}
         {% if current_user.role == 'admin' %}
-          <a href="{{ url_for('admin.panel') }}" class="mobile-nav-link text-[#DAAC40] font-semibold">Admin</a>
+          <a href="{{ url_for('admin_dashboard.panel') }}" class="mobile-nav-link text-[#DAAC40] font-semibold">Admin</a>
         {% else %}
-          <a href="{{ url_for('users.account') }}" class="mobile-nav-link text-[#DAAC40] font-semibold">Dashboard</a>
+          <a href="{{ url_for('users.dashboard') }}" class="mobile-nav-link text-[#DAAC40] font-semibold">Dashboard</a>
         {% endif %}
         <form method="POST" action="{{ url_for('users.logout') }}" class="w-full flex justify-center mt-2">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />

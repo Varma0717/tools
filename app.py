@@ -8,10 +8,10 @@ from flask import request, Flask, render_template, jsonify
 from flask_wtf.csrf import CSRFProtect
 
 from flask_dance.contrib.google import make_google_blueprint, google
+from flask_login import current_user
 from utils.extensions import db, login_manager, mail, migrate
 from users.routes import users_bp
-from admin.routes import admin_bp
-from admin.enhanced_routes import enhanced_admin_bp
+from admin import register_admin_routes
 from tools.routes import tools_bp, register_tool_blueprints
 from tools.routes.sitemap import sitemap_bp
 from models.newsletter import Subscriber
@@ -89,8 +89,7 @@ app.register_blueprint(google_bp, url_prefix="/login")
 
 # Register Blueprints
 app.register_blueprint(users_bp)
-app.register_blueprint(admin_bp)
-app.register_blueprint(enhanced_admin_bp)
+register_admin_routes(app)  # Register all admin route blueprints
 app.register_blueprint(tools_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(sitemap_bp)
@@ -301,13 +300,33 @@ def home():
 
 
 # ========================
+# Context Processors
+# ========================
+@app.context_processor
+def ads_context():
+    """Context processor to determine if ads should be displayed"""
+
+    def should_show_ads():
+        # Check if we're on a tools page
+        is_tools_page = request.endpoint and (
+            request.endpoint.startswith("tools.") or "/tools/" in request.path
+        )
+
+        # Check user subscription status
+        if current_user.is_authenticated:
+            is_free_user = not current_user.is_premium
+        else:
+            is_free_user = True  # Non-authenticated users see ads
+
+        result = is_tools_page and is_free_user
+        return result
+
+    return dict(should_show_ads=should_show_ads)
+
+
+# ========================
 # Other Static Pages
 # ========================
-@app.route("/pricing", endpoint="pricing")
-def pricing():
-    return render_template("pricing.html")
-
-
 @app.route("/privacy-policy")
 def privacy():
     return render_template("privacy.html")  # Make sure this template exists
@@ -342,4 +361,4 @@ if __name__ == "__main__":
         # init_db()  # Initialize the database and default settings
         pass
 
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=False, host="0.0.0.0", port=5000)

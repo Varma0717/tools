@@ -3,13 +3,13 @@
     <h2 class="text-xl font-semibold mb-4">Platform Settings</h2>
 
     <form id="setting-form" @submit.prevent="submit" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <input type="text" name="key" x-model="key" class="px-4 py-2 border rounded w-full" placeholder="Setting Key" required>
-      <input type="text" name="value" x-model="value" class="px-4 py-2 border rounded w-full" placeholder="Setting Value" required>
+      <input type="text" name="key" x-model="key" class="px-4 py-2 border rounded w-full" placeholder="Setting Key" required />
+      <input type="text" name="value" x-model="value" class="px-4 py-2 border rounded w-full" placeholder="Setting Value" required />
       <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Save</button>
     </form>
   </div>
 
-  <hr class="my-6">
+  <hr class="my-6" />
 
   <div>
     <h3 class="text-lg font-semibold mb-2">Existing Settings</h3>

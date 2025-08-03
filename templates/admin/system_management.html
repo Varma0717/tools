@@ -1,0 +1,771 @@
+{% extends "admin/base.html" %}
+
+{% block title %}System Management - Admin Dashboard{% endblock %}
+
+{% block header %}System Management{% endblock %}
+{% block subtitle %}Monitor and manage your system resources{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Quick Actions -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="flex flex-wrap gap-3">
+      <button onclick="enableMaintenanceMode()" class="inline-flex items-center px-4 py-2 bg-yellow-500 text-white font-medium rounded-lg hover:bg-yellow-600 transition-colors duration-200">
+        <i data-lucide="wrench" class="w-4 h-4 mr-2"></i>
+        Maintenance Mode
+      </button>
+      <button onclick="createBackup()" class="inline-flex items-center px-4 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors duration-200">
+        <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+        Create Backup
+      </button>
+      <button onclick="restartSystem()" class="inline-flex items-center px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition-colors duration-200">
+        <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
+        Restart System
+      </button>
+    </div>
+  </div>
+
+  <!-- Maintenance Banner -->
+  <div id="maintenanceBanner" class="hidden bg-gradient-to-r from-red-100 to-pink-100 border border-red-200 rounded-xl p-4">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center">
+        <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600 mr-3"></i>
+        <div>
+          <span class="font-semibold text-red-800">Maintenance Mode Active</span>
+          <p class="text-red-700 text-sm">System is currently under maintenance</p>
+        </div>
+      </div>
+      <button onclick="disableMaintenanceMode()" class="px-3 py-1 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors duration-200">
+        Disable
+      </button>
+    </div>
+  </div>
+
+      <!-- System Status Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-green-100 text-sm font-medium">System Uptime</p>
+              <p class="text-2xl font-bold" id="systemUptime">{{ data.server_info.uptime or '99.9%' }}</p>
+            </div>
+            <i data-lucide="activity" class="w-8 h-8 text-green-200"></i>
+          </div>
+        </div>
+        
+        <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-blue-100 text-sm font-medium">Active Users</p>
+              <p class="text-2xl font-bold" id="activeUsers">{{ data.server_info.active_users or 0 }}</p>
+            </div>
+            <i data-lucide="users" class="w-8 h-8 text-blue-200"></i>
+          </div>
+        </div>
+        
+        <div class="bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-yellow-100 text-sm font-medium">Queued Tasks</p>
+              <p class="text-2xl font-bold" id="queuedTasks">{{ data.server_info.queued_tasks or 0 }}</p>
+            </div>
+            <i data-lucide="clock" class="w-8 h-8 text-yellow-200"></i>
+          </div>
+        </div>
+        
+        <div class="bg-gradient-to-br from-red-500 to-pink-600 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-red-100 text-sm font-medium">Errors (24h)</p>
+              <p class="text-2xl font-bold" id="errorCount">{{ data.server_info.error_count or 0 }}</p>
+            </div>
+            <i data-lucide="alert-triangle" class="w-8 h-8 text-red-200"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resource Monitoring -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+          <div class="text-center">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">CPU Usage</h3>
+            <div class="relative w-24 h-24 mx-auto mb-4">
+              <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 36 36">
+                <path class="text-gray-200" stroke="currentColor" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="text-[#DAAC40]" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" 
+                      stroke-dasharray="{{ (data.resources.cpu_usage or 45) }}, 100" 
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" id="cpuGauge"></path>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-xl font-bold text-gray-900" id="cpuText">{{ data.resources.cpu_usage or 45 }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+          <div class="text-center">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Memory Usage</h3>
+            <div class="relative w-24 h-24 mx-auto mb-4">
+              <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 36 36">
+                <path class="text-gray-200" stroke="currentColor" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="text-green-500" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" 
+                      stroke-dasharray="{{ (data.resources.memory_usage or 62) }}, 100" 
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" id="memoryGauge"></path>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-xl font-bold text-gray-900" id="memoryText">{{ data.resources.memory_usage or 62 }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+          <div class="text-center">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Disk Usage</h3>
+            <div class="relative w-24 h-24 mx-auto mb-4">
+              <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 36 36">
+                <path class="text-gray-200" stroke="currentColor" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="text-yellow-500" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" 
+                      stroke-dasharray="{{ (data.resources.disk_usage or 78) }}, 100" 
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" id="diskGauge"></path>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-xl font-bold text-gray-900" id="diskText">{{ data.resources.disk_usage or 78 }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+          <div class="text-center">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Network I/O</h3>
+            <div class="relative w-24 h-24 mx-auto mb-4">
+              <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 36 36">
+                <path class="text-gray-200" stroke="currentColor" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                <path class="text-red-500" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" 
+                      stroke-dasharray="{{ (data.resources.network_usage or 35) }}, 100" 
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" id="networkGauge"></path>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-xl font-bold text-gray-900" id="networkText">{{ data.resources.network_usage or 35 }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Status and Logs -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div class="flex justify-between items-center p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <i data-lucide="server" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+              Services Status
+            </h3>
+            <button onclick="refreshServices()" class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition-colors duration-200">
+              <i data-lucide="refresh-cw" class="w-4 h-4 mr-1"></i>
+              Refresh
+            </button>
+          </div>
+          <div class="p-6">
+            {% if data.services %}
+              <div class="space-y-4">
+                {% for service in data.services %}
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                  <div class="flex items-center">
+                    <div class="w-3 h-3 rounded-full mr-3 
+                         {% if service.status == 'healthy' %}bg-green-500{% endif %}
+                         {% if service.status == 'warning' %}bg-yellow-500{% endif %}
+                         {% if service.status == 'critical' %}bg-red-500{% endif %}
+                         {% if service.status == 'offline' %}bg-gray-500{% endif %}"></div>
+                    <div>
+                      <p class="font-medium text-gray-900">{{ service.name }}</p>
+                      <p class="text-sm text-gray-600">{{ service.description }}</p>
+                    </div>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button onclick="startService('{{ service.id }}')" class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors duration-200">
+                      <i data-lucide="play" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="restartService('{{ service.id }}')" class="p-2 text-yellow-600 hover:bg-yellow-100 rounded-lg transition-colors duration-200">
+                      <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="stopService('{{ service.id }}')" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200">
+                      <i data-lucide="square" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="text-center py-8">
+                <i data-lucide="server" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                <p class="text-gray-500">No services configured</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div class="flex justify-between items-center p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <i data-lucide="file-text" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+              System Logs
+            </h3>
+            <div class="flex space-x-1">
+              <button onclick="showLogs('system')" class="px-3 py-1 bg-[#DAAC40] text-white text-sm rounded-lg">System</button>
+              <button onclick="showLogs('error')" class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200">Errors</button>
+              <button onclick="showLogs('access')" class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200">Access</button>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="bg-gray-900 text-gray-300 rounded-lg p-4 font-mono text-sm max-h-96 overflow-y-auto" id="logViewer">
+              {% if data.logs %}
+                {% for log in data.logs %}
+                <div class="mb-1 
+                     {% if log.level == 'error' %}text-red-400{% endif %}
+                     {% if log.level == 'warning' %}text-yellow-400{% endif %}
+                     {% if log.level == 'info' %}text-blue-400{% endif %}
+                     {% if log.level == 'success' %}text-green-400{% endif %}">
+                  [{{ log.timestamp }}] {{ log.level.upper() }}: {{ log.message }}
+                </div>
+                {% endfor %}
+              {% else %}
+                <div class="text-gray-500">No logs available</div>
+              {% endif %}
+            </div>
+            <div class="flex space-x-2 mt-4">
+              <button onclick="downloadLogs()" class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                <i data-lucide="download" class="w-4 h-4 mr-1"></i>
+                Download
+              </button>
+              <button onclick="clearLogs()" class="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition-colors duration-200">
+                <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backup Management & Task Queue -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div class="p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <i data-lucide="hard-drive" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+              Backup Management
+            </h3>
+          </div>
+          <div class="p-6">
+            <div class="flex space-x-3 mb-6">
+              <button onclick="createBackup()" class="inline-flex items-center px-4 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors duration-200">
+                <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+                Create Backup
+              </button>
+              <button onclick="scheduleBackup()" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                <i data-lucide="clock" class="w-4 h-4 mr-2"></i>
+                Schedule
+              </button>
+            </div>
+            
+            <div class="space-y-3">
+              {% if data.backups %}
+                {% for backup in data.backups %}
+                <div class="flex justify-between items-center p-4 border border-gray-200 rounded-lg">
+                  <div>
+                    <p class="font-medium text-gray-900">{{ backup.name }}</p>
+                    <p class="text-sm text-gray-600">{{ backup.created_at }}</p>
+                    <p class="text-xs text-gray-500">{{ backup.size }}</p>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button onclick="downloadBackup('{{ backup.id }}')" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200">
+                      <i data-lucide="download" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="restoreBackup('{{ backup.id }}')" class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors duration-200">
+                      <i data-lucide="upload" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="deleteBackup('{{ backup.id }}')" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200">
+                      <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+                {% endfor %}
+              {% else %}
+                <div class="text-center py-8">
+                  <i data-lucide="hard-drive" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                  <p class="text-gray-500">No backups available</p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div class="p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <i data-lucide="list-checks" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+              Task Queue
+            </h3>
+          </div>
+          <div class="p-6">
+            <div class="space-y-3 max-h-96 overflow-y-auto">
+              {% if data.tasks %}
+                {% for task in data.tasks %}
+                <div class="flex justify-between items-center p-4 bg-white border border-gray-200 rounded-lg">
+                  <div class="flex-1">
+                    <p class="font-medium text-gray-900">{{ task.name }}</p>
+                    <p class="text-sm text-gray-600">{{ task.description }}</p>
+                    <p class="text-xs text-gray-500">Started: {{ task.started_at or 'Not started' }}</p>
+                  </div>
+                  <div class="text-right">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                         {% if task.status == 'pending' %}bg-yellow-100 text-yellow-800{% endif %}
+                         {% if task.status == 'running' %}bg-blue-100 text-blue-800{% endif %}
+                         {% if task.status == 'completed' %}bg-green-100 text-green-800{% endif %}
+                         {% if task.status == 'failed' %}bg-red-100 text-red-800{% endif %}">
+                      {{ task.status.title() }}
+                    </span>
+                    {% if task.status == 'running' %}
+                    <p class="text-xs text-gray-500 mt-1">{{ task.progress or 0 }}%</p>
+                    {% endif %}
+                  </div>
+                </div>
+                {% endfor %}
+              {% else %}
+                <div class="text-center py-8">
+                  <i data-lucide="list-checks" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                  <p class="text-gray-500">No tasks in queue</p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security & Configuration -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div class="p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <i data-lucide="shield" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+              Security Status
+            </h3>
+          </div>
+          <div class="p-6">
+            {% if data.security %}
+              <div class="space-y-4">
+                {% for alert in data.security %}
+                <div class="p-4 rounded-lg border
+                     {% if alert.type == 'success' %}bg-green-50 border-green-200{% endif %}
+                     {% if alert.type == 'warning' %}bg-yellow-50 border-yellow-200{% endif %}
+                     {% if alert.type == 'danger' %}bg-red-50 border-red-200{% endif %}">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <p class="font-medium
+                           {% if alert.type == 'success' %}text-green-800{% endif %}
+                           {% if alert.type == 'warning' %}text-yellow-800{% endif %}
+                           {% if alert.type == 'danger' %}text-red-800{% endif %}">
+                        {{ alert.title }}
+                      </p>
+                      <p class="text-sm mt-1
+                           {% if alert.type == 'success' %}text-green-700{% endif %}
+                           {% if alert.type == 'warning' %}text-yellow-700{% endif %}
+                           {% if alert.type == 'danger' %}text-red-700{% endif %}">
+                        {{ alert.description }}
+                      </p>
+                    </div>
+                    {% if alert.action %}
+                    <button onclick="{{ alert.action }}" class="px-3 py-1 text-sm font-medium rounded-lg
+                             {% if alert.type == 'success' %}bg-green-600 text-white hover:bg-green-700{% endif %}
+                             {% if alert.type == 'warning' %}bg-yellow-600 text-white hover:bg-yellow-700{% endif %}
+                             {% if alert.type == 'danger' %}bg-red-600 text-white hover:bg-red-700{% endif %}">
+                      Fix
+                    </button>
+                    {% endif %}
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div class="flex items-center">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mr-3"></i>
+                  <div>
+                    <p class="font-medium text-green-800">All security checks passed</p>
+                    <p class="text-sm text-green-700">Your system is secure and up to date</p>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            
+            <div class="flex space-x-3 mt-6">
+              <button onclick="runSecurityScan()" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                <i data-lucide="search" class="w-4 h-4 mr-2"></i>
+                Security Scan
+              </button>
+              <button onclick="updateSystem()" class="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 font-medium rounded-lg hover:bg-green-200 transition-colors duration-200">
+                <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
+                Update System
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div class="p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <i data-lucide="settings" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+              System Configuration
+            </h3>
+          </div>
+          <div class="p-6">
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+              <h4 class="font-medium text-gray-900 mb-4">Application Settings</h4>
+              {% if data.config %}
+                <div class="space-y-4">
+                  {% for config in data.config %}
+                  <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                    <div>
+                      <p class="font-medium text-gray-900">{{ config.name }}</p>
+                      <p class="text-sm text-gray-600">{{ config.description }}</p>
+                    </div>
+                    <div>
+                      {% if config.type == 'boolean' %}
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" 
+                               {{ 'checked' if config.value else '' }}
+                               onchange="updateConfig('{{ config.key }}', this.checked)">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#DAAC40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#DAAC40]"></div>
+                      </label>
+                      {% else %}
+                      <input type="text" class="px-3 py-1 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40] focus:border-transparent" 
+                             value="{{ config.value }}" 
+                             onchange="updateConfig('{{ config.key }}', this.value)">
+                      {% endif %}
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            
+            <div class="flex space-x-3">
+              <button onclick="exportConfig()" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+                Export Config
+              </button>
+              <button onclick="resetConfig()" class="inline-flex items-center px-4 py-2 bg-yellow-100 text-yellow-700 font-medium rounded-lg hover:bg-yellow-200 transition-colors duration-200">
+                <i data-lucide="rotate-ccw" class="w-4 h-4 mr-2"></i>
+                Reset Defaults
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Initialize Lucide icons
+lucide.createIcons();
+
+// Auto-refresh system status every 30 seconds
+setInterval(refreshSystemStatus, 30000);
+
+function refreshSystemStatus() {
+    fetch('/admin/api/system/status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateSystemMetrics(data.server_info);
+                updateResourceGauges(data.resources);
+            }
+        })
+        .catch(error => console.error('Error refreshing system status:', error));
+}
+
+function updateSystemMetrics(system) {
+    document.getElementById('systemUptime').textContent = system.uptime || '99.9%';
+    document.getElementById('activeUsers').textContent = system.active_users || 0;
+    document.getElementById('queuedTasks').textContent = system.queued_tasks || 0;
+    document.getElementById('errorCount').textContent = system.error_count || 0;
+}
+
+function updateResourceGauges(resources) {
+    updateGauge('cpuText', resources.cpu_usage || 0);
+    updateGauge('memoryText', resources.memory_usage || 0);
+    updateGauge('diskText', resources.disk_usage || 0);
+    updateGauge('networkText', resources.network_usage || 0);
+}
+
+function updateGauge(textId, value) {
+    const text = document.getElementById(textId);
+    if (text) {
+        text.textContent = `${value}%`;
+    }
+}
+
+function enableMaintenanceMode() {
+    if (confirm('Enable maintenance mode? This will make the site unavailable to users.')) {
+        fetch('/admin/api/system/maintenance', {
+            method: 'POST',
+            body: JSON.stringify({enabled: true}),
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('maintenanceBanner').classList.remove('hidden');
+                showToast('Maintenance mode enabled', 'success');
+            }
+        })
+        .catch(error => showToast('Error enabling maintenance mode', 'error'));
+    }
+}
+
+function disableMaintenanceMode() {
+    fetch('/admin/api/system/maintenance', {
+        method: 'POST',
+        body: JSON.stringify({enabled: false}),
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('maintenanceBanner').classList.add('hidden');
+            showToast('Maintenance mode disabled', 'success');
+        }
+    })
+    .catch(error => showToast('Error disabling maintenance mode', 'error'));
+}
+
+function createBackup() {
+    if (confirm('Create a full system backup? This may take several minutes.')) {
+        fetch('/admin/api/system/backup', {method: 'POST'})
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Backup created successfully!', 'success');
+                setTimeout(() => location.reload(), 2000);
+            } else {
+                showToast('Error creating backup: ' + data.message, 'error');
+            }
+        })
+        .catch(error => showToast('Error creating backup', 'error'));
+    }
+}
+
+function restartSystem() {
+    if (confirm('Restart the system? This will temporarily make the site unavailable.')) {
+        fetch('/admin/api/system/restart', {method: 'POST'})
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('System restart initiated. Please wait a few minutes before refreshing.', 'info');
+            }
+        })
+        .catch(error => showToast('Error restarting system', 'error'));
+    }
+}
+
+function startService(serviceId) {
+    fetch(`/admin/api/system/service/${serviceId}/start`, {method: 'POST'})
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Service started successfully', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showToast('Error starting service: ' + data.message, 'error');
+            }
+        })
+        .catch(error => showToast('Error starting service', 'error'));
+}
+
+function restartService(serviceId) {
+    fetch(`/admin/api/system/service/${serviceId}/restart`, {method: 'POST'})
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Service restarted successfully', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showToast('Error restarting service: ' + data.message, 'error');
+            }
+        })
+        .catch(error => showToast('Error restarting service', 'error'));
+}
+
+function stopService(serviceId) {
+    if (confirm('Stop this service?')) {
+        fetch(`/admin/api/system/service/${serviceId}/stop`, {method: 'POST'})
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Service stopped successfully', 'success');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showToast('Error stopping service: ' + data.message, 'error');
+                }
+            })
+            .catch(error => showToast('Error stopping service', 'error'));
+    }
+}
+
+function showLogs(type) {
+    // Update active button
+    const buttons = event.target.parentElement.querySelectorAll('button');
+    buttons.forEach(btn => {
+        btn.className = 'px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200';
+    });
+    event.target.className = 'px-3 py-1 bg-[#DAAC40] text-white text-sm rounded-lg';
+
+    fetch(`/admin/api/system/logs?type=${type}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const logViewer = document.getElementById('logViewer');
+                logViewer.innerHTML = data.logs.map(log => {
+                    let colorClass = 'text-gray-300';
+                    if (log.level === 'error') colorClass = 'text-red-400';
+                    else if (log.level === 'warning') colorClass = 'text-yellow-400';
+                    else if (log.level === 'info') colorClass = 'text-blue-400';
+                    else if (log.level === 'success') colorClass = 'text-green-400';
+                    
+                    return `<div class="mb-1 ${colorClass}">[${log.timestamp}] ${log.level.toUpperCase()}: ${log.message}</div>`;
+                }).join('');
+            }
+        })
+        .catch(error => showToast('Error loading logs', 'error'));
+}
+
+function downloadLogs() {
+    window.open('/admin/api/system/logs/download', '_blank');
+}
+
+function clearLogs() {
+    if (confirm('Clear all logs? This action cannot be undone.')) {
+        fetch('/admin/api/system/logs/clear', {method: 'DELETE'})
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('logViewer').innerHTML = '<div class="text-gray-500">Logs cleared</div>';
+                    showToast('Logs cleared successfully', 'success');
+                }
+            })
+            .catch(error => showToast('Error clearing logs', 'error'));
+    }
+}
+
+function runSecurityScan() {
+    showToast('Security scan started. Results will be available in a few minutes.', 'info');
+    fetch('/admin/api/system/security/scan', {method: 'POST'})
+        .catch(error => showToast('Error starting security scan', 'error'));
+}
+
+function updateSystem() {
+    if (confirm('Update system packages? This may take several minutes.')) {
+        fetch('/admin/api/system/update', {method: 'POST'})
+            .then(response => response.json())
+            .then(data => {
+                showToast(data.message || 'System update initiated', 'info');
+            })
+            .catch(error => showToast('Error updating system', 'error'));
+    }
+}
+
+function updateConfig(key, value) {
+    fetch('/admin/api/system/config', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({key: key, value: value})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Configuration updated', 'success');
+        } else {
+            showToast('Error updating configuration: ' + data.message, 'error');
+        }
+    })
+    .catch(error => showToast('Error updating configuration', 'error'));
+}
+
+function exportConfig() {
+    window.open('/admin/api/system/config/export', '_blank');
+}
+
+function resetConfig() {
+    if (confirm('Reset all configuration to defaults? This will require system restart.')) {
+        fetch('/admin/api/system/config/reset', {method: 'POST'})
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Configuration reset. System restart required.', 'info');
+                }
+            })
+            .catch(error => showToast('Error resetting configuration', 'error'));
+    }
+}
+
+function refreshServices() {
+    location.reload();
+}
+
+function scheduleBackup() {
+    showToast('Backup scheduling feature will be implemented!', 'info');
+}
+
+function downloadBackup(backupId) {
+    window.open(`/admin/api/system/backup/${backupId}/download`, '_blank');
+}
+
+function restoreBackup(backupId) {
+    if (confirm('Restore from this backup? This will overwrite current data.')) {
+        fetch(`/admin/api/system/backup/${backupId}/restore`, {method: 'POST'})
+            .then(response => response.json())
+            .then(data => {
+                showToast(data.message || 'Backup restore completed', 'info');
+            })
+            .catch(error => showToast('Error restoring backup', 'error'));
+    }
+}
+
+function deleteBackup(backupId) {
+    if (confirm('Delete this backup? This action cannot be undone.')) {
+        fetch(`/admin/api/system/backup/${backupId}`, {method: 'DELETE'})
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Backup deleted successfully', 'success');
+                    setTimeout(() => location.reload(), 1000);
+                }
+            })
+            .catch(error => showToast('Error deleting backup', 'error'));
+    }
+}
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-green-500' : 
+                   type === 'error' ? 'bg-red-500' : 
+                   type === 'info' ? 'bg-blue-500' : 'bg-gray-500';
+    
+    toast.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-white ${bgColor} shadow-lg transform transition-all duration-300`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => toast.style.transform = 'translateY(0)', 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+</script>
+{% endblock %}

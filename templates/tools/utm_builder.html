@@ -108,7 +108,7 @@
 
         <div class="flex items-center gap-2">
 
-          <input type="text" readonly value="{{ utm_url }}" class="flex-1 px-2 py-1 border border-indigo-300 rounded bg-indigo-50 text-indigo-800 text-xs font-mono" id="utm-url-output">
+          <input type="text" readonly value="{{ utm_url }}" class="flex-1 px-2 py-1 border border-indigo-300 rounded bg-indigo-50 text-indigo-800 text-xs font-mono" id="utm-url-output" />
 
           <button onclick="navigator.clipboard.writeText(document.getElementById('utm-url-output').value); this.innerText='Copied!';" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 transition text-xs font-semibold">Copy</button>
 

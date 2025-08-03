@@ -1,0 +1,365 @@
+{% extends 'base.html' %}
+{% block title %}
+  User Dashboard - Super SEO Toolkit
+{% endblock %}
+
+{% block content %}
+  <!-- Professional User Dashboard -->
+  <div class="min-h-screen bg-gray-50">
+    <!-- Dashboard Header -->
+    <div class="bg-white border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-lg">
+              <i data-lucide="user" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold text-gray-900">
+                Welcome back,{% if current_user.is_authenticated %}
+                  {{ current_user.username }}
+                {% else %}
+                  User
+                {% endif %}!
+              </h1>
+              <p class="text-sm text-gray-600">Manage your SEO tools and projects</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
+              <i data-lucide="clock" class="w-4 h-4"></i>
+              <span>
+                Last login:{% if current_user.is_authenticated and current_user.last_login %}
+                  {{ current_user.last_login.strftime('%B %d, %Y') }}
+                {% else %}
+                  Today
+                {% endif %}
+              </span>
+            </div>
+            <a href="{{ url_for('users.account') }}" class="inline-flex items-center px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+              <i data-lucide="settings" class="w-4 h-4 mr-2"></i>
+              Account Settings
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- SEO Tools Used -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Tools Used Today</p>
+              <p class="text-2xl font-bold text-gray-900">12</p>
+              <p class="text-xs text-green-600 font-medium">+3 from yesterday</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i data-lucide="wrench" class="w-6 h-6 text-blue-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saved Reports -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Saved Reports</p>
+              <p class="text-2xl font-bold text-gray-900">28</p>
+              <p class="text-xs text-blue-600 font-medium">View all reports</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <i data-lucide="file-text" class="w-6 h-6 text-green-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Projects -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Active Projects</p>
+              <p class="text-2xl font-bold text-gray-900">5</p>
+              <p class="text-xs text-purple-600 font-medium">2 need attention</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <i data-lucide="folder" class="w-6 h-6 text-purple-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Status -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Account Status</p>
+              <p class="text-lg font-bold text-accent-600">
+                {% if current_user.is_authenticated %}
+                  Premium
+                {% else %}
+                  Free
+                {% endif %}
+              </p>
+              <p class="text-xs text-accent-600 font-medium">Upgrade available</p>
+            </div>
+            <div class="w-12 h-12 bg-accent-100 rounded-lg flex items-center justify-center">
+              <i data-lucide="star" class="w-6 h-6 text-accent-600"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Dashboard Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column - Recent Activity & Tools -->
+        <div class="lg:col-span-2 space-y-8">
+          <!-- Quick Access Tools -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i data-lucide="zap" class="w-5 h-5 mr-2 text-accent-500"></i>
+                Quick Access Tools
+              </h2>
+            </div>
+            <div class="p-6">
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <a href="/tools/keyword-research" class="group p-4 rounded-lg border border-gray-200 hover:border-accent-500 hover:shadow-md transition-all duration-200">
+                  <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors duration-200">
+                    <i data-lucide="search" class="w-5 h-5 text-blue-600"></i>
+                  </div>
+                  <p class="font-medium text-gray-900 text-sm">Keyword Research</p>
+                  <p class="text-xs text-gray-500 mt-1">Find profitable keywords</p>
+                </a>
+
+                <a href="/tools/backlink-analyzer" class="group p-4 rounded-lg border border-gray-200 hover:border-accent-500 hover:shadow-md transition-all duration-200">
+                  <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-green-200 transition-colors duration-200">
+                    <i data-lucide="link" class="w-5 h-5 text-green-600"></i>
+                  </div>
+                  <p class="font-medium text-gray-900 text-sm">Backlink Analyzer</p>
+                  <p class="text-xs text-gray-500 mt-1">Analyze link profiles</p>
+                </a>
+
+                <a href="/tools/site-audit" class="group p-4 rounded-lg border border-gray-200 hover:border-accent-500 hover:shadow-md transition-all duration-200">
+                  <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-purple-200 transition-colors duration-200">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-purple-600"></i>
+                  </div>
+                  <p class="font-medium text-gray-900 text-sm">Site Audit</p>
+                  <p class="text-xs text-gray-500 mt-1">Technical SEO scan</p>
+                </a>
+
+                <a href="/tools/rank-tracker" class="group p-4 rounded-lg border border-gray-200 hover:border-accent-500 hover:shadow-md transition-all duration-200">
+                  <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-red-200 transition-colors duration-200">
+                    <i data-lucide="trending-up" class="w-5 h-5 text-red-600"></i>
+                  </div>
+                  <p class="font-medium text-gray-900 text-sm">Rank Tracker</p>
+                  <p class="text-xs text-gray-500 mt-1">Monitor rankings</p>
+                </a>
+
+                <a href="/tools/content-optimizer" class="group p-4 rounded-lg border border-gray-200 hover:border-accent-500 hover:shadow-md transition-all duration-200">
+                  <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-yellow-200 transition-colors duration-200">
+                    <i data-lucide="edit" class="w-5 h-5 text-yellow-600"></i>
+                  </div>
+                  <p class="font-medium text-gray-900 text-sm">Content Optimizer</p>
+                  <p class="text-xs text-gray-500 mt-1">Optimize content</p>
+                </a>
+
+                <a href="/tools" class="group p-4 rounded-lg border border-gray-200 hover:border-accent-500 hover:shadow-md transition-all duration-200">
+                  <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-gray-200 transition-colors duration-200">
+                    <i data-lucide="plus" class="w-5 h-5 text-gray-600"></i>
+                  </div>
+                  <p class="font-medium text-gray-900 text-sm">All Tools</p>
+                  <p class="text-xs text-gray-500 mt-1">Explore 168+ tools</p>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i data-lucide="activity" class="w-5 h-5 mr-2 text-accent-500"></i>
+                Recent Activity
+              </h2>
+            </div>
+            <div class="p-6">
+              <div class="space-y-4">
+                <div class="flex items-center space-x-4 p-3 rounded-lg bg-gray-50">
+                  <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i data-lucide="search" class="w-5 h-5 text-blue-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-900">Keyword Research Completed</p>
+                    <p class="text-xs text-gray-500">Found 247 keywords for "digital marketing"</p>
+                  </div>
+                  <span class="text-xs text-gray-400">2 hours ago</span>
+                </div>
+
+                <div class="flex items-center space-x-4 p-3 rounded-lg bg-gray-50">
+                  <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                    <i data-lucide="file-text" class="w-5 h-5 text-green-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-900">SEO Report Generated</p>
+                    <p class="text-xs text-gray-500">Full site audit for example.com</p>
+                  </div>
+                  <span class="text-xs text-gray-400">5 hours ago</span>
+                </div>
+
+                <div class="flex items-center space-x-4 p-3 rounded-lg bg-gray-50">
+                  <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                    <i data-lucide="trending-up" class="w-5 h-5 text-purple-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-900">Rank Tracking Updated</p>
+                    <p class="text-xs text-gray-500">3 keywords improved positions</p>
+                  </div>
+                  <span class="text-xs text-gray-400">1 day ago</span>
+                </div>
+              </div>
+              <div class="mt-4 pt-4 border-t border-gray-200">
+                <a href="#" class="text-sm text-accent-600 hover:text-accent-700 font-medium">View all activity →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Quick Info & Actions -->
+        <div class="space-y-8">
+          <!-- Account Overview -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i data-lucide="user-circle" class="w-5 h-5 mr-2 text-accent-500"></i>
+                Account Overview
+              </h2>
+            </div>
+            <div class="p-6 space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Plan</span>
+                <span class="text-sm font-medium text-accent-600">Premium</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Tools Available</span>
+                <span class="text-sm font-medium text-gray-900">168+</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Reports Generated</span>
+                <span class="text-sm font-medium text-gray-900">28</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Member Since</span>
+                <span class="text-sm font-medium text-gray-900">
+                  {% if current_user.is_authenticated %}
+                    {{ current_user.date_created.strftime('%B %Y') }}
+                  {% else %}
+                    2024
+                  {% endif %}
+                </span>
+              </div>
+              <div class="pt-4 border-t border-gray-200">
+                <a href="{{ url_for('pricing.pricing') }}" class="w-full inline-flex items-center justify-center px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                  <i data-lucide="zap" class="w-4 h-4 mr-2"></i>
+                  Upgrade Plan
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i data-lucide="lightning-bolt" class="w-5 h-5 mr-2 text-accent-500"></i>
+                Quick Actions
+              </h2>
+            </div>
+            <div class="p-6 space-y-3">
+              <a href="/tools/site-audit" class="w-full inline-flex items-center px-4 py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium rounded-lg transition-colors duration-200">
+                <i data-lucide="shield-check" class="w-4 h-4 mr-3"></i>
+                Run Site Audit
+              </a>
+              <a href="/tools/keyword-research" class="w-full inline-flex items-center px-4 py-3 bg-green-50 hover:bg-green-100 text-green-700 text-sm font-medium rounded-lg transition-colors duration-200">
+                <i data-lucide="search" class="w-4 h-4 mr-3"></i>
+                Find Keywords
+              </a>
+              <a href="/tools/backlink-analyzer" class="w-full inline-flex items-center px-4 py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 text-sm font-medium rounded-lg transition-colors duration-200">
+                <i data-lucide="link" class="w-4 h-4 mr-3"></i>
+                Check Backlinks
+              </a>
+              <a href="{{ url_for('contact') }}" class="w-full inline-flex items-center px-4 py-3 bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200">
+                <i data-lucide="help-circle" class="w-4 h-4 mr-3"></i>
+                Get Support
+              </a>
+            </div>
+          </div>
+
+          <!-- Performance Metrics -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i data-lucide="bar-chart" class="w-5 h-5 mr-2 text-accent-500"></i>
+                This Month
+              </h2>
+            </div>
+            <div class="p-6 space-y-4">
+              <div>
+                <div class="flex justify-between text-sm mb-2">
+                  <span class="text-gray-600">Tools Usage</span>
+                  <span class="font-medium">78%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-accent-500 h-2 rounded-full" style="width: 78%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-2">
+                  <span class="text-gray-600">Reports Generated</span>
+                  <span class="font-medium">12/15</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-blue-500 h-2 rounded-full" style="width: 80%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-2">
+                  <span class="text-gray-600">API Calls</span>
+                  <span class="font-medium">2.4K/5K</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-green-500 h-2 rounded-full" style="width: 48%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    // Dashboard interactions
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize dashboard functionality
+      console.log('User dashboard loaded successfully')
+    
+      // Auto-refresh stats every 5 minutes
+      setInterval(function () {
+        // Fetch updated stats from server
+        fetch('/api/user-stats')
+          .then((response) => response.json())
+          .then((data) => {
+            // Update dashboard stats if needed
+            console.log('Stats updated:', data)
+          })
+          .catch((error) => {
+            console.log('Stats update failed:', error)
+          })
+      }, 300000) // 5 minutes
+    })
+  </script>
+{% endblock %}

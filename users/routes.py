@@ -63,6 +63,15 @@ def record_login_attempt(ip_address):
 
 
 # ------------------------------
+# ✅ USER DASHBOARD
+@users_bp.route("/dashboard")
+@login_required
+def dashboard():
+    """User dashboard with overview and quick actions"""
+    return render_template("users/dashboard.html")
+
+
+# ------------------------------
 # ✅ ENHANCED LOGIN WITH SECURITY
 @users_bp.route("/login", methods=["GET", "POST"], endpoint="login")
 def login():
@@ -132,7 +141,7 @@ def login():
                 if user.role == "customer":
                     return redirect(url_for("users.account"))
                 else:
-                    return redirect(url_for("admin.panel"))
+                    return redirect(url_for("admin_dashboard.panel"))
             else:
                 # Failed password
                 user.increment_failed_attempts()
@@ -345,7 +354,7 @@ def login_success():
 @login_required
 def account():
     if current_user.role != "customer":
-        return redirect(url_for("admin.panel"))
+        return redirect(url_for("admin_dashboard.panel"))
     return render_template("users/account.html")
 
 
@@ -355,7 +364,7 @@ def account():
 @login_required
 def account_section(section):
     if current_user.role != "customer":
-        return redirect(url_for("admin.panel"))
+        return redirect(url_for("admin_dashboard.panel"))
 
     section_map = {
         "overview": "users/sections/overview.html",

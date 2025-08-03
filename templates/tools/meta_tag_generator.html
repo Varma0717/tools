@@ -20,7 +20,7 @@
 
       <div class="relative z-10 text-center">
 
-        <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="mx-auto w-[50px] mb-3">
+        <img src="/static/favicon.png" alt="Super SEO Toolkit Logo" class="mx-auto w-[50px] mb-3" />
 
         <h1 class="text-3xl font-bold text-gray-900 mb-2">Meta Tag Generator</h1>
 
@@ -32,7 +32,7 @@
 
       <form id="metaForm" class="space-y-5">
 
-        <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />
 
 
 
@@ -42,7 +42,7 @@
 
           <input type="url" id="url" name="url" placeholder="https://example.com"
 
-                 class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+                 class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none" />
 
         </div>
 
@@ -54,7 +54,7 @@
 
           <input type="text" id="title" name="title" maxlength="70"
 
-                 class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+                 class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none" />
 
         </div>
 
@@ -80,7 +80,7 @@
 
           <input type="text" id="keywords" name="keywords" placeholder="seo, web tools, analyzer"
 
-                 class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none">
+                 class="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-[#DAAC40] focus:outline-none" />
 
         </div>
 
@@ -242,9 +242,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (t.title) metaTags += `<title>${t.title}</title>\n`;
 
-        if (t.description) metaTags += `<meta name="description" content="${t.description}">\n`;
+        if (t.description) metaTags += `<meta name="description" content="${t.description}" />\n`;
 
-        if (t.keywords) metaTags += `<meta name="keywords" content="${t.keywords}">`;
+        if (t.keywords) metaTags += `<meta name="keywords" content="${t.keywords}" />`;
 
         output.textContent = metaTags;
 

@@ -15,10 +15,8 @@
       <!-- Mini Newsletter -->
       <form action="{{ url_for('subscribe') }}" method="POST" class="flex items-center gap-2 mt-4 max-w-xs w-full">
         <label for="footer-newsletter" class="sr-only">Your email</label>
-        <input id="footer-newsletter" type="email" name="email" placeholder="Your email for SEO tips"
-          class="w-full px-3 py-2 rounded-l-lg bg-[#191919] text-gray-100 border-0 focus:ring-2 focus:ring-[#DAAC40] placeholder-gray-400 text-xs" required>
-        <button type="submit"
-          class="bg-[#DAAC40] text-gray-900 px-4 py-2 rounded-r-lg text-xs font-semibold hover:bg-[#b89627] transition">Join</button>
+        <input id="footer-newsletter" type="email" name="email" placeholder="Your email for SEO tips" class="w-full px-3 py-2 rounded-l-lg bg-[#191919] text-gray-100 border-0 focus:ring-2 focus:ring-[#DAAC40] placeholder-gray-400 text-xs" required />
+        <button type="submit" class="bg-[#DAAC40] text-gray-900 px-4 py-2 rounded-r-lg text-xs font-semibold hover:bg-[#b89627] transition">Join</button>
       </form>
     </div>
 
@@ -26,11 +24,19 @@
     <div>
       <h4 class="text-white font-semibold text-base mb-4 tracking-wide">Explore</h4>
       <ul class="space-y-2 text-sm">
-        <li><a href="{{ url_for('home') }}" class="footer-link">Home</a></li>
-        <li><a href="{{ url_for('tools.list_tools') }}" class="footer-link">All Tools</a></li>
-        <li><a href="{{ url_for('pricing') }}" class="footer-link">Pricing</a></li> 
+        <li>
+          <a href="{{ url_for('home') }}" class="footer-link">Home</a>
+        </li>
+        <li>
+          <a href="{{ url_for('tools.list_tools') }}" class="footer-link">All Tools</a>
+        </li>
+        <li>
+          <a href="{{ url_for('pricing.pricing') }}" class="footer-link">Pricing</a>
+        </li>
         <a href="{{ url_for('blog.blog_index') }}" class="footer-link">Blog</a>
-        <li><a href="{{ url_for('contact.contact') }}" class="footer-link">Contact</a></li>
+        <li>
+          <a href="{{ url_for('contact.contact') }}" class="footer-link">Contact</a>
+        </li>
       </ul>
     </div>
 
@@ -38,11 +44,21 @@
     <div>
       <h4 class="text-white font-semibold text-base mb-4 tracking-wide">Categories</h4>
       <ul class="space-y-2 text-sm">
-        <li><a href="{{ url_for('tools.category_page', category_slug='meta-tags-tools') }}" class="footer-link">Meta Tags</a></li>
-        <li><a href="{{ url_for('tools.category_page', category_slug='ai-writing-generators') }}" class="footer-link">AI Writing</a></li>
-        <li><a href="{{ url_for('tools.category_page', category_slug='website-management-tools') }}" class="footer-link">Web Management</a></li>
-        <li><a href="{{ url_for('tools.category_page', category_slug='keyword-tools') }}" class="footer-link">Keywords</a></li>
-        <li><a href="{{ url_for('tools.category_page', category_slug='backlink-tools') }}" class="footer-link">Backlinks</a></li>
+        <li>
+          <a href="{{ url_for('tools.category_page', category_slug='meta-tags-tools') }}" class="footer-link">Meta Tags</a>
+        </li>
+        <li>
+          <a href="{{ url_for('tools.category_page', category_slug='ai-writing-generators') }}" class="footer-link">AI Writing</a>
+        </li>
+        <li>
+          <a href="{{ url_for('tools.category_page', category_slug='website-management-tools') }}" class="footer-link">Web Management</a>
+        </li>
+        <li>
+          <a href="{{ url_for('tools.category_page', category_slug='keyword-tools') }}" class="footer-link">Keywords</a>
+        </li>
+        <li>
+          <a href="{{ url_for('tools.category_page', category_slug='backlink-tools') }}" class="footer-link">Backlinks</a>
+        </li>
       </ul>
     </div>
 
@@ -50,10 +66,18 @@
     <div>
       <h4 class="text-white font-semibold text-base mb-4 tracking-wide">Legal & Social</h4>
       <ul class="space-y-2 text-sm mb-4">
-        <li><a href="{{ url_for('privacy') }}" class="footer-link">Privacy Policy</a></li>
-        <li><a href="{{ url_for('terms') }}" class="footer-link">Terms of Use</a></li>
-        <li><a href="{{ url_for('cookies') }}" class="footer-link">Cookie Policy</a></li>
-        <li><a href="{{ url_for('users.login') }}" class="footer-link">User Login</a></li>
+        <li>
+          <a href="{{ url_for('privacy') }}" class="footer-link">Privacy Policy</a>
+        </li>
+        <li>
+          <a href="{{ url_for('terms') }}" class="footer-link">Terms of Use</a>
+        </li>
+        <li>
+          <a href="{{ url_for('cookies') }}" class="footer-link">Cookie Policy</a>
+        </li>
+        <li>
+          <a href="{{ url_for('users.login') }}" class="footer-link">User Login</a>
+        </li>
       </ul>
       <!-- Social Icons -->
       <div class="flex gap-4 mt-2">
@@ -67,7 +91,7 @@
 
   <!-- Divider -->
   <div class="max-w-7xl mx-auto mt-12 mb-4 border-t border-[#232323]"></div>
-  
+
   <!-- Bottom Footer -->
   <div class="text-center text-xs text-gray-500">
     &copy; 2025 <span class="font-semibold text-[#DAAC40]">Super SEO Toolkit</span>. All rights reserved.
@@ -86,8 +110,8 @@
       display: block;
       width: 0;
       height: 2px;
-      background: linear-gradient(90deg,#DAAC40,#f1eaff);
-      transition: width .2s;
+      background: linear-gradient(90deg, #daac40, #f1eaff);
+      transition: width 0.2s;
       margin: 0 auto;
       border-radius: 1px;
     }
@@ -104,14 +128,15 @@
         gap: 0.5rem !important;
         max-width: 100% !important;
       }
-      footer input[type="email"], footer button[type="submit"] {
+      footer input[type='email'],
+      footer button[type='submit'] {
         border-radius: 0.5rem !important;
       }
     }
   </style>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      if (window.lucide) window.lucide.createIcons();
-    });
+      if (window.lucide) window.lucide.createIcons()
+    })
   </script>
 </footer>

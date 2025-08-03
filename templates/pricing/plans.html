@@ -3,343 +3,183 @@
 {% block title %}Pricing Plans - Super SEO Toolkit{% endblock %}
 {% block meta_description %}Choose the perfect plan for your SEO needs. From free daily tools to unlimited premium access with advanced features.{% endblock %}
 
-{% block head %}
-{{ super() }}
-<style>
-    .pricing-container {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 80px 0 60px;
-    }
-    
-    .pricing-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        padding: 40px 30px;
-        text-align: center;
-        position: relative;
-        margin-bottom: 30px;
-        transition: transform 0.3s ease;
-    }
-    
-    .pricing-card:hover {
-        transform: translateY(-10px);
-    }
-    
-    .pricing-card.featured {
-        transform: scale(1.05);
-        border: 3px solid #DAAC40;
-        background: linear-gradient(135deg, #fff 0%, #f8f9ff 100%);
-    }
-    
-    .pricing-card.featured::before {
-        content: "MOST POPULAR";
-        position: absolute;
-        top: -15px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #DAAC40;
-        color: white;
-        padding: 8px 24px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: bold;
-        letter-spacing: 1px;
-    }
-    
-    .plan-name {
-        font-size: 24px;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 10px;
-    }
-    
-    .plan-price {
-        font-size: 48px;
-        font-weight: bold;
-        color: #DAAC40;
-        margin-bottom: 5px;
-    }
-    
-    .plan-price .currency {
-        font-size: 24px;
-        vertical-align: top;
-    }
-    
-    .plan-price .period {
-        font-size: 16px;
-        color: #666;
-        font-weight: normal;
-    }
-    
-    .plan-features {
-        list-style: none;
-        padding: 0;
-        margin: 30px 0;
-    }
-    
-    .plan-features li {
-        padding: 12px 0;
-        border-bottom: 1px solid #f0f0f0;
-        color: #555;
-        display: flex;
-        align-items: center;
-    }
-    
-    .plan-features li:last-child {
-        border-bottom: none;
-    }
-    
-    .plan-features li::before {
-        content: "✓";
-        color: #28a745;
-        font-weight: bold;
-        margin-right: 12px;
-        font-size: 16px;
-    }
-    
-    .plan-button {
-        background: linear-gradient(135deg, #DAAC40 0%, #b89627 100%);
-        color: white;
-        border: none;
-        padding: 15px 40px;
-        border-radius: 50px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-block;
-        width: 100%;
-    }
-    
-    .plan-button:hover {
-        background: linear-gradient(135deg, #b89627 0%, #9d7f1f 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(218, 172, 64, 0.3);
-        color: white;
-        text-decoration: none;
-    }
-    
-    .free-plan .plan-button {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    }
-    
-    .free-plan .plan-button:hover {
-        background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
-        box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
-    }
-    
-    .usage-stats {
-        background: rgba(255,255,255,0.9);
-        border-radius: 15px;
-        padding: 20px;
-        margin-bottom: 40px;
-        text-align: center;
-    }
-    
-    .usage-bar {
-        background: #e9ecef;
-        border-radius: 10px;
-        height: 8px;
-        margin: 10px 0;
-        overflow: hidden;
-    }
-    
-    .usage-fill {
-        background: linear-gradient(90deg, #DAAC40, #b89627);
-        height: 100%;
-        border-radius: 10px;
-        transition: width 0.3s ease;
-    }
-    
-    .comparison-table {
-        background: white;
-        border-radius: 15px;
-        margin-top: 60px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-    
-    .faq-section {
-        margin-top: 80px;
-        color: white;
-    }
-    
-    .faq-item {
-        background: rgba(255,255,255,0.1);
-        border-radius: 10px;
-        margin-bottom: 15px;
-        overflow: hidden;
-    }
-    
-    .faq-question {
-        padding: 20px;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .faq-answer {
-        padding: 0 20px 20px;
-        display: none;
-    }
-    
-    .competitive-advantage {
-        background: rgba(255,255,255,0.95);
-        border-radius: 15px;
-        padding: 40px;
-        margin: 60px 0;
-        text-align: center;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="pricing-container">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h1 class="display-4 text-white font-weight-bold mb-3">
+<div class="bg-gray-50 min-h-screen py-20 px-4">
+    <div class="container mx-auto max-w-7xl">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-gray-800 mb-4">
                 Choose Your SEO Power Level
             </h1>
-            <p class="lead text-white mb-4">
+            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
                 Access 168+ professional SEO tools with flexible pricing that grows with your needs
             </p>
         </div>
 
         {% if user_stats %}
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="usage-stats">
-                    <h5 class="mb-3">Your Current Usage</h5>
-                    {% if user_stats.type == 'anonymous' %}
-                        <p class="mb-2">Daily Usage: <strong>{{ user_stats.daily_usage }}/{{ user_stats.daily_limit }}</strong></p>
-                        <div class="usage-bar">
-                            <div class="usage-fill" style="width: {{ (user_stats.daily_usage / user_stats.daily_limit * 100) if user_stats.daily_limit > 0 else 0 }}%"></div>
-                        </div>
-                        <small class="text-muted">Create an account for 5 monthly uses!</small>
+        <div class="flex justify-center mb-12">
+            <div class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
+                <h5 class="text-lg font-semibold mb-4 text-center">Your Current Usage</h5>
+                {% if user_stats.type == 'anonymous' %}
+                    <p class="mb-3 text-center">Daily Usage: <strong>{{ user_stats.daily_usage }}/{{ user_stats.daily_limit }}</strong></p>
+                    <div class="bg-gray-200 rounded-full h-2 mb-3">
+                        <div class="bg-gradient-to-r from-accent-500 to-accent-600 h-2 rounded-full transition-all duration-300" 
+                             style="width: {{ (user_stats.daily_usage / user_stats.daily_limit * 100) if user_stats.daily_limit > 0 else 0 }}%"></div>
+                    </div>
+                    <small class="text-gray-600 text-center block">Create an account for 5 monthly uses!</small>
+                {% else %}
+                    {% if user_stats.is_premium %}
+                        <p class="text-green-600 text-center font-semibold">✓ Unlimited Access</p>
+                        <p class="text-gray-500 text-center">{{ user_stats.subscription_type|title }} Plan Active</p>
                     {% else %}
-                        {% if user_stats.is_premium %}
-                            <p class="text-success"><strong>✓ Unlimited Access</strong></p>
-                            <p class="text-muted">{{ user_stats.subscription_type|title }} Plan Active</p>
-                        {% else %}
-                            <p class="mb-2">Monthly Usage: <strong>{{ user_stats.monthly_usage }}/{{ user_stats.monthly_limit }}</strong></p>
-                            <div class="usage-bar">
-                                <div class="usage-fill" style="width: {{ (user_stats.monthly_usage / user_stats.monthly_limit * 100) if user_stats.monthly_limit > 0 else 0 }}%"></div>
-                            </div>
-                            {% if user_stats.monthly_usage >= user_stats.monthly_limit %}
-                                <small class="text-warning">Upgrade for unlimited access!</small>
-                            {% endif %}
+                        <p class="mb-3 text-center">Monthly Usage: <strong>{{ user_stats.monthly_usage }}/{{ user_stats.monthly_limit }}</strong></p>
+                        <div class="bg-gray-200 rounded-full h-2 mb-3">
+                            <div class="bg-gradient-to-r from-accent-500 to-accent-600 h-2 rounded-full transition-all duration-300" 
+                                 style="width: {{ (user_stats.monthly_usage / user_stats.monthly_limit * 100) if user_stats.monthly_limit > 0 else 0 }}%"></div>
+                        </div>
+                        {% if user_stats.monthly_usage >= user_stats.monthly_limit %}
+                            <small class="text-yellow-600 text-center block">Upgrade for unlimited access!</small>
                         {% endif %}
                     {% endif %}
-                </div>
+                {% endif %}
             </div>
         </div>
         {% endif %}
 
-        <div class="row">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             <!-- Free Plan -->
-            <div class="col-lg-4 mb-4">
-                <div class="pricing-card free-plan">
-                    <div class="plan-name">Free</div>
-                    <div class="plan-price">
-                        <span class="currency">$</span>0
-                        <span class="period">/month</span>
-                    </div>
-                    <ul class="plan-features">
-                        <li>1 tool use per day (anonymous)</li>
-                        <li>5 tools per month (with account)</li>
-                        <li>All 168+ SEO tools available</li>
-                        <li>Basic support</li>
-                        <li>Community access</li>
-                    </ul>
-                    {% if current_user.is_authenticated %}
-                        <div class="plan-button" style="background: #6c757d; cursor: not-allowed;">
-                            Current Plan
-                        </div>
-                    {% else %}
-                        <a href="{{ url_for('auth.register') }}" class="plan-button">
-                            Sign Up Free
-                        </a>
-                    {% endif %}
+            <div class="bg-white rounded-3xl shadow-2xl p-8 text-center relative hover:transform hover:-translate-y-2 transition-all duration-300">
+                <div class="text-2xl font-bold text-gray-800 mb-2">Free</div>
+                <div class="text-5xl font-bold text-accent-500 mb-6">
+                    <span class="text-2xl align-top">$</span>0
+                    <span class="text-lg text-gray-600 font-normal">/month</span>
                 </div>
+                <ul class="space-y-4 mb-8 text-left">
+                    <li class="flex items-center text-gray-700">
+                        <span class="text-green-500 font-bold mr-3">✓</span>
+                        1 tool use per day (anonymous)
+                    </li>
+                    <li class="flex items-center text-gray-700">
+                        <span class="text-green-500 font-bold mr-3">✓</span>
+                        5 tools per month (with account)
+                    </li>
+                    <li class="flex items-center text-gray-700">
+                        <span class="text-green-500 font-bold mr-3">✓</span>
+                        All 168+ SEO tools available
+                    </li>
+                    <li class="flex items-center text-gray-700">
+                        <span class="text-green-500 font-bold mr-3">✓</span>
+                        Basic support
+                    </li>
+                    <li class="flex items-center text-gray-700">
+                        <span class="text-green-500 font-bold mr-3">✓</span>
+                        Community access
+                    </li>
+                </ul>
+                {% if current_user.is_authenticated %}
+                    <div class="bg-gray-500 text-white py-4 px-8 rounded-full font-semibold cursor-not-allowed">
+                        Current Plan
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('users.register') }}" 
+                       class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-4 px-8 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 inline-block w-full">
+                        Sign Up Free
+                    </a>
+                {% endif %}
             </div>
 
             <!-- Pro Plan -->
-            <div class="col-lg-4 mb-4">
-                <div class="pricing-card">
-                    <div class="plan-name">{{ plans.pro.name }}</div>
-                    <div class="plan-price">
-                        <span class="currency">$</span>{{ plans.pro.price }}
-                        <span class="period">/month</span>
-                    </div>
-                    <ul class="plan-features">
-                        {% for feature in plans.pro.features %}
-                        <li>{{ feature }}</li>
-                        {% endfor %}
-                    </ul>
-                    <a href="{{ url_for('pricing.subscribe', plan_type='pro') }}" class="plan-button">
-                        {% if current_user.is_authenticated %}
-                            Upgrade to Pro
-                        {% else %}
-                            Start Pro Trial
-                        {% endif %}
-                    </a>
+            <div class="bg-white rounded-3xl shadow-2xl p-8 text-center relative hover:transform hover:-translate-y-2 transition-all duration-300">
+                <div class="text-2xl font-bold text-gray-800 mb-2">{{ plans.pro.name }}</div>
+                <div class="text-5xl font-bold text-accent-500 mb-6">
+                    <span class="text-2xl align-top">$</span>{{ plans.pro.price }}
+                    <span class="text-lg text-gray-600 font-normal">/month</span>
                 </div>
+                <ul class="space-y-4 mb-8 text-left">
+                    {% for feature in plans.pro.features %}
+                    <li class="flex items-center text-gray-700">
+                        <span class="text-green-500 font-bold mr-3">✓</span>
+                        {{ feature }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                <a href="{{ url_for('pricing.subscribe', plan_type='pro') }}" 
+                   class="bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-yellow-600 text-white py-4 px-8 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 inline-block w-full">
+                    {% if current_user.is_authenticated %}
+                        Upgrade to Pro
+                    {% else %}
+                        Start Pro Trial
+                    {% endif %}
+                </a>
             </div>
 
-            <!-- Premium Plan -->
-            <div class="col-lg-4 mb-4">
-                <div class="pricing-card featured">
-                    <div class="plan-name">{{ plans.premium.name }}</div>
-                    <div class="plan-price">
-                        <span class="currency">$</span>{{ plans.premium.price }}
-                        <span class="period">/month</span>
-                    </div>
-                    <ul class="plan-features">
-                        {% for feature in plans.premium.features %}
-                        <li>{{ feature }}</li>
-                        {% endfor %}
-                    </ul>
-                    <a href="{{ url_for('pricing.subscribe', plan_type='premium') }}" class="plan-button">
-                        {% if current_user.is_authenticated %}
-                            Upgrade to Premium
-                        {% else %}
-                            Start Premium Trial
-                        {% endif %}
-                    </a>
+            <!-- Premium Plan (Most Popular) -->
+            <div class="bg-white rounded-3xl shadow-2xl p-8 text-center relative hover:transform hover:-translate-y-2 transition-all duration-300 border-4 border-accent-500 transform scale-105">
+                <!-- Most Popular Badge -->
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <span class="bg-accent-500 text-white px-6 py-2 rounded-full text-sm font-bold tracking-wider">
+                        MOST POPULAR
+                    </span>
                 </div>
+                
+                <div class="text-2xl font-bold text-gray-800 mb-2 mt-4">{{ plans.premium.name }}</div>
+                <div class="text-5xl font-bold text-accent-500 mb-6">
+                    <span class="text-2xl align-top">$</span>{{ plans.premium.price }}
+                    <span class="text-lg text-gray-600 font-normal">/month</span>
+                </div>
+                <ul class="space-y-4 mb-8 text-left">
+                    {% for feature in plans.premium.features %}
+                    <li class="flex items-center text-gray-700">
+                        <span class="text-green-500 font-bold mr-3">✓</span>
+                        {{ feature }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                <a href="{{ url_for('pricing.subscribe', plan_type='premium') }}" 
+                   class="bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-yellow-600 text-white py-4 px-8 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 inline-block w-full">
+                    {% if current_user.is_authenticated %}
+                        Upgrade to Premium
+                    {% else %}
+                        Start Premium Trial
+                    {% endif %}
+                </a>
             </div>
         </div>
 
         <!-- Enterprise Plan (Full Width) -->
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="pricing-card" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white;">
-                    <div class="plan-name" style="color: white;">{{ plans.enterprise.name }}</div>
-                    <div class="plan-price" style="color: #DAAC40;">
-                        <span class="currency">$</span>{{ plans.enterprise.price }}
-                        <span class="period">/month</span>
+        <div class="flex justify-center mb-16">
+            <div class="bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-3xl shadow-2xl p-8 w-full max-w-4xl hover:transform hover:-translate-y-2 transition-all duration-300">
+                <div class="text-center mb-8">
+                    <div class="text-3xl font-bold mb-2">{{ plans.enterprise.name }}</div>
+                    <div class="text-5xl font-bold text-accent-500 mb-6">
+                        <span class="text-2xl align-top">$</span>{{ plans.enterprise.price }}
+                        <span class="text-lg text-gray-400 font-normal">/month</span>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <ul class="plan-features">
-                                {% for feature in plans.enterprise.features[:4] %}
-                                <li style="color: white;">{{ feature }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <ul class="plan-features">
-                                {% for feature in plans.enterprise.features[4:] %}
-                                <li style="color: white;">{{ feature }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div>
+                        <ul class="space-y-4">
+                            {% for feature in plans.enterprise.features[:4] %}
+                            <li class="flex items-center">
+                                <span class="text-green-400 font-bold mr-3">✓</span>
+                                {{ feature }}
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
-                    <a href="{{ url_for('pricing.subscribe', plan_type='enterprise') }}" class="plan-button">
+                    <div>
+                        <ul class="space-y-4">
+                            {% for feature in plans.enterprise.features[4:] %}
+                            <li class="flex items-center">
+                                <span class="text-green-400 font-bold mr-3">✓</span>
+                                {{ feature }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <a href="{{ url_for('pricing.subscribe', plan_type='enterprise') }}" 
+                       class="bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-yellow-600 text-white py-4 px-12 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 inline-block">
                         Contact Sales
                     </a>
                 </div>
@@ -347,67 +187,65 @@
         </div>
 
         <!-- Competitive Advantage -->
-        <div class="competitive-advantage">
-            <h3 class="mb-4" style="color: #333;">Why Choose Super SEO Toolkit?</h3>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <div class="h5" style="color: #DAAC40;">168+ Tools</div>
-                    <p class="text-muted">vs 15-20 tools in competitors</p>
+        <div class="bg-white rounded-3xl shadow-lg p-12 mb-16 text-center">
+            <h3 class="text-3xl font-bold text-gray-800 mb-8">Why Choose Super SEO Toolkit?</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-accent-500 mb-2">168+ Tools</div>
+                    <p class="text-gray-600">vs 15-20 tools in competitors</p>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <div class="h5" style="color: #DAAC40;">80% Lower Cost</div>
-                    <p class="text-muted">vs SEOptimer & similar tools</p>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-accent-500 mb-2">80% Lower Cost</div>
+                    <p class="text-gray-600">vs SEOptimer & similar tools</p>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <div class="h5" style="color: #DAAC40;">All-in-One</div>
-                    <p class="text-muted">SEO + Content + Technical + Security</p>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-accent-500 mb-2">All-in-One</div>
+                    <p class="text-gray-600">SEO + Content + Technical + Security</p>
                 </div>
             </div>
         </div>
 
         <!-- FAQ Section -->
-        <div class="faq-section">
-            <h3 class="text-center mb-5">Frequently Asked Questions</h3>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFaq(this)">
-                            <span>Can I change plans anytime?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Yes! You can upgrade, downgrade, or cancel your subscription at any time. Changes take effect at your next billing cycle.
-                        </div>
+        <div class="bg-white rounded-3xl shadow-lg p-12 mb-16">
+            <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Frequently Asked Questions</h3>
+            <div class="max-w-4xl mx-auto space-y-4">
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <div class="p-6 cursor-pointer flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-800">Can I change plans anytime?</span>
+                        <i class="fas fa-chevron-down transition-transform text-gray-600"></i>
                     </div>
-                    
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFaq(this)">
-                            <span>What happens if I exceed my usage limits?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            You'll receive a friendly reminder to upgrade. Your access isn't blocked permanently - limits reset daily (free) or monthly (registered users).
-                        </div>
+                    <div class="faq-answer px-6 pb-6 hidden border-t border-gray-100">
+                        <p class="text-gray-600 pt-4">Yes! You can upgrade, downgrade, or cancel your subscription at any time. Changes take effect at your next billing cycle.</p>
                     </div>
-                    
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFaq(this)">
-                            <span>Do you offer refunds?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Yes! We offer a 30-day money-back guarantee. If you're not satisfied, contact support for a full refund.
-                        </div>
+                </div>
+                
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <div class="p-6 cursor-pointer flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-800">What happens if I exceed my usage limits?</span>
+                        <i class="fas fa-chevron-down transition-transform text-gray-600"></i>
                     </div>
-                    
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFaq(this)">
-                            <span>Are there any setup fees or hidden costs?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            No hidden fees! The price you see is exactly what you pay. No setup fees, no per-tool charges, no surprises.
-                        </div>
+                    <div class="faq-answer px-6 pb-6 hidden border-t border-gray-100">
+                        <p class="text-gray-600 pt-4">You'll receive a friendly reminder to upgrade. Your access isn't blocked permanently - limits reset daily (free) or monthly (registered users).</p>
+                    </div>
+                </div>
+                
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <div class="p-6 cursor-pointer flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-800">Do you offer refunds?</span>
+                        <i class="fas fa-chevron-down transition-transform text-gray-600"></i>
+                    </div>
+                    <div class="faq-answer px-6 pb-6 hidden border-t border-gray-100">
+                        <p class="text-gray-600 pt-4">Yes! We offer a 30-day money-back guarantee. If you're not satisfied, contact support for a full refund.</p>
+                    </div>
+                </div>
+                
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <div class="p-6 cursor-pointer flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-gray-800">Are there any setup fees or hidden costs?</span>
+                        <i class="fas fa-chevron-down transition-transform text-gray-600"></i>
+                    </div>
+                    <div class="faq-answer px-6 pb-6 hidden border-t border-gray-100">
+                        <p class="text-gray-600 pt-4">No hidden fees! The price you see is exactly what you pay. No setup fees, no per-tool charges, no surprises.</p>
                     </div>
                 </div>
             </div>
@@ -419,74 +257,74 @@
 {% block scripts %}
 {{ super() }}
 <script>
+// Define toggleFaq function globally and immediately
 function toggleFaq(element) {
     const answer = element.nextElementSibling;
     const icon = element.querySelector('i');
     
-    if (answer.style.display === 'block') {
-        answer.style.display = 'none';
-        icon.classList.remove('fa-chevron-up');
-        icon.classList.add('fa-chevron-down');
-    } else {
-        // Close all other FAQ items
-        document.querySelectorAll('.faq-answer').forEach(item => {
-            item.style.display = 'none';
-        });
-        document.querySelectorAll('.faq-question i').forEach(icon => {
-            icon.classList.remove('fa-chevron-up');
-            icon.classList.add('fa-chevron-down');
-        });
-        
-        // Open clicked item
-        answer.style.display = 'block';
+    // Check if this FAQ is currently open
+    const isOpen = !answer.classList.contains('hidden');
+    
+    // Close all FAQ items
+    document.querySelectorAll('.faq-answer').forEach(item => {
+        item.classList.add('hidden');
+    });
+    document.querySelectorAll('.p-6 i').forEach(iconEl => {
+        iconEl.classList.remove('fa-chevron-up', 'rotate-180');
+        iconEl.classList.add('fa-chevron-down');
+    });
+    
+    // If this FAQ was closed, open it
+    if (!isOpen) {
+        answer.classList.remove('hidden');
         icon.classList.remove('fa-chevron-down');
-        icon.classList.add('fa-chevron-up');
+        icon.classList.add('fa-chevron-up', 'rotate-180');
     }
 }
 
-// Auto-show upgrade prompts for high usage
+// Wait for DOM to be fully loaded for other functionality
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('/pricing/api/upgrade-prompt')
+    // Auto-show upgrade prompts for high usage
+    fetch('/api/upgrade-prompt')
         .then(response => response.json())
         .then(data => {
             if (data.show_prompt) {
                 setTimeout(() => showUpgradeModal(data), 2000);
             }
-        });
+        })
+        .catch(err => console.log('Upgrade prompt API not available'));
 });
 
 function showUpgradeModal(data) {
-    // Create modal HTML
+    // Create Tailwind modal
     const modal = document.createElement('div');
-    modal.className = 'modal fade';
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
     modal.innerHTML = `
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body text-center p-4">
-                    <h5 class="mb-3">${data.title}</h5>
-                    <p class="mb-4">${data.message}</p>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <a href="${data.primary_action.url}" class="btn btn-primary">
-                            ${data.primary_action.text}
-                        </a>
-                        <a href="${data.secondary_action.url}" class="btn btn-outline-secondary">
-                            ${data.secondary_action.text}
-                        </a>
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                            Later
-                        </button>
-                    </div>
-                </div>
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+            <h5 class="text-xl font-bold mb-4">${data.title}</h5>
+            <p class="text-gray-600 mb-6">${data.message}</p>
+            <div class="flex gap-3 justify-center">
+                <a href="${data.primary_action.url}" class="bg-accent-500 hover:bg-accent-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                    ${data.primary_action.text}
+                </a>
+                <a href="${data.secondary_action.url}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg font-semibold transition-colors">
+                    ${data.secondary_action.text}
+                </a>
+                <button onclick="this.closest('.fixed').remove()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg font-semibold transition-colors">
+                    Later
+                </button>
             </div>
         </div>
     `;
     
     document.body.appendChild(modal);
     
-    // Show modal using Bootstrap
-    if (typeof bootstrap !== 'undefined') {
-        new bootstrap.Modal(modal).show();
-    }
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
 }
 </script>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block title %}Edit Post - Admin Panel{% endblock %}
 
 {% block content %}
@@ -7,8 +7,8 @@
     <i data-lucide="edit-2" class="w-8 h-8"></i> Edit Post
   </h1>
 
-  <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.posts_edit', post_id=post.id) }}" class="space-y-6 text-gray-200">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin_content.posts_edit', post_id=post.id) }}" class="space-y-6 text-gray-200">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
     <div>
       <label for="title" class="block mb-2 font-semibold">Title <span class="text-red-600">*</span></label>
@@ -51,7 +51,7 @@
       <div>
         <label class="block mb-2 font-semibold">Post Image</label>
         {% if post.image %}
-          <img src="{{ url_for('static', filename='images/' ~ post.image) }}" alt="Post Image" class="rounded max-h-28 mb-2 border border-[#DAAC40]">
+          <img src="{{ url_for('static', filename='images/' ~ post.image) }}" alt="Post Image" class="rounded max-h-28 mb-2 border border-[#DAAC40]" />
         {% endif %}
         <input type="file" name="image" accept="image/*"
                class="w-full text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0
@@ -60,7 +60,7 @@
       <div>
         <label class="block mb-2 font-semibold">Author Image</label>
         {% if post.author_img %}
-          <img src="{{ url_for('static', filename='images/' ~ post.author_img) }}" alt="Author Image" class="rounded-full max-h-20 mb-2 border border-[#DAAC40]">
+          <img src="{{ url_for('static', filename='images/' ~ post.author_img) }}" alt="Author Image" class="rounded-full max-h-20 mb-2 border border-[#DAAC40]" />
         {% endif %}
         <input type="file" name="author_img" accept="image/*"
                class="w-full text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0
@@ -69,7 +69,7 @@
       <div>
         <label class="block mb-2 font-semibold">Featured Image (OG Image)</label>
         {% if post.featured_image %}
-          <img src="{{ url_for('static', filename='images/' ~ post.featured_image) }}" alt="Featured Image" class="rounded max-h-28 mb-2 border border-[#DAAC40]">
+          <img src="{{ url_for('static', filename='images/' ~ post.featured_image) }}" alt="Featured Image" class="rounded max-h-28 mb-2 border border-[#DAAC40]" />
         {% endif %}
         <input type="file" name="featured_image" accept="image/*"
                class="w-full text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0

@@ -106,6 +106,11 @@
     .alert-error {
         @apply alert bg-red-50 border-red-200 text-red-800;
     }
+
+    /* Glass Effect - Solid instead of transparent */
+    .glass {
+        @apply bg-white shadow-lg border border-gray-200;
+    }
 }
 
 /* Keyframe Animations */

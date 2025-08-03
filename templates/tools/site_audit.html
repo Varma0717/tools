@@ -1,84 +1,168 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<div class="max-w-5xl mx-auto mt-12 px-4">
-  <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6">🔍 Site Audit Report</h1>
-
-  {% if error %}
-    <div class="bg-red-100 text-red-800 p-4 rounded shadow mb-6">
-      ⚠️ {{ error }}
-    </div>
-  {% elif audit %}
-    <div class="bg-white p-6 rounded shadow space-y-6">
-      
-      <!-- Site Info -->
-      <div>
-        <h2 class="text-xl font-semibold text-gray-800">📌 URL:</h2>
-        <p class="text-blue-600 underline">{{ url }}</p>
-        <p class="text-sm text-gray-500">Status Code: <span class="font-semibold">{{ audit.status_code }}</span></p>
-        <p class="text-sm text-gray-500">Load Time: <span class="font-semibold">{{ audit.load_time }}s</span></p>
-        <p class="text-sm text-gray-500">SSL Valid: 
-          {% if audit.ssl_valid %}
-            <span class="text-green-600 font-semibold">✔ Yes</span>
-          {% else %}
-            <span class="text-red-600 font-semibold">✖ No</span>
-          {% endif %}
-        </p>
-      </div>
-
-      <!-- Meta Tags -->
-      <div>
-        <h2 class="text-xl font-semibold text-gray-800">🧱 Meta Information</h2>
-        <ul class="text-gray-700 pl-5 list-disc">
-          <li><strong>Title:</strong> {{ audit.title or "Missing" }}</li>
-          <li><strong>Description:</strong> {{ audit.meta_description or "Missing" }}</li>
-          <li><strong>Canonical:</strong> {{ audit.canonical or "Missing" }}</li>
-          <li><strong>Robots Meta:</strong> {{ audit.robots_meta or "Missing" }}</li>
-        </ul>
-      </div>
-
-      <!-- Headings -->
-      <div>
-        <h2 class="text-xl font-semibold text-gray-800">📚 Headings</h2>
-        <p>H1 Tags: <span class="font-bold">{{ audit.h1_count }}</span></p>
-        <p>H2 Tags: <span class="font-bold">{{ audit.h2_count }}</span></p>
-      </div>
-
-      <!-- Content Stats -->
-      <div>
-        <h2 class="text-xl font-semibold text-gray-800">✍️ Content</h2>
-        <p>Word Count: <span class="font-bold">{{ audit.word_count }}</span></p>
-        <p>Content Length: <span class="font-bold">{{ audit.content_length }} characters</span></p>
-      </div>
-
-      <!-- Link Analysis -->
-      <div>
-        <h2 class="text-xl font-semibold text-gray-800">🔗 Link Analysis</h2>
-        <p>Internal Links: <span class="font-bold">{{ audit.internal_links }}</span></p>
-        <p>External Links: <span class="font-bold">{{ audit.external_links }}</span></p>
-      </div>
-
-      <!-- Images -->
-      <div>
-        <h2 class="text-xl font-semibold text-gray-800">🖼️ Images</h2>
-        <p>Total Images: <span class="font-bold">{{ audit.images }}</span></p>
-        <p>Missing Alt: <span class="font-bold text-red-600">{{ audit.missing_alt_images }}</span></p>
-        <p>Broken Images: <span class="font-bold text-red-600">{{ audit.broken_images }}</span></p>
-      </div>
-
-      <!-- Headers -->
-      <div>
-        <h2 class="text-xl font-semibold text-gray-800">📦 HTTP Headers</h2>
-        <div class="bg-gray-100 p-3 rounded text-sm overflow-x-auto">
-          <pre>{{ audit.headers | tojson(indent=2) }}</pre>
-        </div>
-      </div>
-    </div>
-
-  {% else %}
-    <div class="bg-yellow-100 text-yellow-900 p-4 rounded shadow text-center">
-      Please provide a URL to audit in the query string. Example: <code>?url=https://example.com</code>
-    </div>
-  {% endif %}
-</div>
-{% endblock %}
+{% extends "base.html" %}
+
+
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto mt-12 px-4">
+
+  <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6">🔍 Site Audit Report</h1>
+
+
+
+  {% if error %}
+
+    <div class="bg-red-100 text-red-800 p-4 rounded shadow mb-6">
+
+      ⚠️ {{ error }}
+
+    </div>
+
+  {% elif audit %}
+
+    <div class="bg-white p-6 rounded shadow space-y-6">
+
+      
+
+      <!-- Site Info -->
+
+      <div>
+
+        <h2 class="text-xl font-semibold text-gray-800">📌 URL:</h2>
+
+        <p class="text-blue-600 underline">{{ url }}</p>
+
+        <p class="text-sm text-gray-500">Status Code: <span class="font-semibold">{{ audit.status_code }}</span></p>
+
+        <p class="text-sm text-gray-500">Load Time: <span class="font-semibold">{{ audit.load_time }}s</span></p>
+
+        <p class="text-sm text-gray-500">SSL Valid: 
+
+          {% if audit.ssl_valid %}
+
+            <span class="text-green-600 font-semibold">✔ Yes</span>
+
+          {% else %}
+
+            <span class="text-red-600 font-semibold">✖ No</span>
+
+          {% endif %}
+
+        </p>
+
+      </div>
+
+
+
+      <!-- Meta Tags -->
+
+      <div>
+
+        <h2 class="text-xl font-semibold text-gray-800">🧱 Meta Information</h2>
+
+        <ul class="text-gray-700 pl-5 list-disc">
+
+          <li><strong>Title:</strong> {{ audit.title or "Missing" }}</li>
+
+          <li><strong>Description:</strong> {{ audit.meta_description or "Missing" }}</li>
+
+          <li><strong>Canonical:</strong> {{ audit.canonical or "Missing" }}</li>
+
+          <li><strong>Robots Meta:</strong> {{ audit.robots_meta or "Missing" }}</li>
+
+        </ul>
+
+      </div>
+
+
+
+      <!-- Headings -->
+
+      <div>
+
+        <h2 class="text-xl font-semibold text-gray-800">📚 Headings</h2>
+
+        <p>H1 Tags: <span class="font-bold">{{ audit.h1_count }}</span></p>
+
+        <p>H2 Tags: <span class="font-bold">{{ audit.h2_count }}</span></p>
+
+      </div>
+
+
+
+      <!-- Content Stats -->
+
+      <div>
+
+        <h2 class="text-xl font-semibold text-gray-800">✍️ Content</h2>
+
+        <p>Word Count: <span class="font-bold">{{ audit.word_count }}</span></p>
+
+        <p>Content Length: <span class="font-bold">{{ audit.content_length }} characters</span></p>
+
+      </div>
+
+
+
+      <!-- Link Analysis -->
+
+      <div>
+
+        <h2 class="text-xl font-semibold text-gray-800">🔗 Link Analysis</h2>
+
+        <p>Internal Links: <span class="font-bold">{{ audit.internal_links }}</span></p>
+
+        <p>External Links: <span class="font-bold">{{ audit.external_links }}</span></p>
+
+      </div>
+
+
+
+      <!-- Images -->
+
+      <div>
+
+        <h2 class="text-xl font-semibold text-gray-800">🖼️ Images</h2>
+
+        <p>Total Images: <span class="font-bold">{{ audit.images }}</span></p>
+
+        <p>Missing Alt: <span class="font-bold text-red-600">{{ audit.missing_alt_images }}</span></p>
+
+        <p>Broken Images: <span class="font-bold text-red-600">{{ audit.broken_images }}</span></p>
+
+      </div>
+
+
+
+      <!-- Headers -->
+
+      <div>
+
+        <h2 class="text-xl font-semibold text-gray-800">📦 HTTP Headers</h2>
+
+        <div class="bg-gray-100 p-3 rounded text-sm overflow-x-auto">
+
+          <pre>{{ audit.headers | tojson(indent=2) }}</pre>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+  {% else %}
+
+    <div class="bg-yellow-100 text-yellow-900 p-4 rounded shadow text-center">
+
+      Please provide a URL to audit in the query string. Example: <code>?url=https://example.com</code>
+
+    </div>
+
+  {% endif %}
+
+</div>
+
+{% endblock %}
+
