@@ -374,16 +374,27 @@ function quickAction(action) {
     // Show loading state
     showNotification(`Processing ${action.replace('_', ' ')}...`, 'info');
     
+    // Get CSRF token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    
+    if (csrfToken) {
+        headers['X-CSRFToken'] = csrfToken;
+        headers['X-CSRF-Token'] = csrfToken;  // Alternative header name
+    }
+    
     fetch('/admin/api/quick-actions', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: headers,
         body: JSON.stringify({ action: action })
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            return response.text().then(text => {
+                throw new Error(`HTTP ${response.status}: ${response.statusText} - ${text}`);
+            });
         }
         return response.json();
     })

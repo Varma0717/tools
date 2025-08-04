@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 
 def admin_required(func):
-    """Admin-only access decorator"""
+    """Admin-only access decorator with database error handling"""
 
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated:
@@ -50,11 +50,28 @@ def admin_required(func):
                 )
             return redirect(url_for("users.dashboard"))
 
-        if current_user.role != "admin":
+        try:
+            # Check if user has admin role (with fallback for missing role column)
+            user_role = getattr(current_user, "role", "customer")
+            if user_role != "admin":
+                if request.is_json or request.path.startswith("/admin/api/"):
+                    return (
+                        jsonify({"success": False, "message": "Admin access required"}),
+                        403,
+                    )
+                return redirect(url_for("users.dashboard"))
+        except Exception as e:
+            logger.error(f"Error checking user role: {e}")
+            # If there's a database error, redirect to user dashboard
             if request.is_json or request.path.startswith("/admin/api/"):
                 return (
-                    jsonify({"success": False, "message": "Admin access required"}),
-                    403,
+                    jsonify(
+                        {
+                            "success": False,
+                            "message": "Database error - please contact admin",
+                        }
+                    ),
+                    500,
                 )
             return redirect(url_for("users.dashboard"))
 
@@ -104,7 +121,60 @@ def test_cache_endpoint():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
+@system_bp.route("/database/setup")
+def database_setup():
+    """Database setup page for first-time initialization"""
+    return render_template("database_setup.html")
+
+
+@system_bp.route("/api/database/init", methods=["POST"])
+def init_database():
+    """Initialize database with proper schema - Emergency fix endpoint"""
+    try:
+        logger.info("Database initialization requested")
+
+        # Create all tables
+        db.create_all()
+        logger.info("Database tables created")
+
+        # Check if admin user exists
+        try:
+            admin_user = User.query.filter_by(username="admin").first()
+        except Exception as e:
+            # If query fails due to missing columns, recreate tables
+            logger.warning(f"User query failed: {e}, recreating tables")
+            db.drop_all()
+            db.create_all()
+            admin_user = None
+
+        if not admin_user:
+            admin_user = User(
+                username="admin",
+                email="admin@superseotoolkit.com",
+                role="admin",
+                is_active=True,
+                email_verified=True,
+            )
+            admin_user.set_password("admin123")  # Change in production!
+            db.session.add(admin_user)
+            db.session.commit()
+            logger.info("Admin user created")
+
+        return jsonify(
+            {
+                "success": True,
+                "message": "Database initialized successfully. Admin user: admin, password: admin123",
+            }
+        )
+
+    except Exception as e:
+        error_msg = f"Database initialization error: {str(e)}"
+        logger.error(error_msg, exc_info=True)
+        return jsonify({"success": False, "message": error_msg}), 500
+
+
 @system_bp.route("/api/cache/clear", methods=["POST"])
+@admin_required
 def clear_cache():
     """Clear application cache"""
     try:
@@ -262,7 +332,7 @@ def get_cache_info():
 
 
 def get_database_info():
-    """Get database information"""
+    """Get database information with error handling"""
     try:
         tables_info = []
         models = [User, Post, ContactMessage, Subscriber, Order, UserSubscription]
@@ -271,15 +341,29 @@ def get_database_info():
             try:
                 count = model.query.count()
                 tables_info.append({"name": model.__tablename__, "count": count})
-            except:
-                pass
+            except Exception as model_error:
+                # If specific model fails, add it with error info
+                tables_info.append(
+                    {
+                        "name": getattr(model, "__tablename__", model.__name__),
+                        "count": f"Error: {str(model_error)}",
+                    }
+                )
+
+        total_records = sum(
+            table["count"] for table in tables_info if isinstance(table["count"], int)
+        )
 
         return {
             "tables": tables_info,
-            "total_records": sum(table["count"] for table in tables_info),
+            "total_records": total_records,
         }
     except Exception as e:
-        return {}
+        logger.error(f"Database info error: {e}")
+        return {
+            "tables": [{"name": "Error", "count": f"Database error: {str(e)}"}],
+            "total_records": 0,
+        }
 
 
 def get_log_files():

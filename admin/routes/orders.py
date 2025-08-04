@@ -65,8 +65,17 @@ def orders_view(order_id):
 @admin_required
 def subscriptions_management():
     """Manage subscription plans and user subscriptions"""
-    plans = SubscriptionPlan.query.all()
-    user_subscriptions = UserSubscription.query.join(User).all()
+    try:
+        plans = SubscriptionPlan.query.all()
+        user_subscriptions = UserSubscription.query.join(User).all()
+    except Exception as e:
+        # Handle case where subscription tables don't exist
+        logging.warning(f"Subscription tables not found: {e}")
+        plans = []
+        user_subscriptions = []
+        flash(
+            "Subscription tables not found. Please run database migrations.", "warning"
+        )
 
     return render_template(
         "admin/subscriptions_management.html",

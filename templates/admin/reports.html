@@ -1,0 +1,133 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}
+  Reports & Analytics - Admin Panel
+{% endblock %}
+
+{% block header %}
+  Reports & Analytics
+{% endblock %}
+
+{% block subtitle %}
+  Comprehensive reporting and business insights
+{% endblock %}
+
+{% block content %}
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-blue-100">
+          <i data-lucide="bar-chart-3" class="w-6 h-6 text-blue-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Total Reports</p>
+          <p class="text-2xl font-bold text-gray-900">{{ data.total_reports or 0 }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-green-100">
+          <i data-lucide="trending-up" class="w-6 h-6 text-green-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Active Reports</p>
+          <p class="text-2xl font-bold text-gray-900">{{ data.active_reports or 0 }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-yellow-100">
+          <i data-lucide="clock" class="w-6 h-6 text-yellow-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Pending Reports</p>
+          <p class="text-2xl font-bold text-gray-900">{{ data.pending_reports or 0 }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-purple-100">
+          <i data-lucide="download" class="w-6 h-6 text-purple-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Downloads</p>
+          <p class="text-2xl font-bold text-gray-900">{{ data.total_downloads or 0 }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports Table -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+      <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+        <i data-lucide="file-text" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+        Generated Reports
+      </h3>
+    </div>
+
+    <div class="p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div class="flex items-center space-x-4">
+          <button class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#DAAC40] to-[#b89627] hover:from-[#b89627] hover:to-[#DAAC40] text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
+            <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+            Generate Report
+          </button>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40]/50 focus:border-[#DAAC40]">
+            <option>All Reports</option>
+            <option>Analytics</option>
+            <option>Sales</option>
+            <option>User Activity</option>
+          </select>
+
+          <div class="relative">
+            <input type="text" placeholder="Search reports..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40]/50 focus:border-[#DAAC40]" />
+            <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Report Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Generated</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr>
+              <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                <i data-lucide="file-x" class="w-12 h-12 mx-auto text-gray-300 mb-4"></i>
+                <p class="text-lg font-medium">No reports generated yet</p>
+                <p class="text-sm">Generate your first report to see analytics and insights</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    // Initialize icons
+    document.addEventListener('DOMContentLoaded', function () {
+      lucide.createIcons()
+    })
+  </script>
+{% endblock %}

@@ -7,6 +7,7 @@ from flask import (
     request,
     jsonify,
     session,
+    current_app,
 )
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -325,11 +326,21 @@ def login():
         # Record login attempt for rate limiting
         record_login_attempt(ip_address)
 
-        # Find user by username or email
-        user = User.query.filter(
-            (User.username == form.username.data.strip())
-            | (User.email == form.username.data.strip())
-        ).first()
+        try:
+            # Find user by username or email
+            user = User.query.filter(
+                (User.username == form.username.data.strip())
+                | (User.email == form.username.data.strip())
+            ).first()
+        except Exception as db_error:
+            # Database error - likely missing columns
+            current_app.logger.error(f"Database error during login: {db_error}")
+            flash(
+                "Database error detected. Please initialize the database first.",
+                "danger",
+            )
+            # Redirect to database setup page
+            return redirect(url_for("admin_system.database_setup"))
 
         if user:
             # Check if account is locked
@@ -367,7 +378,9 @@ def login():
                 if next_page and next_page.startswith("/"):
                     return redirect(next_page)
 
-                if user.role == "customer":
+                # Safe role check with fallback
+                user_role = getattr(user, "role", "customer")
+                if user_role == "customer":
                     return redirect(url_for("users.account"))
                 else:
                     return redirect(url_for("admin_dashboard.panel"))

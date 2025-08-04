@@ -3,20 +3,6 @@ from datetime import datetime
 from sqlalchemy import Text, Index
 
 
-# Import Category and Tag models (defined in separate files)
-# These imports need to be at the bottom to avoid circular imports
-def get_category_model():
-    from models.category import Category
-
-    return Category
-
-
-def get_tag_model():
-    from models.tag import Tag
-
-    return Tag
-
-
 # Association table for many-to-many relationship between posts and categories
 post_categories = db.Table(
     "post_categories",
@@ -46,8 +32,8 @@ class Post(db.Model):
     content = db.Column(Text, nullable=False)
     excerpt = db.Column(Text, nullable=True)  # Short summary for previews
 
-    # Media
-    featured_image = db.Column(db.String(500), nullable=True)  # Main image + OG image
+    # Media - featured_image serves as both main image and OG image
+    featured_image = db.Column(db.String(500), nullable=True)
 
     # Author Information
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
@@ -211,7 +197,8 @@ class Post(db.Model):
     @classmethod
     def get_by_category(cls, category_slug):
         """Get published posts by category"""
-        Category = get_category_model()
+        from .category import Category
+
         return (
             cls.query.join(cls.categories)
             .filter(Category.slug == category_slug, cls.status == "published")
@@ -221,7 +208,8 @@ class Post(db.Model):
     @classmethod
     def get_by_tag(cls, tag_slug):
         """Get published posts by tag"""
-        Tag = get_tag_model()
+        from .tag import Tag
+
         return (
             cls.query.join(cls.tags)
             .filter(Tag.slug == tag_slug, cls.status == "published")

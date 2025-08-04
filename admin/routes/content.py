@@ -18,6 +18,7 @@ from flask import (
 )
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+import bleach
 
 # Core extensions
 from utils.extensions import db
@@ -59,13 +60,93 @@ def admin_required(func):
 
 
 def save_file(file_storage):
-    """Save uploaded file safely"""
+    """Save uploaded file safely to uploads folder"""
     if file_storage and file_storage.filename != "":
         filename = secure_filename(file_storage.filename)
-        path = os.path.join(current_app.root_path, "static", "images", filename)
+        # Save to uploads folder instead of images
+        uploads_dir = os.path.join(current_app.root_path, "static", "uploads")
+
+        # Create uploads directory if it doesn't exist
+        os.makedirs(uploads_dir, exist_ok=True)
+
+        path = os.path.join(uploads_dir, filename)
         file_storage.save(path)
         return filename
     return None
+
+
+def sanitize_html(content):
+    """Sanitize HTML content for security while preserving formatting"""
+    allowed_tags = [
+        "p",
+        "br",
+        "strong",
+        "b",
+        "em",
+        "i",
+        "u",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "ul",
+        "ol",
+        "li",
+        "a",
+        "img",
+        "blockquote",
+        "code",
+        "pre",
+        "span",
+        "div",
+        "table",
+        "thead",
+        "tbody",
+        "tr",
+        "th",
+        "td",
+        "hr",
+    ]
+
+    allowed_attributes = {
+        "a": ["href", "title", "target"],
+        "img": ["src", "alt", "title", "width", "height"],
+        "span": ["style"],
+        "div": ["style"],
+        "p": ["style"],
+        "h1": ["style"],
+        "h2": ["style"],
+        "h3": ["style"],
+        "h4": ["style"],
+        "h5": ["style"],
+        "h6": ["style"],
+        "table": ["style"],
+        "tr": ["style"],
+        "td": ["style"],
+        "th": ["style"],
+    }
+
+    allowed_styles = [
+        "color",
+        "background-color",
+        "font-weight",
+        "font-style",
+        "text-align",
+        "text-decoration",
+        "margin",
+        "padding",
+        "border",
+    ]
+
+    return bleach.clean(
+        content,
+        tags=allowed_tags,
+        attributes=allowed_attributes,
+        styles=allowed_styles,
+        strip=True,
+    )
 
 
 @content_bp.route("/content")
@@ -117,19 +198,15 @@ def posts_create():
                 return redirect(url_for("admin_content.posts_create"))
 
             image_filename = save_file(request.files.get("image"))
-            author_img_filename = save_file(request.files.get("author_img"))
             featured_img_filename = save_file(request.files.get("featured_image"))
 
             post = Post(
                 title=request.form.get("title", "").strip(),
                 slug=slug,
-                content=request.form.get("content", "").strip(),
-                summary=request.form.get("summary", "").strip() or None,
-                image=image_filename,
+                content=sanitize_html(request.form.get("content", "").strip()),
+                excerpt=request.form.get("summary", "").strip() or None,
                 featured_image=featured_img_filename,
-                category=request.form.get("category", "").strip() or None,
-                author=request.form.get("author", "").strip() or None,
-                author_img=author_img_filename,
+                author_name=request.form.get("author", "").strip() or None,
                 meta_title=request.form.get("meta_title", "").strip() or None,
                 meta_description=request.form.get("meta_description", "").strip()
                 or None,
@@ -162,20 +239,11 @@ def posts_edit(post_id):
 
             post.title = request.form.get("title", "").strip()
             post.slug = slug
-            post.content = request.form.get("content", "").strip()
-            post.summary = request.form.get("summary", "").strip() or None
-            post.category = request.form.get("category", "").strip() or None
-            post.author = request.form.get("author", "").strip() or None
+            post.content = sanitize_html(request.form.get("content", "").strip())
+            post.excerpt = request.form.get("summary", "").strip() or None
+            post.author_name = request.form.get("author", "").strip() or None
 
             # Handle file uploads
-            image_filename = save_file(request.files.get("image"))
-            if image_filename:
-                post.image = image_filename
-
-            author_img_filename = save_file(request.files.get("author_img"))
-            if author_img_filename:
-                post.author_img = author_img_filename
-
             featured_img_filename = save_file(request.files.get("featured_image"))
             if featured_img_filename:
                 post.featured_image = featured_img_filename

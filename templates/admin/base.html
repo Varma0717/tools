@@ -403,17 +403,29 @@
           button.textContent = 'Clearing...';
           button.disabled = true;
           
-          // Simple POST request without CSRF for now
+          // Get CSRF token if available
+          const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+          const headers = {
+            'Content-Type': 'application/json',
+          };
+          
+          if (csrfToken) {
+            headers['X-CSRFToken'] = csrfToken;
+            headers['X-CSRF-Token'] = csrfToken;  // Alternative header name
+          }
+          
+          // POST request with proper headers
           fetch('/admin/api/cache/clear', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers: headers,
             body: JSON.stringify({type: 'all'})
           })
           .then(response => {
+            console.log('Response status:', response.status);
             if (!response.ok) {
-              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+              return response.text().then(text => {
+                throw new Error(`HTTP ${response.status}: ${response.statusText} - ${text}`);
+              });
             }
             return response.json();
           })

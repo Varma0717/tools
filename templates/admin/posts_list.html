@@ -125,16 +125,26 @@
             </div>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {{ post.author or '—' }}
+            {{ post.author_name or (post.author.username if post.author else '—') }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {{ post.category or '—' }}
+            {% if post.categories %}
+              {% for category in post.categories %}
+                <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1">{{ category.name }}</span>
+              {% endfor %}
+            {% else %}
+              —
+            {% endif %}
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            {% if post.published %}
+            {% if post.status == 'published' %}
               <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Published</span>
-            {% else %}
+            {% elif post.status == 'draft' %}
               <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Draft</span>
+            {% elif post.status == 'archived' %}
+              <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">Archived</span>
+            {% else %}
+              <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">{{ post.status|title }}</span>
             {% endif %}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

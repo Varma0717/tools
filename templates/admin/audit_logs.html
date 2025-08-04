@@ -1,0 +1,142 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}
+  Audit Logs - Admin Panel
+{% endblock %}
+
+{% block header %}
+  Audit Logs
+{% endblock %}
+
+{% block subtitle %}
+  System activity tracking and security monitoring
+{% endblock %}
+
+{% block content %}
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-blue-100">
+          <i data-lucide="activity" class="w-6 h-6 text-blue-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Total Logs</p>
+          <p class="text-2xl font-bold text-gray-900">{{ data.total_logs or 0 }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-green-100">
+          <i data-lucide="shield-check" class="w-6 h-6 text-green-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Security Events</p>
+          <p class="text-2xl font-bold text-gray-900">{{ data.security_events or 0 }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-yellow-100">
+          <i data-lucide="alert-triangle" class="w-6 h-6 text-yellow-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Warnings</p>
+          <p class="text-2xl font-bold text-gray-900">{{ data.warnings or 0 }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-red-100">
+          <i data-lucide="x-circle" class="w-6 h-6 text-red-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Errors</p>
+          <p class="text-2xl font-bold text-gray-900">{{ data.errors or 0 }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Logs Table -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+      <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+        <i data-lucide="file-text" class="w-5 h-5 mr-2 text-[#DAAC40]"></i>
+        System Audit Logs
+      </h3>
+    </div>
+
+    <div class="p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div class="flex items-center space-x-4">
+          <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40]/50 focus:border-[#DAAC40]">
+            <option>All Events</option>
+            <option>Login/Logout</option>
+            <option>Data Changes</option>
+            <option>Security Events</option>
+            <option>System Events</option>
+          </select>
+
+          <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40]/50 focus:border-[#DAAC40]">
+            <option>Last 24 Hours</option>
+            <option>Last 7 Days</option>
+            <option>Last 30 Days</option>
+            <option>Custom Range</option>
+          </select>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <button class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-[#DAAC40]/50 transition-all duration-200">
+            <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+            Export Logs
+          </button>
+
+          <div class="relative">
+            <input type="text" placeholder="Search logs..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DAAC40]/50 focus:border-[#DAAC40]" />
+            <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Address</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr>
+              <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                <i data-lucide="clipboard-list" class="w-12 h-12 mx-auto text-gray-300 mb-4"></i>
+                <p class="text-lg font-medium">No audit logs available</p>
+                <p class="text-sm">System activity will appear here once events are logged</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    // Initialize icons
+    document.addEventListener('DOMContentLoaded', function () {
+      lucide.createIcons()
+    })
+  </script>
+{% endblock %}

@@ -1,9 +1,24 @@
+# Suppress pkg_resources deprecation warnings from third-party libraries
+import warnings
+
+warnings.filterwarnings(
+    "ignore", message="pkg_resources is deprecated as an API.*", category=UserWarning
+)
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 from routes.seo_analysis import seo_bp
-from flask import request, Flask, render_template, jsonify
+from flask import (
+    request,
+    Flask,
+    render_template,
+    jsonify,
+    redirect,
+    url_for,
+    current_app,
+)
 
 from flask_wtf.csrf import CSRFProtect
 
@@ -67,12 +82,28 @@ app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
 app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
 app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")  # <--- THIS LINE
 
+# TinyMCE Configuration
+app.config["TINYMCE_API_KEY"] = os.getenv("TINYMCE_API_KEY", "no-api-key")
+
 # Init extensions
 db.init_app(app)
 migrate.init_app(app, db)
 login_manager.init_app(app)
 mail.init_app(app)
 csrf = CSRFProtect(app)
+
+
+# Make CSRF token available in templates
+@app.context_processor
+def inject_csrf_token():
+    try:
+        from flask_wtf.csrf import generate_csrf
+
+        token = generate_csrf()
+        return dict(csrf_token=lambda: token)
+    except Exception:
+        return dict(csrf_token=lambda: "")
+
 
 # Google OAuth Blueprint
 google_bp = make_google_blueprint(
@@ -184,6 +215,233 @@ def default_data():
 
 
 # ========================
+# Database Test Route
+# ========================
+@app.route("/test-db")
+def test_db():
+    """Test database connectivity and show status"""
+    try:
+        from sqlalchemy import inspect
+
+        inspector = inspect(db.engine)
+        tables = inspector.get_table_names()
+
+        # Test user query
+        try:
+            user_count = User.query.count()
+            user_status = f"✅ User table: {user_count} users"
+        except Exception as e:
+            user_status = f"❌ User table error: {str(e)}"
+
+        # Test posts query
+        try:
+            post_count = Post.query.count()
+            post_status = f"✅ Posts table: {post_count} posts"
+        except Exception as e:
+            post_status = f"❌ Posts table error: {str(e)}"
+
+        return f"""
+        <html>
+        <head><title>Database Test</title></head>
+        <body>
+            <h1>Database Status</h1>
+            <p><strong>Tables:</strong> {tables}</p>
+            <p>{user_status}</p>
+            <p>{post_status}</p>
+            <br>
+            <a href="/emergency-db-setup">Fix Database</a> | 
+            <a href="/">Home</a> | 
+            <a href="/users/login">Login</a>
+        </body>
+        </html>
+        """
+    except Exception as e:
+        return f"""
+        <html>
+        <body>
+            <h1>Database Error</h1>
+            <p>Error: {str(e)}</p>
+            <a href="/emergency-db-setup">Fix Database</a>
+        </body>
+        </html>
+        """
+
+
+# ========================
+# Emergency Database Setup Route
+# ========================
+@app.route("/emergency-db-setup")
+def emergency_db_setup():
+    """Emergency database setup - accessible without login"""
+    try:
+        # Check if database needs setup
+        from sqlalchemy import inspect
+
+        inspector = inspect(db.engine)
+        tables = inspector.get_table_names()
+
+        if "user" not in tables:
+            needs_setup = True
+            message = "Database tables don't exist"
+        else:
+            try:
+                columns = [col["name"] for col in inspector.get_columns("user")]
+                if "role" not in columns:
+                    needs_setup = True
+                    message = "User table missing 'role' column"
+                else:
+                    needs_setup = False
+                    message = "Database appears to be properly configured"
+            except:
+                needs_setup = True
+                message = "Error checking user table structure"
+
+        return f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Emergency Database Setup</title>
+            <style>
+                body {{ font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }}
+                .btn {{ background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }}
+                .status {{ padding: 15px; margin: 20px 0; border-radius: 5px; }}
+                .error {{ background: #f8d7da; color: #721c24; }}
+                .success {{ background: #d4edda; color: #155724; }}
+                .warning {{ background: #fff3cd; color: #856404; }}
+            </style>
+        </head>
+        <body>
+            <h1>🛠️ Emergency Database Setup</h1>
+            <div class="status {'error' if needs_setup else 'success'}">
+                <strong>Status:</strong> {message}
+            </div>
+            
+            {'<button class="btn" onclick="fixDatabase()">Fix Database Now</button>' if needs_setup else '<p>✅ Database is ready!</p>'}
+            
+            <div id="result"></div>
+            
+            <script>
+                function fixDatabase() {{
+                    document.getElementById('result').innerHTML = '<p>🔄 Fixing database...</p>';
+                    fetch('/emergency-db-fix', {{method: 'POST'}})
+                    .then(response => response.json())
+                    .then(data => {{
+                        if (data.success) {{
+                            document.getElementById('result').innerHTML = 
+                                '<div class="status success">✅ ' + data.message + 
+                                '<br><br><strong>Login with:</strong><br>Username: admin<br>Password: admin123<br><br>' +
+                                '<a href="/users/login">Go to Login</a></div>';
+                        }} else {{
+                            document.getElementById('result').innerHTML = 
+                                '<div class="status error">❌ Error: ' + data.message + '</div>';
+                        }}
+                    }});
+                }}
+            </script>
+        </body>
+        </html>
+        """
+
+    except Exception as e:
+        return f"""
+        <html>
+        <body>
+            <h1>Database Setup Error</h1>
+            <p>Error: {str(e)}</p>
+            <p>Try restarting the application.</p>
+        </body>
+        </html>
+        """
+
+
+@app.route("/emergency-db-fix", methods=["POST"])
+def emergency_db_fix():
+    """Emergency database fix endpoint"""
+    try:
+        # Drop and recreate all tables
+        db.drop_all()
+        db.create_all()
+
+        # Import all models to ensure they're all registered
+        from users.models.user import User
+        from users.models.order import Order
+        from users.models.download import Download
+        from admin.models import Setting
+        from models.post import Post
+        from models.contact import ContactMessage
+        from models.newsletter import Subscriber
+        from models.subscription import UserSubscription
+
+        # Create admin user
+        admin_user = User(
+            username="admin",
+            email="admin@superseotoolkit.com",
+            role="admin",
+            is_active=True,
+            email_verified=True,
+        )
+        admin_user.set_password("admin123")
+        db.session.add(admin_user)
+
+        # Create a test user
+        test_user = User(
+            username="testuser",
+            email="test@example.com",
+            role="customer",
+            is_active=True,
+            email_verified=True,
+        )
+        test_user.set_password("test123")
+        db.session.add(test_user)
+
+        # Create basic settings
+        settings = [
+            Setting(key="site_name", value="Super SEO Toolkit"),
+            Setting(key="admin_email", value="admin@superseotoolkit.com"),
+            Setting(key="maintenance_mode", value="false"),
+            Setting(key="debug_mode", value="true"),
+        ]
+        for setting in settings:
+            db.session.add(setting)
+
+        # Create a sample post
+        sample_post = Post(
+            title="Welcome to Super SEO Toolkit",
+            slug="welcome-to-super-seo-toolkit",
+            content="This is a sample blog post to demonstrate the SEO toolkit functionality.",
+            excerpt="Welcome post for the SEO toolkit",
+            author_name="Admin",
+            status="published",
+        )
+        db.session.add(sample_post)
+
+        db.session.commit()
+
+        return jsonify(
+            {
+                "success": True,
+                "message": "Database fixed successfully! Admin user and sample data created.",
+            }
+        )
+
+    except Exception as e:
+        db.session.rollback()
+        return (
+            jsonify({"success": False, "message": f"Database fix failed: {str(e)}"}),
+            500,
+        )
+
+
+# ========================
+# Database Setup Route (Emergency)
+# ========================
+@app.route("/database-setup")
+def database_setup_redirect():
+    """Redirect to admin database setup"""
+    return redirect(url_for("admin_system.database_setup"))
+
+
+# ========================
 # Newsletter Subscribe API
 # ========================
 @csrf.exempt
@@ -217,20 +475,24 @@ from models.category import Category
 
 @app.route("/")
 def home():
-    # Fetch recent posts from database, order by created_at descending, limit 6
-    recent_posts_db = Post.query.order_by(Post.created_at.desc()).limit(3).all()
-
-    # Format posts for template: add image URL using url_for static path
+    # Try to fetch recent posts from database with error handling
     recent_posts = []
-    for post in recent_posts_db:
-        recent_posts.append(
-            {
-                "title": post.title,
-                "slug": post.slug,
-                "summary": post.summary or (post.content[:120] + "..."),
-                "image": post.image,
-            }
-        )
+    try:
+        recent_posts_db = Post.query.order_by(Post.created_at.desc()).limit(3).all()
+        # Format posts for template: add image URL using url_for static path
+        for post in recent_posts_db:
+            recent_posts.append(
+                {
+                    "title": post.title,
+                    "slug": post.slug,
+                    "summary": post.excerpt or (post.content[:120] + "..."),
+                    "image": post.featured_image,
+                }
+            )
+    except Exception as e:
+        # If posts table doesn't exist or has issues, use empty list
+        current_app.logger.warning(f"Could not fetch posts: {e}")
+        recent_posts = []
 
     testimonials = [
         {

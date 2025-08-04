@@ -16,6 +16,7 @@ dnspython==2.7.0
 EditorConfig==0.17.1
 email_validator==2.2.0
 filelock==3.13.1
+# Core Flask Dependencies
 Flask==3.1.1
 Flask-Dance==7.1.0
 Flask-Login==0.6.3
@@ -23,6 +24,12 @@ Flask-Mail==0.10.0
 Flask-Migrate==4.0.7
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.2
+
+# HTML Sanitization for security
+bleach==6.2.0
+
+# Pin setuptools to avoid pkg_resources deprecation warnings
+setuptools<81
 fsspec==2024.6.1
 greenlet==3.2.3
 h11==0.16.0
