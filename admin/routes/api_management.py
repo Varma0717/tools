@@ -7,7 +7,16 @@ Manage API keys, rate limiting, webhooks, and integrations
 import logging
 import secrets
 from datetime import datetime, timedelta
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash,
+    jsonify,
+    current_app,
+)
 from flask_login import login_required, current_user
 
 # Core extensions
@@ -35,8 +44,32 @@ def admin_required(func):
 @admin_required
 def api_management():
     """API Management dashboard"""
-    api_stats = get_api_stats()
-    return render_template("admin/api_management.html", stats=api_stats)
+    try:
+        api_stats = get_api_stats()
+        api_keys = get_api_keys()
+        webhooks = get_webhook_data()
+
+        # Create comprehensive data object for template
+        data = {
+            "stats": api_stats,
+            "api_keys": api_keys,
+            "webhooks": webhooks.get("webhooks", []),
+            "integrations": get_integration_data().get("connected_services", []),
+            "rate_limits": get_rate_limit_stats().get("limits", []),
+        }
+
+        return render_template("admin/api_management.html", data=data, stats=api_stats)
+    except Exception as e:
+        current_app.logger.error(f"API Management error: {e}")
+        try:
+            # Return a simple error page or redirect
+            from flask import flash, redirect, url_for
+
+            flash("Error loading API management page", "error")
+            return redirect(url_for("admin_dashboard.admin_panel"))
+        except:
+            # Final fallback if redirect fails
+            return f"Error loading API management page: {str(e)}", 500
 
 
 @api_bp.route("/api-keys")
@@ -110,6 +143,8 @@ def get_api_stats():
         "rate_limit_hits": 15,
         "error_rate": 0.2,
         "avg_response_time": 145,
+        "active_webhooks": 5,
+        "webhook_success_rate": 98.5,
         "top_endpoints": [
             {"endpoint": "/api/seo/analyze", "requests": 45231},
             {"endpoint": "/api/keywords/research", "requests": 32145},
@@ -127,6 +162,7 @@ def get_api_keys():
             "key": "sk_superseo_***************",
             "permissions": ["seo.analyze", "keywords.research"],
             "rate_limit": 5000,
+            "usage_count": 1247,
             "last_used": datetime.now() - timedelta(hours=2),
             "created_at": datetime.now() - timedelta(days=30),
         }
@@ -189,5 +225,28 @@ def get_rate_limit_stats():
         "top_consumers": [
             {"key": "sk_superseo_prod", "requests": 89},
             {"key": "sk_superseo_test", "requests": 34},
+        ],
+        "limits": [
+            {
+                "endpoint": "/api/seo/analyze",
+                "description": "SEO Analysis API",
+                "limit": 1000,
+                "window": "hour",
+                "current_usage": 234,
+            },
+            {
+                "endpoint": "/api/keywords/research",
+                "description": "Keyword Research API",
+                "limit": 500,
+                "window": "hour",
+                "current_usage": 89,
+            },
+            {
+                "endpoint": "/api/backlinks/check",
+                "description": "Backlink Check API",
+                "limit": 200,
+                "window": "hour",
+                "current_usage": 45,
+            },
         ],
     }

@@ -6,12 +6,13 @@ Analytics and reporting functionality
 
 import random
 import logging
-from datetime import datetime
+from datetime import datetime, date
 from flask import Blueprint, render_template, current_app
 from flask_login import login_required, current_user
 
 # Models
 from models.page_view import PageView
+from models.contact import ContactMessage
 from users.models.user import User
 
 # Create blueprint
@@ -46,36 +47,47 @@ def analytics():
 @admin_required
 def leads_management():
     """Lead and CRM management"""
-    from flask import request
-    from models.contact import ContactMessage
+    try:
+        from flask import request, flash, redirect, url_for
 
-    page = request.args.get("page", 1, type=int)
-    search = request.args.get("search", "")
+        page = request.args.get("page", 1, type=int)
+        search = request.args.get("search", "")
 
-    # Get contacts as leads
-    query = ContactMessage.query
-    if search:
-        query = query.filter(
-            ContactMessage.name.contains(search) | ContactMessage.email.contains(search)
+        # Get contacts as leads
+        query = ContactMessage.query
+        if search:
+            query = query.filter(
+                ContactMessage.name.contains(search)
+                | ContactMessage.email.contains(search)
+            )
+
+        leads = query.order_by(ContactMessage.created_at.desc()).paginate(
+            page=page, per_page=20, error_out=False
         )
 
-    leads = query.order_by(ContactMessage.created_at.desc()).paginate(
-        page=page, per_page=20, error_out=False
-    )
+        # Get lead statistics
+        lead_stats = {
+            "total_leads": ContactMessage.query.count(),
+            "new_leads_today": ContactMessage.query.filter(
+                ContactMessage.created_at >= date.today()
+            ).count(),
+            "conversion_rate": 12.5,  # Mock data
+            "revenue_generated": 15420,  # Mock data
+        }
 
-    # Get lead statistics
-    lead_stats = {
-        "total_leads": ContactMessage.query.count(),
-        "new_leads_today": ContactMessage.query.filter(
-            ContactMessage.created_at >= datetime.now().date()
-        ).count(),
-        "conversion_rate": 12.5,  # Mock data
-        "revenue_generated": 15420,  # Mock data
-    }
+        return render_template(
+            "admin/leads.html", leads=leads, stats=lead_stats, search=search
+        )
+    except Exception as e:
+        current_app.logger.error(f"Leads management error: {e}")
+        try:
+            from flask import flash, redirect, url_for
 
-    return render_template(
-        "admin/leads.html", leads=leads, stats=lead_stats, search=search
-    )
+            flash("Error loading leads page", "error")
+            return redirect(url_for("admin_dashboard.admin_panel"))
+        except:
+            # Fallback to simple response if redirect fails
+            return f"Error loading leads page: {str(e)}", 500
 
 
 def get_analytics_data():

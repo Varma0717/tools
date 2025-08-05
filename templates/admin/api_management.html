@@ -31,7 +31,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Active API Keys</p>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ data.stats.active_keys }}</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ stats.active_keys }}</p>
                     </div>
                     <div class="bg-blue-100 p-3 rounded-full">
                         <i class="lucide-key w-6 h-6 text-blue-600"></i>
@@ -47,7 +47,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">API Requests (24h)</p>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ "{:,}".format(data.stats.requests_24h) }}</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ "{:,}".format(stats.requests_today) }}</p>
                     </div>
                     <div class="bg-green-100 p-3 rounded-full">
                         <i class="lucide-activity w-6 h-6 text-green-600"></i>
@@ -63,14 +63,14 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Active Webhooks</p>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ data.stats.active_webhooks }}</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ stats.active_webhooks }}</p>
                     </div>
                     <div class="bg-purple-100 p-3 rounded-full">
                         <i class="lucide-webhook w-6 h-6 text-purple-600"></i>
                     </div>
                 </div>
                 <div class="mt-4 flex items-center text-sm">
-                    <span class="text-gray-600">{{ data.stats.webhook_success_rate }}% success rate</span>
+                    <span class="text-gray-600">{{ stats.webhook_success_rate }}% success rate</span>
                 </div>
             </div>
 
@@ -78,7 +78,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Rate Limit Hits</p>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ data.stats.rate_limit_hits }}</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ stats.rate_limit_hits }}</p>
                     </div>
                     <div class="bg-red-100 p-3 rounded-full">
                         <i class="lucide-shield-alert w-6 h-6 text-red-600"></i>
