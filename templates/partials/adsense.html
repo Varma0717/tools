@@ -1,7 +1,14 @@
-{% if should_show_ads() %}
-<!-- Ads are disabled in development -->
-<!-- Replace this with your actual ad code in production -->
-<div class="ad-placeholder hidden">
-    <p class="text-sm text-gray-500">Ad space</p>
-</div>
+{% set adsense_config = get_adsense_config() %}
+
+{% if should_show_ads() and adsense_config.approved %}
+  <!-- Google AdSense Auto Ads Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_config.client_id }}" crossorigin="anonymous"></script>
+
+  <!-- AdSense Initialization -->
+  <script>
+    ;(adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: '{{ adsense_config.client_id }}',
+      enable_page_level_ads: true
+    })
+  </script>
 {% endif %}

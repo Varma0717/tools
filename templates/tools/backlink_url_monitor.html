@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}
   Backlink URL Monitor - Super SEO Toolkit
@@ -10,9 +10,8 @@
   backlink monitor, backlink status, link checker, external links, backlink finder
 {% endblock %}
 
-{% block content %}
+{% block tool_content %}
   <section class="py-14 min-h-screen bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc]">
-    <div class="max-w-3xl mx-auto px-4">
       <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
         <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">Backlink URL Monitor</h1>
         <p class="text-sm text-gray-600 text-center mb-6">Check if your website is still being linked from specific pages.</p>
@@ -26,7 +25,6 @@
           <div>
             <label class="text-sm font-semibold mb-1 block">Backlink Source URLs (one per line)</label>
             <textarea id="sourceUrls" name="urls" rows="6" placeholder="https://example.com/page1" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-[#DAAC40] focus:outline-none"></textarea>
-          </div>
           <button type="submit" class="bg-[#DAAC40] hover:bg-[#b89627] text-white font-semibold px-6 py-2 rounded-md">Check Backlinks</button>
         </form>
 

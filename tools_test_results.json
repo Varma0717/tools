@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-08-05T08:05:49.563656",
+  "base_url": "http://localhost:5000",
+  "total_tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "errors": [],
+  "tool_results": {
+    "meta_tag_analyzer": {
+      "status": "page_loads",
+      "code": 200
+    },
+    "ai_content_generator": {
+      "status": "auth_required",
+      "code": 200
+    },
+    "keyword_suggestion_generator": {
+      "status": "page_loads",
+      "code": 200
+    },
+    "ssl_checker": {
+      "status": "page_loads",
+      "code": 200
+    },
+    "broken_link_checker": {
+      "status": "page_loads",
+      "code": 200
+    },
+    "page_speed_analyzer": {
+      "status": "page_loads",
+      "code": 200
+    },
+    "robots_txt_tester": {
+      "status": "page_loads",
+      "code": 200
+    },
+    "sitemap_xml_validator": {
+      "status": "page_loads",
+      "code": 200
+    },
+    "whois_lookup": {
+      "status": "page_loads",
+      "code": 200
+    },
+    "dns_lookup": {
+      "status": "page_loads",
+      "code": 200
+    }
+  }
+}

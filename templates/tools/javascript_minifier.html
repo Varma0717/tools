@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}JavaScript Minifier - Super SEO Toolkit{% endblock %}
 {% block meta_description %}Minify your JavaScript code for faster performance and smaller file size. Free online JS compressor.{% endblock %}
 {% block meta_keywords %}js minifier, javascript compressor, minimize js code, shrink js, fast js tool{% endblock %}
 
-{% block content %}
+{% block tool_content %}
 <section class="py-14 min-h-screen bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc]">
-  <div class="max-w-3xl mx-auto px-4">
     <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
       <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">JavaScript Minifier</h1>
       <p class="text-sm text-gray-600 text-center mb-6">Paste your JavaScript code and compress it to a single-line minified version.</p>
@@ -22,7 +21,6 @@
       <div id="resultsSection" class="mt-6 hidden">
         <label class="text-sm font-semibold block mb-2">Minified Output:</label>
         <textarea readonly id="resultText" rows="10" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono bg-gray-100"></textarea>
-      </div>
     </div>
   </div>
 </section>

@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}Referrer IP Tracker - Super SEO Toolkit{% endblock %}
 {% block meta_description %}Track and display the visitor's IP address and referrer information instantly.{% endblock %}
 {% block meta_keywords %}Referrer IP Tracker, Website Tracking, Visitor IP{% endblock %}
 
-{% block content %}
+{% block tool_content %}
 <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
-  <div class="max-w-2xl mx-auto px-4">
     <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
       <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
 
@@ -32,7 +31,6 @@
             >
               Get Referrer Info
             </button>
-          </div>
         </form>
 
         <!-- Loader -->

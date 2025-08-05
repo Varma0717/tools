@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}Internal Link Structure Analyzer - Super SEO Toolkit{% endblock %}
 {% block meta_description %}Visualize internal link relationships on any webpage. Get anchor-to-destination mapping from a single scan.{% endblock %}
 {% block meta_keywords %}internal link structure, internal links map, anchor path analyzer, internal seo structure{% endblock %}
 
-{% block content %}
+{% block tool_content %}
 <section class="py-14 min-h-screen bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc]">
-  <div class="max-w-4xl mx-auto px-4">
     <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
       <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">Internal Link Structure Analyzer</h1>
       <p class="text-sm text-gray-600 text-center mb-6">Enter a page URL to map out all internal links and their anchor paths.</p>
@@ -20,7 +19,6 @@
 
       <div id="loader" class="text-center mt-6 hidden">
         <p class="text-sm text-gray-500">Analyzing internal structure…</p>
-      </div>
 
       <div id="resultsSection" class="mt-6 hidden">
         <table class="w-full text-sm border-collapse border">

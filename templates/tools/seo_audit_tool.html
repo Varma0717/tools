@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}SEO Audit Tool - Super SEO Toolkit{% endblock %}
 {% block meta_description %}Run a quick SEO audit of your webpage. Check title, meta description, headings, image ALT tags, and more.{% endblock %}
 {% block meta_keywords %}seo audit tool, website seo checker, onpage seo analysis, meta tag analyzer, h1 audit{% endblock %}
 
-{% block content %}
+{% block tool_content %}
 <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
-  <div class="max-w-3xl mx-auto px-4">
     <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
       <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">SEO Audit Tool</h1>
       <p class="text-sm text-gray-600 text-center mb-6">Check basic on-page SEO factors for your webpage in seconds.</p>
@@ -28,7 +27,6 @@
         <div><strong>Images With ALT:</strong> <span id="altResult"></span></div>
         <div><strong>Internal Links:</strong> <span id="internalLinks"></span></div>
         <div><strong>External Links:</strong> <span id="externalLinks"></span></div>
-      </div>
     </div>
   </div>
 </section>

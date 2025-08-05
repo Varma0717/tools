@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="max-w-7xl mx-auto px-4 py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- Main Tool Content -->
+      <div class="lg:col-span-3">
+        {% block tool_content %}
+          <!-- Tool-specific content goes here -->
+        {% endblock %}
+
+        <!-- Bottom Ad -->
+        {% include 'partials/bottom_ad.html' %}
+      </div>
+
+      <!-- Sidebar with Ad -->
+      <div class="lg:col-span-1">
+        <div class="sticky top-4 space-y-6">
+          <!-- Sidebar Ad -->
+          {% include 'partials/sidebar_ad.html' %}
+
+          <!-- Related Tools -->
+          {% block sidebar_content %}
+            <div class="bg-white border border-gray-200 rounded-lg p-6">
+              <h3 class="text-lg font-bold text-gray-900 mb-4">Related Tools</h3>
+              <div class="space-y-3">
+                <a href="{{ url_for('meta_tag_analyzer.meta_tag_analyzer') }}" class="block text-sm text-gray-600 hover:text-[#DAAC40] transition">Meta Tag Analyzer</a>
+                <a href="{{ url_for('ssl_checker.ssl_checker') }}" class="block text-sm text-gray-600 hover:text-[#DAAC40] transition">SSL Checker</a>
+                <a href="{{ url_for('broken_link_checker.broken_link_checker') }}" class="block text-sm text-gray-600 hover:text-[#DAAC40] transition">Broken Link Checker</a>
+                <a href="{{ url_for('keyword_suggestion_generator.keyword_suggestion_generator') }}" class="block text-sm text-gray-600 hover:text-[#DAAC40] transition">Keyword Generator</a>
+                <a href="{{ url_for('page_speed_analyzer.page_speed_analyzer') }}" class="block text-sm text-gray-600 hover:text-[#DAAC40] transition">Page Speed Analyzer</a>
+              </div>
+            </div>
+          {% endblock %}
+
+          <!-- User Upgrade Prompt for Free Users -->
+          {% if current_user.is_authenticated and not current_user.is_premium %}
+            <div class="bg-gradient-to-r from-[#DAAC40] to-yellow-500 text-white rounded-lg p-6">
+              <h3 class="text-lg font-bold mb-2">Upgrade to Pro</h3>
+              <p class="text-sm mb-4">Remove ads, get unlimited tool usage, and access premium features.</p>
+              <a href="{{ url_for('subscription.pricing') }}" class="inline-block bg-white text-gray-900 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition">Upgrade Now</a>
+            </div>
+          {% elif not current_user.is_authenticated %}
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
+              <h3 class="text-lg font-bold text-gray-900 mb-2">Save Your Results</h3>
+              <p class="text-sm text-gray-600 mb-4">Create a free account to save your analysis results and track your progress.</p>
+              <a href="{{ url_for('users.register') }}" class="inline-block bg-[#DAAC40] text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-yellow-600 transition">Sign Up Free</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

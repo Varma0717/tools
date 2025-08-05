@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}Headline Generator - Super SEO Toolkit{% endblock %}
 
@@ -10,9 +10,8 @@ Generate catchy, SEO-friendly headlines instantly based on your topic or keyword
 headline generator, seo headlines, blog titles, catchy titles, content ideas, seo content, blog headline ideas, marketing headlines, seo tips
 {% endblock %}
 
-{% block content %}
+{% block tool_content %}
 <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
-  <div class="max-w-2xl mx-auto px-4">
 
     <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
       <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
@@ -44,7 +43,6 @@ headline generator, seo headlines, blog titles, catchy titles, content ideas, se
             <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
           <p class="text-sm text-gray-500 mt-2">Generating headlines… Please wait.</p>
-        </div>
 
         <div id="resultsSection" class="mt-6 text-left text-gray-800 hidden whitespace-pre-line"></div>
 

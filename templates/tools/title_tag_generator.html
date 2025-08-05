@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}Title Tag Generator - Super SEO Toolkit{% endblock %}
 {% block meta_description %}Generate SEO-optimized title tags for your web pages using AI. Improve rankings and CTR with ideal meta titles.{% endblock %}
 {% block meta_keywords %}title tag generator, SEO meta titles, HTML title optimization, ai title tag tool{% endblock %}
 
-{% block content %}
+{% block tool_content %}
 <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
-  <div class="max-w-md mx-auto px-4">
     <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
       <div class="absolute -top-16 -left-16 w-48 h-48 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
       <div class="relative z-10 text-center">
@@ -38,7 +37,6 @@
             <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
           <p class="text-sm text-gray-500 mt-2">Generating… Please wait.</p>
-        </div>
 
         <div id="resultsSection" class="mt-6 hidden text-left text-gray-800 space-y-3">
           <h2 class="text-md font-semibold mb-1 text-[#DAAC40]">Generated Title Tags:</h2>

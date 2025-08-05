@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}Link Profile Analyzer - Super SEO Toolkit{% endblock %}
 {% block meta_description %}Analyze internal and external links on any webpage. Check anchor text, link type, and overall link profile for SEO.{% endblock %}
 {% block meta_keywords %}link profile analyzer, link audit tool, external link checker, nofollow link checker{% endblock %}
 
-{% block content %}
+{% block tool_content %}
 <section class="py-14 min-h-screen bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc]">
-  <div class="max-w-4xl mx-auto px-4">
     <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
       <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">Link Profile Analyzer</h1>
       <p class="text-sm text-gray-600 text-center mb-6">Enter a page URL to analyze all internal and external links with anchor text and link type.</p>
@@ -20,7 +19,6 @@
 
       <div id="loader" class="text-center mt-6 hidden">
         <p class="text-sm text-gray-500">Analyzing link profile…</p>
-      </div>
 
       <div id="resultsSection" class="mt-6 hidden">
         <div>

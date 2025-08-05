@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}
   AMP Validator - Super SEO Toolkit
@@ -12,14 +12,12 @@
   AMP Validator, AMP Page Checker
 {% endblock %}
 
-{% block content %}
+{% block tool_content %}
   <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
-    <div class="max-w-5xl mx-auto px-4">
       <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
         <div class="relative z-10 text-center">
           <img src="/static/favicon.png" alt="Logo" class="mx-auto w-[50px] mb-3" />
           <h1 class="text-3xl font-bold text-gray-900 mb-2">AMP Validator</h1>
-        </div>
 
         <p class="text-lg text-gray-600 mb-8">
           Instantly check if your web page is AMP-compliant for mobile-first SEO and Google News.

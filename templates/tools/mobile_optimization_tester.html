@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}Mobile Optimization Tester - Super SEO Toolkit{% endblock %}
 {% block meta_description %}Test your webpage for mobile responsiveness, viewport, font size, and user-friendliness. Get an SEO-friendly mobile score.{% endblock %}
 {% block meta_keywords %}mobile tester, mobile optimization, responsive checker, viewport, mobile seo{% endblock %}
 
-{% block content %}
+{% block tool_content %}
 <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
-  <div class="max-w-3xl mx-auto px-4">
     <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
       <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">Mobile Optimization Tester</h1>
       <p class="text-sm text-gray-600 text-center mb-6">Check if your site is mobile-friendly and SEO-optimized for mobile users.</p>
@@ -28,7 +27,6 @@
           <li><strong>Responsive Width Layout:</strong> <span id="responsive_width"></span></li>
           <li><strong>Font Size OK (12px+):</strong> <span id="font_size_ok"></span></li>
         </ul>
-      </div>
     </div>
   </div>
 </section>

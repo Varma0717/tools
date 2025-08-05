@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}HTTP Header Checker - Super SEO Toolkit{% endblock %}
 {% block meta_description %}Analyze HTTP response headers, status codes, and server info of any website.{% endblock %}
 {% block meta_keywords %}http header checker, server status, website headers, response headers{% endblock %}
 
-{% block content %}
+{% block tool_content %}
 <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
-  <div class="max-w-2xl mx-auto px-4">
     <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
       <h1 class="text-3xl font-bold text-gray-900 mb-2 text-center">HTTP Header Checker</h1>
       <p class="text-sm text-gray-600 text-center mb-6">Enter a URL to inspect HTTP headers, response codes, and server data.</p>
@@ -26,7 +25,6 @@
           <path class="opacity-75" fill="#DAAC40" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
         <p class="text-sm text-gray-500 mt-2">Fetching headers…</p>
-      </div>
 
       <div id="resultsSection" class="mt-6 hidden text-sm font-mono">
         <div class="text-left space-y-2 text-gray-800">

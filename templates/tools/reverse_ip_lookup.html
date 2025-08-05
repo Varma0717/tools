@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}
   Reverse IP Lookup Tool - Super SEO Toolkit
@@ -12,9 +12,8 @@
   Reverse IP Lookup Tool
 {% endblock %}
 
-{% block content %}
+{% block tool_content %}
   <section class="py-12 bg-white min-h-screen">
-    <div class="max-w-7xl mx-auto px-4">
       <div class="bg-white shadow-xl rounded-xl p-8 border border-gray-200 relative overflow-hidden">
         <div class="absolute -top-16 -left-16 w-64 h-64 bg-[#DAAC40]/20 rounded-full blur-3xl animate-pulse"></div>
 
@@ -24,7 +23,6 @@
           <h1 class="text-3xl font-bold text-gray-800">Reverse IP Lookup</h1>
 
           <p class="text-sm text-gray-600 mb-6">Discover all domains hosted on a given IP address using our fast lookup tool.</p>
-        </div>
 
         <form id="reverseForm" class="space-y-4">
           <input type="hidden" id="csrf_token" value="{{ csrf_token }}" />

@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}CSS & JS Bundler - Super SEO Toolkit{% endblock %}
 {% block meta_description %}Combine and minify multiple CSS or JavaScript files instantly.{% endblock %}
 {% block meta_keywords %}css bundler, js bundler, combine css, combine js, minify js css{% endblock %}
 
-{% block content %}
+{% block tool_content %}
 <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
-  <div class="max-w-4xl mx-auto px-4">
     <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
       <h1 class="text-3xl font-bold text-center text-gray-900 mb-4">CSS & JS Bundler</h1>
       <p class="text-center text-sm text-gray-600 mb-6">Paste up to 3 files to merge and minify into a single output.</p>
@@ -31,7 +30,6 @@
       <div id="resultsSection" class="mt-6 hidden">
         <h2 class="text-md font-semibold text-[#DAAC40] mb-2">Bundled Output:</h2>
         <textarea id="resultOutput" class="w-full border border-green-300 bg-green-50 rounded-md px-3 py-2 text-sm font-mono" rows="10" readonly></textarea>
-      </div>
     </div>
   </div>
 </section>

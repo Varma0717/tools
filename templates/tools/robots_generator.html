@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "tools/tools_base.html" %}
 
 {% block title %}Robots.txt Generator - Super SEO Toolkit{% endblock %}
 {% block meta_description %}Generate a perfect robots.txt file to control how search engines crawl your website.{% endblock %}
 {% block meta_keywords %}robots.txt generator, disallow bots, crawl control, SEO robot file{% endblock %}
 
-{% block content %}
+{% block tool_content %}
 <section class="py-14 bg-gradient-to-br from-[#FAF7EC] via-[#F7F6F2] to-[#fcfcfc] min-h-screen">
-  <div class="max-w-4xl mx-auto px-4">
     <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
       <h1 class="text-3xl font-bold text-center text-gray-900 mb-4">Robots.txt Generator</h1>
       <p class="text-center text-sm text-gray-600 mb-6">Customize how search engine bots access your website.</p>
@@ -22,7 +21,6 @@
         <div>
           <label class="text-sm font-semibold block">Allow Paths:</label>
           <textarea id="allow" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono" placeholder="/about/&#10;/products/"></textarea>
-        </div>
 
         <div>
           <label class="text-sm font-semibold block">Disallow Paths:</label>
