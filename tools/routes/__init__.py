@@ -83,6 +83,11 @@ from .page_view_counter import page_view_counter_bp
 from .writing_style_analyzer import writing_style_analyzer_bp
 from .headline_generator import headline_generator_bp
 from .ai_content_generator_basic import ai_content_generator_basic_bp
+from .ai_content_optimizer import ai_content_optimizer_bp
+from .ai_seo_audit import ai_seo_audit_bp
+from .ai_technical_seo_audit import ai_technical_seo_audit_bp
+from .ai_competitor_analysis import ai_competitor_analysis_bp
+from .ai_performance_optimizer import ai_performance_optimizer_bp
 from .auto_title_generator import auto_title_generator_bp
 from .grammar_checker import grammar_checker_bp
 from .content_rewriter_pro import content_rewriter_pro_bp
@@ -126,6 +131,30 @@ all_tools = [
         "name": "AI SEO Audit Pro",
         "endpoint": "ai_seo_audit.ai_seo_audit_pro",
         "description": "Comprehensive AI-powered SEO audit with technical analysis and competitive insights. Pro subscription required.",
+        "category": "AI Professional Tools",
+        "is_ai_tool": True,
+        "is_pro_required": True,
+    },
+    {
+        "name": "AI Technical SEO Audit Pro",
+        "endpoint": "ai_technical_seo_audit.ai_technical_seo_audit",
+        "description": "Professional AI-powered technical SEO audit with comprehensive performance, crawlability, indexability, mobile optimization, and security analysis. Pro subscription required.",
+        "category": "AI Professional Tools",
+        "is_ai_tool": True,
+        "is_pro_required": True,
+    },
+    {
+        "name": "AI Competitor Analysis Pro",
+        "endpoint": "ai_competitor_analysis.ai_competitor_analysis",
+        "description": "Professional AI-powered competitive analysis with website comparison, market positioning insights, and strategic recommendations. Pro subscription required.",
+        "category": "AI Professional Tools",
+        "is_ai_tool": True,
+        "is_pro_required": True,
+    },
+    {
+        "name": "AI Performance Optimizer Pro",
+        "endpoint": "ai_performance_optimizer.ai_performance_optimizer",
+        "description": "Comprehensive AI-powered performance analysis with Core Web Vitals assessment, resource optimization, and professional optimization strategies. Pro subscription required.",
         "category": "AI Professional Tools",
         "is_ai_tool": True,
         "is_pro_required": True,
@@ -751,4 +780,10 @@ def register_tool_blueprints(app):
     app.register_blueprint(html_minifier_bp)
     app.register_blueprint(robots_bp)
     app.register_blueprint(speed_test_bp)
+    # Professional AI Tools
+    app.register_blueprint(ai_content_optimizer_bp)
+    app.register_blueprint(ai_seo_audit_bp)
+    app.register_blueprint(ai_technical_seo_audit_bp)
+    app.register_blueprint(ai_competitor_analysis_bp)
+    app.register_blueprint(ai_performance_optimizer_bp)
     # new registers from here

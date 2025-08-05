@@ -1,0 +1,594 @@
+{% extends "tools/professional_tool_base.html" %}
+
+{% block tool_title %}AI Technical SEO Audit Pro{% endblock %}
+{% block tool_description %}
+Professional AI-powered technical SEO audit with comprehensive analysis of performance, crawlability, indexability, mobile optimization, and security factors. Includes AI-generated insights and actionable recommendations for developers.
+{% endblock %}
+
+{% block tool_content %}
+<div class="space-y-8">
+    <!-- URL Input Section -->
+    <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+        <div class="flex items-center mb-6">
+            <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 p-3 rounded-lg mr-4">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Technical SEO Analysis</h2>
+                <p class="text-gray-600">Enter your website URL for comprehensive technical audit</p>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label for="url" class="block text-sm font-semibold text-gray-700 mb-2">Website URL</label>
+                <div class="relative">
+                    <input 
+                        type="url" 
+                        id="url" 
+                        name="url" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-lg"
+                        placeholder="https://example.com"
+                        required
+                    >
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <button 
+                type="button" 
+                onclick="startTechnicalAudit()" 
+                class="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-bold py-4 px-6 rounded-lg hover:from-yellow-600 hover:to-yellow-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+                <span class="flex items-center justify-center">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Start AI Technical Audit
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Section -->
+    <div id="loading" class="hidden">
+        <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+            <div class="flex items-center justify-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mr-4"></div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Analyzing Technical SEO...</h3>
+                    <p class="text-gray-600">AI is conducting comprehensive technical audit</p>
+                </div>
+            </div>
+            
+            <div class="mt-6 space-y-2">
+                <div class="text-sm text-gray-600">Progress:</div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="progress-bar" class="bg-yellow-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <div id="progress-text" class="text-sm text-gray-500">Initializing audit...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" class="hidden space-y-6">
+        <!-- Technical Score Card -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-900">Technical SEO Score</h3>
+                <div id="score-badge" class="px-4 py-2 rounded-full text-white font-bold text-lg"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div class="text-center">
+                    <div class="text-2xl font-bold" id="performance-score">0</div>
+                    <div class="text-sm text-gray-600">Performance</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold" id="seo-score">0</div>
+                    <div class="text-sm text-gray-600">SEO Fundamentals</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold" id="mobile-score">0</div>
+                    <div class="text-sm text-gray-600">Mobile</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold" id="security-score">0</div>
+                    <div class="text-sm text-gray-600">Security</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold" id="issues-score">0</div>
+                    <div class="text-sm text-gray-600">Issues</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Insights Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div class="flex items-center mb-4">
+                <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-2 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">AI-Powered Insights</h3>
+                    <span id="ai-model" class="text-sm text-gray-500"></span>
+                </div>
+            </div>
+            <div id="ai-insights" class="prose max-w-none">
+                <!-- AI insights will be populated here -->
+            </div>
+        </div>
+
+        <!-- Detailed Audit Results -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Performance Analysis -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <div class="bg-blue-500 p-2 rounded-lg mr-3">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    Performance Analysis
+                </h3>
+                <div id="performance-details" class="space-y-3">
+                    <!-- Performance details will be populated here -->
+                </div>
+            </div>
+
+            <!-- SEO Analysis -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <div class="bg-green-500 p-2 rounded-lg mr-3">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    SEO Fundamentals
+                </h3>
+                <div id="seo-details" class="space-y-3">
+                    <!-- SEO details will be populated here -->
+                </div>
+            </div>
+
+            <!-- Mobile Analysis -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <div class="bg-purple-500 p-2 rounded-lg mr-3">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a1 1 0 001-1V4a1 1 0 00-1-1H8a1 1 0 00-1 1v16a1 1 0 001 1z"></path>
+                        </svg>
+                    </div>
+                    Mobile Optimization
+                </h3>
+                <div id="mobile-details" class="space-y-3">
+                    <!-- Mobile details will be populated here -->
+                </div>
+            </div>
+
+            <!-- Security Analysis -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <div class="bg-red-500 p-2 rounded-lg mr-3">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    Security Analysis
+                </h3>
+                <div id="security-details" class="space-y-3">
+                    <!-- Security details will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Issues -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                <div class="bg-orange-500 p-2 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                </div>
+                Technical Issues Found
+            </h3>
+            <div id="technical-issues" class="space-y-3">
+                <!-- Technical issues will be populated here -->
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                <div class="bg-indigo-500 p-2 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                    </svg>
+                </div>
+                Actionable Recommendations
+            </h3>
+            <div id="recommendations" class="space-y-3">
+                <!-- Recommendations will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Section -->
+    <div id="error" class="hidden">
+        <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+            <div class="flex items-center">
+                <div class="bg-red-500 p-2 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-red-800">Analysis Error</h3>
+                    <p id="error-message" class="text-red-600"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function startTechnicalAudit() {
+    const url = document.getElementById('url').value.trim();
+    
+    if (!url) {
+        alert('Please enter a valid URL');
+        return;
+    }
+    
+    // Hide previous results and show loading
+    document.getElementById('results').classList.add('hidden');
+    document.getElementById('error').classList.add('hidden');
+    document.getElementById('loading').classList.remove('hidden');
+    
+    // Simulate progress
+    let progress = 0;
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    
+    const progressMessages = [
+        'Connecting to website...',
+        'Analyzing page structure...',
+        'Checking performance metrics...',
+        'Evaluating SEO factors...',
+        'Testing mobile optimization...',
+        'Assessing security headers...',
+        'AI processing insights...',
+        'Generating recommendations...',
+        'Finalizing report...'
+    ];
+    
+    const progressInterval = setInterval(() => {
+        progress += 11;
+        if (progress > 100) progress = 100;
+        
+        progressBar.style.width = progress + '%';
+        
+        const messageIndex = Math.min(
+            Math.floor(progress / 12), 
+            progressMessages.length - 1
+        );
+        progressText.textContent = progressMessages[messageIndex];
+        
+        if (progress >= 100) {
+            clearInterval(progressInterval);
+        }
+    }, 800);
+    
+    // Make API request
+    fetch('{{ url_for("ai_technical_seo_audit.ai_technical_seo_audit_post") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ url: url })
+    })
+    .then(response => response.json())
+    .then(data => {
+        clearInterval(progressInterval);
+        document.getElementById('loading').classList.add('hidden');
+        
+        if (data.success) {
+            displayResults(data);
+        } else {
+            showError(data.error || 'Analysis failed');
+        }
+    })
+    .catch(error => {
+        clearInterval(progressInterval);
+        document.getElementById('loading').classList.add('hidden');
+        showError('Network error: ' + error.message);
+    });
+}
+
+function displayResults(data) {
+    // Display overall score
+    const score = data.technical_score.score;
+    const grade = data.technical_score.grade;
+    const scoreBadge = document.getElementById('score-badge');
+    
+    scoreBadge.textContent = `${score}% (${grade})`;
+    scoreBadge.className = `px-4 py-2 rounded-full text-white font-bold text-lg ${getScoreColor(score)}`;
+    
+    // Display breakdown scores
+    const breakdown = data.technical_score.breakdown;
+    document.getElementById('performance-score').textContent = Math.round(breakdown.performance) || 0;
+    document.getElementById('seo-score').textContent = Math.round(breakdown.seo_fundamentals) || 0;
+    document.getElementById('mobile-score').textContent = Math.round(breakdown.mobile_optimization) || 0;
+    document.getElementById('security-score').textContent = Math.round(breakdown.security) || 0;
+    document.getElementById('issues-score').textContent = Math.round(breakdown.technical_issues) || 0;
+    
+    // Display AI insights
+    document.getElementById('ai-insights').innerHTML = formatAIInsights(data.ai_insights.insights);
+    document.getElementById('ai-model').textContent = `Powered by ${data.ai_insights.model_used}`;
+    
+    // Display detailed analysis
+    displayPerformanceDetails(data.audit_results.performance);
+    displaySEODetails(data.audit_results.indexability);
+    displayMobileDetails(data.audit_results.mobile_optimization);
+    displaySecurityDetails(data.audit_results.security);
+    displayTechnicalIssues(data.audit_results.technical_issues);
+    displayRecommendations(data.ai_insights.recommendations);
+    
+    document.getElementById('results').classList.remove('hidden');
+}
+
+function getScoreColor(score) {
+    if (score >= 90) return 'bg-green-500';
+    if (score >= 80) return 'bg-blue-500';
+    if (score >= 70) return 'bg-yellow-500';
+    if (score >= 60) return 'bg-orange-500';
+    return 'bg-red-500';
+}
+
+function formatAIInsights(insights) {
+    return insights.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+}
+
+function displayPerformanceDetails(performance) {
+    const container = document.getElementById('performance-details');
+    const resources = performance.resources || {};
+    
+    container.innerHTML = `
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">Page Size:</span>
+            <span class="font-semibold">${(performance.page_size / 1024).toFixed(1)} KB</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">Compression:</span>
+            <span class="font-semibold ${performance.compression ? 'text-green-600' : 'text-red-600'}">
+                ${performance.compression ? 'Enabled' : 'Disabled'}
+            </span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">CSS Files:</span>
+            <span class="font-semibold">${resources.css_files || 0}</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">JS Files:</span>
+            <span class="font-semibold">${resources.js_files || 0}</span>
+        </div>
+        <div class="flex justify-between py-2">
+            <span class="text-gray-600">Images:</span>
+            <span class="font-semibold">${resources.images || 0}</span>
+        </div>
+    `;
+}
+
+function displaySEODetails(indexability) {
+    const container = document.getElementById('seo-details');
+    const metaTags = indexability.meta_tags || {};
+    const contentQuality = indexability.content_quality || {};
+    
+    container.innerHTML = `
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">Title Tag:</span>
+            <span class="font-semibold ${metaTags.has_title ? 'text-green-600' : 'text-red-600'}">
+                ${metaTags.has_title ? `Present (${metaTags.title_length} chars)` : 'Missing'}
+            </span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">Meta Description:</span>
+            <span class="font-semibold ${metaTags.has_description ? 'text-green-600' : 'text-red-600'}">
+                ${metaTags.has_description ? `Present (${metaTags.description_length} chars)` : 'Missing'}
+            </span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">H1 Tags:</span>
+            <span class="font-semibold">${contentQuality.heading_tags?.h1 || 0}</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">Word Count:</span>
+            <span class="font-semibold">${contentQuality.word_count || 0}</span>
+        </div>
+        <div class="flex justify-between py-2">
+            <span class="text-gray-600">Images with Alt:</span>
+            <span class="font-semibold">${contentQuality.images_with_alt || 0}/${contentQuality.total_images || 0}</span>
+        </div>
+    `;
+}
+
+function displayMobileDetails(mobile) {
+    const container = document.getElementById('mobile-details');
+    const viewport = mobile.viewport || {};
+    const responsive = mobile.responsive_design || {};
+    
+    container.innerHTML = `
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">Viewport Tag:</span>
+            <span class="font-semibold ${viewport.has_viewport ? 'text-green-600' : 'text-red-600'}">
+                ${viewport.has_viewport ? 'Present' : 'Missing'}
+            </span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">Device Width:</span>
+            <span class="font-semibold ${viewport.width_device ? 'text-green-600' : 'text-red-600'}">
+                ${viewport.width_device ? 'Configured' : 'Not Set'}
+            </span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">Media Queries:</span>
+            <span class="font-semibold ${responsive.has_media_queries ? 'text-green-600' : 'text-red-600'}">
+                ${responsive.has_media_queries ? 'Detected' : 'Not Found'}
+            </span>
+        </div>
+        <div class="flex justify-between py-2">
+            <span class="text-gray-600">CSS Framework:</span>
+            <span class="font-semibold ${responsive.css_frameworks ? 'text-green-600' : 'text-gray-600'}">
+                ${responsive.css_frameworks ? 'Detected' : 'None'}
+            </span>
+        </div>
+    `;
+}
+
+function displaySecurityDetails(security) {
+    const container = document.getElementById('security-details');
+    const https = security.https || {};
+    const headers = security.headers || {};
+    
+    const headerCount = Object.values(headers.present || {}).filter(Boolean).length;
+    
+    container.innerHTML = `
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">HTTPS:</span>
+            <span class="font-semibold ${https.uses_https ? 'text-green-600' : 'text-red-600'}">
+                ${https.uses_https ? 'Enabled' : 'Disabled'}
+            </span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">Security Headers:</span>
+            <span class="font-semibold">${headerCount}/5 Present</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">HSTS:</span>
+            <span class="font-semibold ${https.strict_transport_security ? 'text-green-600' : 'text-red-600'}">
+                ${https.strict_transport_security ? 'Enabled' : 'Disabled'}
+            </span>
+        </div>
+        <div class="flex justify-between py-2">
+            <span class="text-gray-600">Mixed Content:</span>
+            <span class="font-semibold ${https.mixed_content_risk ? 'text-red-600' : 'text-green-600'}">
+                ${https.mixed_content_risk ? 'Risk Detected' : 'Safe'}
+            </span>
+        </div>
+    `;
+}
+
+function displayTechnicalIssues(issues) {
+    const container = document.getElementById('technical-issues');
+    
+    if (!issues || issues.length === 0) {
+        container.innerHTML = '<div class="text-green-600 font-semibold">No critical technical issues found!</div>';
+        return;
+    }
+    
+    container.innerHTML = issues.map(issue => `
+        <div class="p-4 border rounded-lg ${getSeverityColor(issue.severity)}">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <h4 class="font-semibold text-gray-900">${issue.issue}</h4>
+                    <p class="text-sm text-gray-600 mt-1">${issue.description}</p>
+                    <p class="text-xs text-gray-500 mt-2"><strong>Impact:</strong> ${issue.impact}</p>
+                </div>
+                <span class="px-2 py-1 text-xs font-semibold rounded-full ${getSeverityBadgeColor(issue.severity)}">
+                    ${issue.severity}
+                </span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function displayRecommendations(recommendations) {
+    const container = document.getElementById('recommendations');
+    
+    if (!recommendations || recommendations.length === 0) {
+        container.innerHTML = '<div class="text-gray-600">No specific recommendations at this time.</div>';
+        return;
+    }
+    
+    container.innerHTML = recommendations.map(rec => `
+        <div class="p-4 border rounded-lg bg-gray-50">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <h4 class="font-semibold text-gray-900">${rec.action}</h4>
+                    <p class="text-sm text-gray-600 mt-1">${rec.description}</p>
+                    <div class="flex items-center mt-2">
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 mr-2">
+                            ${rec.category}
+                        </span>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(rec.priority)}">
+                            ${rec.priority} Priority
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getSeverityColor(severity) {
+    switch(severity) {
+        case 'Critical': return 'border-red-300 bg-red-50';
+        case 'High': return 'border-orange-300 bg-orange-50';
+        case 'Medium': return 'border-yellow-300 bg-yellow-50';
+        default: return 'border-gray-300 bg-gray-50';
+    }
+}
+
+function getSeverityBadgeColor(severity) {
+    switch(severity) {
+        case 'Critical': return 'bg-red-100 text-red-800';
+        case 'High': return 'bg-orange-100 text-orange-800';
+        case 'Medium': return 'bg-yellow-100 text-yellow-800';
+        default: return 'bg-gray-100 text-gray-800';
+    }
+}
+
+function getPriorityColor(priority) {
+    switch(priority) {
+        case 'Critical': return 'bg-red-100 text-red-800';
+        case 'High': return 'bg-orange-100 text-orange-800';
+        case 'Medium': return 'bg-blue-100 text-blue-800';
+        default: return 'bg-gray-100 text-gray-800';
+    }
+}
+
+function showError(message) {
+    document.getElementById('error-message').textContent = message;
+    document.getElementById('error').classList.remove('hidden');
+}
+</script>
+{% endblock %}
+
+{% block export_data %}
+<script>
+function getExportData() {
+    const results = document.getElementById('results');
+    if (results.classList.contains('hidden')) {
+        return null;
+    }
+    
+    return {
+        tool: 'AI Technical SEO Audit Pro',
+        timestamp: new Date().toISOString(),
+        url: document.getElementById('url').value,
+        score: document.getElementById('score-badge').textContent,
+        insights: document.getElementById('ai-insights').textContent,
+        // Add more data as needed
+    };
+}
+</script>
+{% endblock %}

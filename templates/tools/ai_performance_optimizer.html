@@ -1,0 +1,746 @@
+{% extends "tools/base_tool.html" %}
+
+{% block tool_title %}AI Website Performance Optimizer Pro{% endblock %}
+
+{% block tool_description %}
+Comprehensive AI-powered performance analysis with Core Web Vitals assessment, resource optimization recommendations, and professional optimization strategies for developers and agencies.
+{% endblock %}
+
+{% block tool_content %}
+<div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+    <form id="performanceForm" class="space-y-6">
+        <div>
+            <label for="websiteUrl" class="block text-sm font-semibold text-white mb-3">
+                <i class="fas fa-globe mr-2 text-[#DAAC42]"></i>Website URL
+            </label>
+            <div class="relative">
+                <input type="url" 
+                       id="websiteUrl" 
+                       name="url" 
+                       required
+                       placeholder="Enter website URL (e.g., https://example.com)"
+                       class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-xl text-white placeholder-gray-300 focus:border-[#DAAC42] focus:ring-2 focus:ring-[#DAAC42]/20 transition-all duration-300">
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <i class="fas fa-chart-line text-[#DAAC42] opacity-70"></i>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" 
+                class="w-full bg-gradient-to-r from-[#DAAC42] to-yellow-600 text-black font-bold py-4 px-6 rounded-xl hover:from-yellow-600 hover:to-[#DAAC42] transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl">
+            <i class="fas fa-rocket mr-2"></i>
+            Start AI Performance Analysis
+        </button>
+    </form>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="hidden mt-8">
+        <div class="text-center py-12">
+            <div class="relative mb-6">
+                <div class="w-24 h-24 mx-auto border-4 border-[#DAAC42]/30 border-t-[#DAAC42] rounded-full animate-spin"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <i class="fas fa-chart-line text-[#DAAC42] text-2xl"></i>
+                </div>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">AI Performance Analysis in Progress</h3>
+            <p class="text-gray-300 mb-4">Our AI is conducting comprehensive performance optimization analysis...</p>
+            
+            <!-- Progress Indicators -->
+            <div class="space-y-3 max-w-md mx-auto">
+                <div class="progress-step flex items-center text-white/80">
+                    <div class="w-4 h-4 rounded-full bg-[#DAAC42] mr-3 animate-pulse"></div>
+                    <span>Analyzing website performance metrics...</span>
+                </div>
+                <div class="progress-step flex items-center text-white/60">
+                    <div class="w-4 h-4 rounded-full bg-white/30 mr-3"></div>
+                    <span>Assessing Core Web Vitals...</span>
+                </div>
+                <div class="progress-step flex items-center text-white/60">
+                    <div class="w-4 h-4 rounded-full bg-white/30 mr-3"></div>
+                    <span>Evaluating resource optimization...</span>
+                </div>
+                <div class="progress-step flex items-center text-white/60">
+                    <div class="w-4 h-4 rounded-full bg-white/30 mr-3"></div>
+                    <span>Generating AI recommendations...</span>
+                </div>
+                <div class="progress-step flex items-center text-white/60">
+                    <div class="w-4 h-4 rounded-full bg-white/30 mr-3"></div>
+                    <span>Calculating performance score...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Container -->
+    <div id="resultsContainer" class="hidden mt-8">
+        <!-- Performance Score Overview -->
+        <div id="performanceScore" class="bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-8">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold text-white mb-4">
+                    <i class="fas fa-gauge mr-2 text-[#DAAC42]"></i>
+                    Performance Score
+                </h3>
+                <div class="flex items-center justify-center space-x-8">
+                    <div class="text-center">
+                        <div id="scoreCircle" class="w-32 h-32 mx-auto mb-4 relative">
+                            <svg class="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="54" fill="transparent" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
+                                <circle id="scoreProgress" cx="60" cy="60" r="54" fill="transparent" stroke="#DAAC42" stroke-width="8" 
+                                        stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span id="scoreValue" class="text-3xl font-bold text-white">0</span>
+                            </div>
+                        </div>
+                        <div id="scoreGrade" class="text-2xl font-bold text-[#DAAC42] mb-2">F</div>
+                        <div id="performanceLevel" class="text-gray-300">Calculating...</div>
+                    </div>
+                    <div class="text-left space-y-2">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-green-500 mr-3"></div>
+                            <span class="text-white">90-100: Excellent</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-blue-500 mr-3"></div>
+                            <span class="text-white">80-89: Very Good</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-yellow-500 mr-3"></div>
+                            <span class="text-white">70-79: Good</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-orange-500 mr-3"></div>
+                            <span class="text-white">60-69: Fair</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-red-500 mr-3"></div>
+                            <span class="text-white">Below 60: Needs Work</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Web Vitals Assessment -->
+        <div id="coreWebVitals" class="bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-8">
+            <h3 class="text-xl font-bold text-white mb-6">
+                <i class="fas fa-heartbeat mr-2 text-[#DAAC42]"></i>
+                Core Web Vitals Assessment
+            </h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- LCP -->
+                <div class="text-center p-4 bg-white/5 rounded-xl">
+                    <div class="text-3xl mb-2">
+                        <i class="fas fa-clock text-[#DAAC42]"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">Largest Contentful Paint</h4>
+                    <div id="lcpScore" class="text-2xl font-bold text-[#DAAC42] mb-2">0.0s</div>
+                    <div id="lcpRating" class="text-sm text-gray-300">Analyzing...</div>
+                </div>
+                
+                <!-- FID -->
+                <div class="text-center p-4 bg-white/5 rounded-xl">
+                    <div class="text-3xl mb-2">
+                        <i class="fas fa-mouse-pointer text-[#DAAC42]"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">First Input Delay</h4>
+                    <div id="fidScore" class="text-2xl font-bold text-[#DAAC42] mb-2">Low Risk</div>
+                    <div id="fidRating" class="text-sm text-gray-300">Analyzing...</div>
+                </div>
+                
+                <!-- CLS -->
+                <div class="text-center p-4 bg-white/5 rounded-xl">
+                    <div class="text-3xl mb-2">
+                        <i class="fas fa-layer-group text-[#DAAC42]"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">Cumulative Layout Shift</h4>
+                    <div id="clsScore" class="text-2xl font-bold text-[#DAAC42] mb-2">Low Risk</div>
+                    <div id="clsRating" class="text-sm text-gray-300">Analyzing...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div id="performanceMetrics" class="bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-8">
+            <h3 class="text-xl font-bold text-white mb-6">
+                <i class="fas fa-chart-bar mr-2 text-[#DAAC42]"></i>
+                Performance Metrics
+            </h3>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="text-center p-4 bg-white/5 rounded-xl">
+                    <div class="text-[#DAAC42] font-semibold mb-1">Response Time</div>
+                    <div id="responseTime" class="text-xl font-bold text-white">0.0s</div>
+                </div>
+                <div class="text-center p-4 bg-white/5 rounded-xl">
+                    <div class="text-[#DAAC42] font-semibold mb-1">Page Size</div>
+                    <div id="pageSize" class="text-xl font-bold text-white">0KB</div>
+                </div>
+                <div class="text-center p-4 bg-white/5 rounded-xl">
+                    <div class="text-[#DAAC42] font-semibold mb-1">Compression</div>
+                    <div id="compressionStatus" class="text-xl font-bold text-white">No</div>
+                </div>
+                <div class="text-center p-4 bg-white/5 rounded-xl">
+                    <div class="text-[#DAAC42] font-semibold mb-1">Resources</div>
+                    <div id="resourceCount" class="text-xl font-bold text-white">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Recommendations -->
+        <div id="aiRecommendations" class="bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-8">
+            <h3 class="text-xl font-bold text-white mb-6">
+                <i class="fas fa-robot mr-2 text-[#DAAC42]"></i>
+                AI-Powered Optimization Recommendations
+            </h3>
+            <div id="aiInsights" class="prose prose-invert max-w-none">
+                <div class="text-gray-300">Generating AI recommendations...</div>
+            </div>
+        </div>
+
+        <!-- Structured Recommendations -->
+        <div id="structuredRecommendations" class="bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-8">
+            <h3 class="text-xl font-bold text-white mb-6">
+                <i class="fas fa-list-check mr-2 text-[#DAAC42]"></i>
+                Action Plan
+            </h3>
+            
+            <!-- Priority Categories -->
+            <div class="space-y-6">
+                <div id="criticalIssues">
+                    <h4 class="text-lg font-semibold text-red-400 mb-3">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        Critical Performance Issues
+                    </h4>
+                    <div class="space-y-3" id="criticalIssuesList"></div>
+                </div>
+                
+                <div id="quickWins">
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-3">
+                        <i class="fas fa-bolt mr-2"></i>
+                        Quick Wins
+                    </h4>
+                    <div class="space-y-3" id="quickWinsList"></div>
+                </div>
+                
+                <div id="advancedOptimizations">
+                    <h4 class="text-lg font-semibold text-blue-400 mb-3">
+                        <i class="fas fa-cogs mr-2"></i>
+                        Advanced Optimizations
+                    </h4>
+                    <div class="space-y-3" id="advancedOptimizationsList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resource Analysis -->
+        <div id="resourceAnalysis" class="bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-8">
+            <h3 class="text-xl font-bold text-white mb-6">
+                <i class="fas fa-server mr-2 text-[#DAAC42]"></i>
+                Resource Analysis
+            </h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-3">Resource Counts</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">CSS Files:</span>
+                            <span id="cssCount" class="text-white font-semibold">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">JavaScript Files:</span>
+                            <span id="jsCount" class="text-white font-semibold">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Images:</span>
+                            <span id="imageCount" class="text-white font-semibold">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Blocking Resources:</span>
+                            <span id="blockingCount" class="text-white font-semibold">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-3">Optimization Scores</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-300">Compression</span>
+                                <span id="compressionScore" class="text-white">0%</span>
+                            </div>
+                            <div class="w-full bg-white/20 rounded-full h-2">
+                                <div id="compressionBar" class="bg-[#DAAC42] h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-300">Caching</span>
+                                <span id="cachingScore" class="text-white">0%</span>
+                            </div>
+                            <div class="w-full bg-white/20 rounded-full h-2">
+                                <div id="cachingBar" class="bg-[#DAAC42] h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-300">Image Optimization</span>
+                                <span id="imageOptScore" class="text-white">0%</span>
+                            </div>
+                            <div class="w-full bg-white/20 rounded-full h-2">
+                                <div id="imageOptBar" class="bg-[#DAAC42] h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Options -->
+        <div class="flex flex-col sm:flex-row gap-4 mt-8">
+            <button onclick="exportResults('pdf')" 
+                    class="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold py-3 px-6 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300">
+                <i class="fas fa-file-pdf mr-2"></i>
+                Export PDF Report
+            </button>
+            <button onclick="exportResults('csv')" 
+                    class="flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold py-3 px-6 rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-300">
+                <i class="fas fa-file-csv mr-2"></i>
+                Export CSV Data
+            </button>
+            <button onclick="copyResults()" 
+                    class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-3 px-6 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300">
+                <i class="fas fa-copy mr-2"></i>
+                Copy Analysis
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+let analysisData = null;
+
+document.getElementById('performanceForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const url = document.getElementById('websiteUrl').value.trim();
+    if (!url) return;
+    
+    // Show loading state
+    document.getElementById('loadingState').classList.remove('hidden');
+    document.getElementById('resultsContainer').classList.add('hidden');
+    
+    // Animate progress steps
+    animateProgressSteps();
+    
+    try {
+        const response = await fetch('/tools/ai-performance-optimizer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: url })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            analysisData = data;
+            displayResults(data);
+        } else {
+            throw new Error(data.error || 'Analysis failed');
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error: ' + error.message);
+    } finally {
+        document.getElementById('loadingState').classList.add('hidden');
+    }
+});
+
+function animateProgressSteps() {
+    const steps = document.querySelectorAll('.progress-step');
+    let currentStep = 0;
+    
+    const animateStep = () => {
+        if (currentStep < steps.length) {
+            // Activate current step
+            const step = steps[currentStep];
+            const circle = step.querySelector('div');
+            const text = step.querySelector('span');
+            
+            circle.classList.remove('bg-white/30');
+            circle.classList.add('bg-[#DAAC42]', 'animate-pulse');
+            text.classList.remove('text-white/60');
+            text.classList.add('text-white/80');
+            
+            currentStep++;
+            
+            // Continue to next step after delay
+            setTimeout(animateStep, 800);
+        }
+    };
+    
+    // Reset all steps first
+    steps.forEach(step => {
+        const circle = step.querySelector('div');
+        const text = step.querySelector('span');
+        circle.classList.remove('bg-[#DAAC42]', 'animate-pulse');
+        circle.classList.add('bg-white/30');
+        text.classList.remove('text-white/80');
+        text.classList.add('text-white/60');
+    });
+    
+    // Start animation
+    setTimeout(animateStep, 500);
+}
+
+function displayResults(data) {
+    // Show results container
+    document.getElementById('resultsContainer').classList.remove('hidden');
+    
+    // Display performance score
+    displayPerformanceScore(data.performance_score);
+    
+    // Display Core Web Vitals
+    displayCoreWebVitals(data.core_web_vitals);
+    
+    // Display performance metrics
+    displayPerformanceMetrics(data.performance_analysis);
+    
+    // Display AI recommendations
+    displayAIRecommendations(data.ai_recommendations);
+    
+    // Display structured recommendations
+    displayStructuredRecommendations(data.ai_recommendations.structured_recommendations);
+    
+    // Display resource analysis
+    displayResourceAnalysis(data.performance_analysis, data.performance_score);
+    
+    // Scroll to results
+    document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+}
+
+function displayPerformanceScore(scoreData) {
+    const score = scoreData.overall_score;
+    const grade = scoreData.grade;
+    const level = scoreData.performance_level;
+    
+    // Animate score circle
+    const circle = document.getElementById('scoreProgress');
+    const circumference = 339.3;
+    const progress = (score / 100) * circumference;
+    
+    setTimeout(() => {
+        circle.style.strokeDashoffset = circumference - progress;
+    }, 500);
+    
+    // Animate score number
+    animateNumber('scoreValue', 0, score, 2000);
+    
+    // Update grade and level
+    document.getElementById('scoreGrade').textContent = grade;
+    document.getElementById('performanceLevel').textContent = level;
+    
+    // Update circle color based on score
+    if (score >= 80) {
+        circle.style.stroke = '#10B981'; // Green
+    } else if (score >= 60) {
+        circle.style.stroke = '#F59E0B'; // Yellow
+    } else {
+        circle.style.stroke = '#EF4444'; // Red
+    }
+}
+
+function displayCoreWebVitals(cwvData) {
+    // LCP
+    const lcpScore = cwvData.lcp_assessment.estimated_lcp;
+    const lcpRating = cwvData.lcp_assessment.rating;
+    document.getElementById('lcpScore').textContent = `${lcpScore.toFixed(1)}s`;
+    document.getElementById('lcpRating').textContent = lcpRating;
+    
+    // FID
+    const fidRisk = cwvData.fid_assessment.estimated_risk;
+    const fidRating = cwvData.fid_assessment.rating;
+    document.getElementById('fidScore').textContent = fidRisk;
+    document.getElementById('fidRating').textContent = fidRating;
+    
+    // CLS
+    const clsRisk = cwvData.cls_assessment.estimated_risk;
+    const clsRating = cwvData.cls_assessment.rating;
+    document.getElementById('clsScore').textContent = clsRisk;
+    document.getElementById('clsRating').textContent = clsRating;
+}
+
+function displayPerformanceMetrics(performanceData) {
+    const basicMetrics = performanceData.basic_metrics;
+    const resourceAnalysis = performanceData.resource_analysis;
+    const compressionAnalysis = performanceData.compression_analysis;
+    
+    document.getElementById('responseTime').textContent = `${basicMetrics.response_time.toFixed(2)}s`;
+    document.getElementById('pageSize').textContent = `${(basicMetrics.total_size / 1024).toFixed(1)}KB`;
+    document.getElementById('compressionStatus').textContent = compressionAnalysis.current_compression.enabled ? 'Yes' : 'No';
+    
+    const totalResources = (resourceAnalysis.resource_counts.total_css || 0) + 
+                          (resourceAnalysis.resource_counts.total_js || 0) + 
+                          (resourceAnalysis.resource_counts.total_images || 0);
+    document.getElementById('resourceCount').textContent = totalResources;
+}
+
+function displayAIRecommendations(aiData) {
+    const container = document.getElementById('aiInsights');
+    
+    if (aiData.ai_powered) {
+        container.innerHTML = `
+            <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-4">
+                <div class="flex items-center mb-2">
+                    <i class="fas fa-robot text-green-400 mr-2"></i>
+                    <span class="text-green-400 font-semibold">AI-Powered Analysis Complete</span>
+                </div>
+                <p class="text-gray-300 text-sm">Generated using advanced machine learning models</p>
+            </div>
+            <div class="text-white whitespace-pre-wrap">${aiData.recommendations}</div>
+        `;
+    } else {
+        container.innerHTML = `
+            <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4">
+                <div class="flex items-center mb-2">
+                    <i class="fas fa-chart-line text-blue-400 mr-2"></i>
+                    <span class="text-blue-400 font-semibold">Professional Algorithm Analysis</span>
+                </div>
+                <p class="text-gray-300 text-sm">Comprehensive performance evaluation completed</p>
+            </div>
+            <div class="text-white whitespace-pre-wrap">${aiData.recommendations}</div>
+        `;
+    }
+}
+
+function displayStructuredRecommendations(recommendations) {
+    const critical = recommendations.filter(r => r.priority === 'High' && r.category.includes('Critical'));
+    const quickWins = recommendations.filter(r => r.category === 'Quick Wins');
+    const advanced = recommendations.filter(r => r.category.includes('Advanced'));
+    
+    displayRecommendationCategory('criticalIssuesList', critical, 'red');
+    displayRecommendationCategory('quickWinsList', quickWins, 'yellow');
+    displayRecommendationCategory('advancedOptimizationsList', advanced, 'blue');
+}
+
+function displayRecommendationCategory(containerId, recommendations, color) {
+    const container = document.getElementById(containerId);
+    
+    if (recommendations.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 italic">No issues found in this category</p>';
+        return;
+    }
+    
+    container.innerHTML = recommendations.map(rec => `
+        <div class="bg-white/5 rounded-lg p-4 border-l-4 border-${color}-500">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <h5 class="font-semibold text-white mb-1">${rec.action}</h5>
+                    <p class="text-gray-300 text-sm mb-2">${rec.description}</p>
+                    <div class="flex items-center space-x-4 text-xs">
+                        <span class="bg-${color}-500/20 text-${color}-400 px-2 py-1 rounded">${rec.category}</span>
+                        <span class="text-gray-400">Priority: ${rec.priority}</span>
+                    </div>
+                </div>
+                <div class="ml-4 text-right">
+                    <div class="text-[#DAAC42] font-semibold text-sm">${rec.expected_impact}</div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function displayResourceAnalysis(performanceData, scoreData) {
+    const resourceCounts = performanceData.resource_analysis.resource_counts;
+    
+    // Resource counts
+    document.getElementById('cssCount').textContent = resourceCounts.total_css || 0;
+    document.getElementById('jsCount').textContent = resourceCounts.total_js || 0;
+    document.getElementById('imageCount').textContent = resourceCounts.total_images || 0;
+    document.getElementById('blockingCount').textContent = resourceCounts.blocking_js || 0;
+    
+    // Optimization scores
+    const compressionScore = performanceData.compression_analysis.compression_score || 0;
+    const cachingScore = performanceData.caching_analysis.cache_score || 0;
+    const imageOptScore = performanceData.image_optimization.optimization_score || 0;
+    
+    animateProgressBar('compressionBar', 'compressionScore', compressionScore);
+    animateProgressBar('cachingBar', 'cachingScore', cachingScore);
+    animateProgressBar('imageOptBar', 'imageOptScore', imageOptScore);
+}
+
+function animateProgressBar(barId, scoreId, score) {
+    const bar = document.getElementById(barId);
+    const scoreElement = document.getElementById(scoreId);
+    
+    setTimeout(() => {
+        bar.style.width = `${score}%`;
+        animateNumber(scoreId, 0, score, 1000, '%');
+    }, 500);
+}
+
+function animateNumber(elementId, start, end, duration, suffix = '') {
+    const element = document.getElementById(elementId);
+    const range = end - start;
+    const startTime = Date.now();
+    
+    const updateNumber = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = start + (range * progress);
+        
+        element.textContent = Math.round(current) + suffix;
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateNumber);
+        }
+    };
+    
+    updateNumber();
+}
+
+function exportResults(format) {
+    if (!analysisData) {
+        alert('No analysis data available to export');
+        return;
+    }
+    
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    const filename = `performance-analysis-${timestamp}`;
+    
+    if (format === 'pdf') {
+        // Create a comprehensive text report for PDF
+        const report = generateTextReport(analysisData);
+        
+        // Create blob and download
+        const blob = new Blob([report], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${filename}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+    } else if (format === 'csv') {
+        const csv = generateCSVReport(analysisData);
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${filename}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+}
+
+function copyResults() {
+    if (!analysisData) {
+        alert('No analysis data available to copy');
+        return;
+    }
+    
+    const report = generateTextReport(analysisData);
+    
+    navigator.clipboard.writeText(report).then(() => {
+        // Show success feedback
+        const button = event.target;
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+        button.classList.add('bg-green-600');
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.classList.remove('bg-green-600');
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert('Failed to copy to clipboard');
+    });
+}
+
+function generateTextReport(data) {
+    const score = data.performance_score;
+    const cwv = data.core_web_vitals;
+    const ai = data.ai_recommendations;
+    
+    return `
+AI Website Performance Optimizer Pro - Analysis Report
+======================================================
+
+Website: ${data.url}
+Analysis Date: ${new Date().toLocaleString()}
+AI-Powered: ${ai.ai_powered ? 'Yes' : 'No'}
+
+PERFORMANCE SCORE
+================
+Overall Score: ${score.overall_score}/100 (Grade: ${score.grade})
+Performance Level: ${score.performance_level}
+
+Score Breakdown:
+- Response Time: ${score.score_breakdown.response_time_score}/25
+- Resource Optimization: ${score.score_breakdown.resource_optimization_score}/25
+- Compression: ${score.score_breakdown.compression_score}/20
+- Caching: ${score.score_breakdown.caching_score}/15
+- Core Web Vitals: ${score.score_breakdown.core_web_vitals_score}/15
+
+CORE WEB VITALS
+===============
+Largest Contentful Paint: ${cwv.lcp_assessment.estimated_lcp.toFixed(1)}s (${cwv.lcp_assessment.rating})
+First Input Delay: ${cwv.fid_assessment.estimated_risk} Risk (${cwv.fid_assessment.rating})
+Cumulative Layout Shift: ${cwv.cls_assessment.estimated_risk} Risk (${cwv.cls_assessment.rating})
+
+AI RECOMMENDATIONS
+==================
+${ai.recommendations}
+
+STRUCTURED ACTION ITEMS
+======================
+${ai.structured_recommendations.map(rec => `
+• ${rec.action} (${rec.priority} Priority)
+  Category: ${rec.category}
+  Description: ${rec.description}
+  Expected Impact: ${rec.expected_impact}
+`).join('\n')}
+
+Generated by AI Website Performance Optimizer Pro
+    `.trim();
+}
+
+function generateCSVReport(data) {
+    const score = data.performance_score;
+    const basic = data.performance_analysis.basic_metrics;
+    const resources = data.performance_analysis.resource_analysis.resource_counts;
+    
+    const headers = [
+        'Metric', 'Value', 'Category', 'Score'
+    ];
+    
+    const rows = [
+        ['Overall Performance Score', score.overall_score, 'Performance', score.grade],
+        ['Response Time', `${basic.response_time.toFixed(2)}s`, 'Performance', ''],
+        ['Page Size', `${(basic.total_size / 1024).toFixed(1)}KB`, 'Performance', ''],
+        ['CSS Files', resources.total_css || 0, 'Resources', ''],
+        ['JavaScript Files', resources.total_js || 0, 'Resources', ''],
+        ['Images', resources.total_images || 0, 'Resources', ''],
+        ['Blocking Resources', resources.blocking_js || 0, 'Resources', ''],
+        ['LCP Score', `${data.core_web_vitals.lcp_assessment.estimated_lcp.toFixed(1)}s`, 'Core Web Vitals', data.core_web_vitals.lcp_assessment.rating],
+        ['FID Risk', data.core_web_vitals.fid_assessment.estimated_risk, 'Core Web Vitals', data.core_web_vitals.fid_assessment.rating],
+        ['CLS Risk', data.core_web_vitals.cls_assessment.estimated_risk, 'Core Web Vitals', data.core_web_vitals.cls_assessment.rating]
+    ];
+    
+    return [headers, ...rows].map(row => 
+        row.map(cell => `"${cell}"`).join(',')
+    ).join('\n');
+}
+</script>
+{% endblock %}

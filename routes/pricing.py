@@ -278,7 +278,7 @@ def api_upgrade_prompt():
                 "message": "Sign up for a free account to get 5 tool uses per month!",
                 "primary_action": {
                     "text": "Sign Up Free",
-                    "url": url_for("auth.register"),
+                    "url": url_for("users.register"),
                 },
                 "secondary_action": {
                     "text": "View Pricing",

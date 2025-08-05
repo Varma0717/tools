@@ -20,13 +20,13 @@ def login_required_infrastructure(f):
                         {
                             "success": False,
                             "error": "Authentication required for professional tools",
-                            "redirect": url_for("auth.login"),
+                            "redirect": url_for("auth.google_login"),
                         }
                     ),
                     401,
                 )
             flash("Please login to access professional developer tools.", "warning")
-            return redirect(url_for("auth.login", next=request.url))
+            return redirect(url_for("auth.google_login", next=request.url))
         return f(*args, **kwargs)
 
     return decorated_function
@@ -46,12 +46,12 @@ def pro_subscription_required(f):
                         {
                             "success": False,
                             "error": "Authentication required",
-                            "redirect": url_for("auth.login"),
+                            "redirect": url_for("auth.google_login"),
                         }
                     ),
                     401,
                 )
-            return redirect(url_for("auth.login", next=request.url))
+            return redirect(url_for("auth.google_login", next=request.url))
 
         if not current_user.has_active_subscription():
             if request.is_json:
@@ -87,12 +87,12 @@ def openrouter_api_tool(f):
                         {
                             "success": False,
                             "error": "Authentication required",
-                            "redirect": url_for("auth.login"),
+                            "redirect": url_for("auth.google_login"),
                         }
                     ),
                     401,
                 )
-            return redirect(url_for("auth.login", next=request.url))
+            return redirect(url_for("auth.google_login", next=request.url))
 
         # Check subscription for AI tools
         if not current_user.has_active_subscription():

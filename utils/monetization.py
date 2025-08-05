@@ -154,14 +154,14 @@ def require_subscription(min_plan="pro"):
                             {
                                 "error": True,
                                 "message": "Please log in to access this feature",
-                                "login_url": url_for("auth.login"),
+                                "login_url": url_for("auth.google_login"),
                             }
                         ),
                         401,
                     )
                 else:
                     flash("Please log in to access this feature", "warning")
-                    return redirect(url_for("auth.login"))
+                    return redirect(url_for("auth.google_login"))
 
             subscription = Subscription.get_user_subscription(current_user.id)
 

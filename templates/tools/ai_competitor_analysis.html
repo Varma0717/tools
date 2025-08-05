@@ -1,0 +1,627 @@
+{% extends "tools/professional_tool_base.html" %}
+
+{% block tool_title %}AI Competitor Analysis Pro{% endblock %}
+{% block tool_description %}
+Professional AI-powered competitive analysis with comprehensive website comparison, market positioning insights, and strategic recommendations. Analyze your website against competitors to identify opportunities and gaps.
+{% endblock %}
+
+{% block tool_content %}
+<div class="space-y-8">
+    <!-- Input Section -->
+    <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+        <div class="flex items-center mb-6">
+            <div class="bg-gradient-to-r from-purple-500 to-pink-600 p-3 rounded-lg mr-4">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Competitive Analysis Setup</h2>
+                <p class="text-gray-600">Compare your website against competitors for strategic insights</p>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <!-- Primary Website -->
+            <div>
+                <label for="primary_url" class="block text-sm font-semibold text-gray-700 mb-2">Your Website URL</label>
+                <div class="relative">
+                    <input 
+                        type="url" 
+                        id="primary_url" 
+                        name="primary_url" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-lg"
+                        placeholder="https://yourwebsite.com"
+                        required
+                    >
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Competitor URLs -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Competitor Websites (1-5 competitors)</label>
+                <div id="competitor-inputs" class="space-y-3">
+                    <div class="relative">
+                        <input 
+                            type="url" 
+                            name="competitor_url" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            placeholder="https://competitor1.com"
+                            required
+                        >
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-3">
+                    <button 
+                        type="button" 
+                        onclick="addCompetitorInput()" 
+                        class="text-purple-600 hover:text-purple-700 font-medium text-sm flex items-center"
+                    >
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Add Another Competitor
+                    </button>
+                    <span class="text-sm text-gray-500" id="competitor-count">1 / 5 competitors</span>
+                </div>
+            </div>
+
+            <button 
+                type="button" 
+                onclick="startCompetitorAnalysis()" 
+                class="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-4 px-6 rounded-lg hover:from-purple-600 hover:to-pink-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+                <span class="flex items-center justify-center">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Start AI Competitive Analysis
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Section -->
+    <div id="loading" class="hidden">
+        <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+            <div class="flex items-center justify-center mb-6">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mr-4"></div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Analyzing Competitive Landscape...</h3>
+                    <p class="text-gray-600">AI is comparing websites and generating insights</p>
+                </div>
+            </div>
+            
+            <div class="space-y-2">
+                <div class="text-sm text-gray-600">Analysis Progress:</div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="progress-bar" class="bg-gradient-to-r from-purple-500 to-pink-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <div id="progress-text" class="text-sm text-gray-500">Initializing competitive analysis...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" class="hidden space-y-6">
+        <!-- Competitive Position Overview -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-900">Competitive Position</h3>
+                <div id="position-badge" class="px-4 py-2 rounded-full text-white font-bold text-lg"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
+                    <div class="text-2xl font-bold text-blue-600" id="content-score">0</div>
+                    <div class="text-sm text-gray-600">Content Score</div>
+                </div>
+                <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
+                    <div class="text-2xl font-bold text-green-600" id="seo-score">0</div>
+                    <div class="text-sm text-gray-600">SEO Score</div>
+                </div>
+                <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
+                    <div class="text-2xl font-bold text-purple-600" id="tech-score">0</div>
+                    <div class="text-sm text-gray-600">Technical Score</div>
+                </div>
+                <div class="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg">
+                    <div class="text-2xl font-bold text-orange-600" id="perf-score">0</div>
+                    <div class="text-sm text-gray-600">Performance Score</div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="text-lg font-semibold text-gray-900 mb-2">Overall Position</div>
+                <div id="overall-score" class="text-3xl font-bold text-gray-800">0%</div>
+                <div id="position-description" class="text-gray-600 mt-2"></div>
+            </div>
+        </div>
+
+        <!-- AI Strategic Insights -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div class="flex items-center mb-4">
+                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-2 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">AI Strategic Recommendations</h3>
+                    <span id="ai-model" class="text-sm text-gray-500"></span>
+                </div>
+            </div>
+            <div id="ai-recommendations" class="prose max-w-none">
+                <!-- AI recommendations will be populated here -->
+            </div>
+        </div>
+
+        <!-- Competitive Comparison -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                <div class="bg-blue-500 p-2 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                Competitive Comparison Matrix
+            </h3>
+            <div id="comparison-matrix" class="overflow-x-auto">
+                <!-- Comparison matrix will be populated here -->
+            </div>
+        </div>
+
+        <!-- Website Analysis Details -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Primary Website Analysis -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <div class="bg-green-500 p-2 rounded-lg mr-3">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+                        </svg>
+                    </div>
+                    Your Website Analysis
+                </h3>
+                <div id="primary-analysis" class="space-y-3">
+                    <!-- Primary analysis details will be populated here -->
+                </div>
+            </div>
+
+            <!-- Competitor Insights -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <div class="bg-red-500 p-2 rounded-lg mr-3">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                    </svg>
+                </div>
+                Competitor Insights
+                </h3>
+                <div id="competitor-insights" class="space-y-3">
+                    <!-- Competitor insights will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Gaps and Opportunities -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                <div class="bg-yellow-500 p-2 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                Opportunities & Action Items
+            </h3>
+            <div id="opportunities" class="space-y-3">
+                <!-- Opportunities will be populated here -->
+            </div>
+        </div>
+
+        <!-- Strategic Recommendations -->
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                <div class="bg-indigo-500 p-2 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                    </svg>
+                </div>
+                Strategic Action Plan
+            </h3>
+            <div id="strategic-recommendations" class="space-y-3">
+                <!-- Strategic recommendations will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Section -->
+    <div id="error" class="hidden">
+        <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+            <div class="flex items-center">
+                <div class="bg-red-500 p-2 rounded-lg mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-red-800">Analysis Error</h3>
+                    <p id="error-message" class="text-red-600"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let competitorCount = 1;
+const maxCompetitors = 5;
+
+function addCompetitorInput() {
+    if (competitorCount >= maxCompetitors) return;
+    
+    competitorCount++;
+    
+    const container = document.getElementById('competitor-inputs');
+    const newInput = document.createElement('div');
+    newInput.className = 'relative';
+    newInput.innerHTML = `
+        <input 
+            type="url" 
+            name="competitor_url" 
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            placeholder="https://competitor${competitorCount}.com"
+        >
+        <div class="absolute inset-y-0 right-0 flex items-center pr-10">
+            <button type="button" onclick="removeCompetitorInput(this)" class="text-red-500 hover:text-red-700 p-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+            </button>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                </svg>
+            </div>
+        </div>
+    `;
+    
+    container.appendChild(newInput);
+    updateCompetitorCount();
+}
+
+function removeCompetitorInput(button) {
+    button.closest('.relative').remove();
+    competitorCount--;
+    updateCompetitorCount();
+}
+
+function updateCompetitorCount() {
+    document.getElementById('competitor-count').textContent = `${competitorCount} / ${maxCompetitors} competitors`;
+}
+
+function startCompetitorAnalysis() {
+    const primaryUrl = document.getElementById('primary_url').value.trim();
+    const competitorInputs = document.querySelectorAll('input[name="competitor_url"]');
+    const competitorUrls = Array.from(competitorInputs)
+        .map(input => input.value.trim())
+        .filter(url => url);
+    
+    if (!primaryUrl) {
+        alert('Please enter your website URL');
+        return;
+    }
+    
+    if (competitorUrls.length === 0) {
+        alert('Please enter at least one competitor URL');
+        return;
+    }
+    
+    // Hide previous results and show loading
+    document.getElementById('results').classList.add('hidden');
+    document.getElementById('error').classList.add('hidden');
+    document.getElementById('loading').classList.remove('hidden');
+    
+    // Simulate progress
+    let progress = 0;
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    
+    const progressMessages = [
+        'Analyzing your website...',
+        'Crawling competitor websites...',
+        'Comparing content strategies...',
+        'Evaluating SEO implementations...',
+        'Assessing technical factors...',
+        'Analyzing performance metrics...',
+        'AI processing competitive insights...',
+        'Generating strategic recommendations...',
+        'Finalizing competitive analysis...'
+    ];
+    
+    const progressInterval = setInterval(() => {
+        progress += 10;
+        if (progress > 100) progress = 100;
+        
+        progressBar.style.width = progress + '%';
+        
+        const messageIndex = Math.min(
+            Math.floor(progress / 12), 
+            progressMessages.length - 1
+        );
+        progressText.textContent = progressMessages[messageIndex];
+        
+        if (progress >= 100) {
+            clearInterval(progressInterval);
+        }
+    }, 1200);
+    
+    // Make API request
+    fetch('{{ url_for("ai_competitor_analysis.ai_competitor_analysis_post") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ 
+            primary_url: primaryUrl,
+            competitor_urls: competitorUrls
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        clearInterval(progressInterval);
+        document.getElementById('loading').classList.add('hidden');
+        
+        if (data.success) {
+            displayResults(data);
+        } else {
+            showError(data.error || 'Analysis failed');
+        }
+    })
+    .catch(error => {
+        clearInterval(progressInterval);
+        document.getElementById('loading').classList.add('hidden');
+        showError('Network error: ' + error.message);
+    });
+}
+
+function displayResults(data) {
+    // Display competitive position
+    const competitiveScore = data.competitive_score;
+    const positionBadge = document.getElementById('position-badge');
+    
+    positionBadge.textContent = competitiveScore.position;
+    positionBadge.className = `px-4 py-2 rounded-full text-white font-bold text-lg ${getPositionColor(competitiveScore.overall_score)}`;
+    
+    // Display score breakdown
+    const breakdown = competitiveScore.score_breakdown;
+    document.getElementById('content-score').textContent = Math.round(breakdown.content_score);
+    document.getElementById('seo-score').textContent = Math.round(breakdown.seo_score);
+    document.getElementById('tech-score').textContent = Math.round(breakdown.technical_score);
+    document.getElementById('perf-score').textContent = Math.round(breakdown.performance_score);
+    document.getElementById('overall-score').textContent = competitiveScore.overall_score + '%';
+    document.getElementById('position-description').textContent = competitiveScore.position_description;
+    
+    // Display AI recommendations
+    document.getElementById('ai-recommendations').innerHTML = formatAIRecommendations(data.ai_recommendations.recommendations);
+    document.getElementById('ai-model').textContent = `Powered by ${data.ai_recommendations.model_used}`;
+    
+    // Display comparison matrix
+    displayComparisonMatrix(data.primary_analysis, data.competitor_analyses);
+    
+    // Display primary analysis
+    displayPrimaryAnalysis(data.primary_analysis);
+    
+    // Display competitor insights
+    displayCompetitorInsights(data.competitor_analyses);
+    
+    // Display opportunities
+    displayOpportunities(data.competitive_insights.gaps_and_opportunities);
+    
+    // Display strategic recommendations
+    displayStrategicRecommendations(data.ai_recommendations.strategic_insights);
+    
+    document.getElementById('results').classList.remove('hidden');
+}
+
+function getPositionColor(score) {
+    if (score >= 85) return 'bg-green-500';
+    if (score >= 70) return 'bg-blue-500';
+    if (score >= 55) return 'bg-yellow-500';
+    if (score >= 40) return 'bg-orange-500';
+    return 'bg-red-500';
+}
+
+function formatAIRecommendations(recommendations) {
+    return recommendations.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+}
+
+function displayComparisonMatrix(primary, competitors) {
+    const container = document.getElementById('comparison-matrix');
+    
+    const allSites = [primary, ...competitors];
+    
+    container.innerHTML = `
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="bg-gray-50">
+                    <th class="px-4 py-2 text-left">Website</th>
+                    <th class="px-4 py-2 text-center">Words</th>
+                    <th class="px-4 py-2 text-center">HTTPS</th>
+                    <th class="px-4 py-2 text-center">Schema</th>
+                    <th class="px-4 py-2 text-center">Response Time</th>
+                    <th class="px-4 py-2 text-center">Mobile Ready</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${allSites.map((site, index) => `
+                    <tr class="${index === 0 ? 'bg-green-50 font-semibold' : 'hover:bg-gray-50'}">
+                        <td class="px-4 py-2">
+                            ${index === 0 ? '🏠 ' : '🔗 '}
+                            <span class="truncate">${site.url}</span>
+                            ${index === 0 ? ' (You)' : ''}
+                        </td>
+                        <td class="px-4 py-2 text-center">${site.content_analysis?.text_metrics?.word_count || 0}</td>
+                        <td class="px-4 py-2 text-center">
+                            ${site.technical_factors?.security?.https ? '✅' : '❌'}
+                        </td>
+                        <td class="px-4 py-2 text-center">
+                            ${site.seo_metrics?.structured_data?.has_schema ? '✅' : '❌'}
+                        </td>
+                        <td class="px-4 py-2 text-center">${site.basic_info?.response_time?.toFixed(2) || 'N/A'}s</td>
+                        <td class="px-4 py-2 text-center">
+                            ${site.technical_factors?.mobile?.has_viewport ? '✅' : '❌'}
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
+function displayPrimaryAnalysis(analysis) {
+    const container = document.getElementById('primary-analysis');
+    
+    const seoMetrics = analysis.seo_metrics || {};
+    const contentAnalysis = analysis.content_analysis || {};
+    const technicalFactors = analysis.technical_factors || {};
+    
+    container.innerHTML = `
+        <div class="space-y-3">
+            <div class="p-3 bg-blue-50 rounded-lg">
+                <h4 class="font-semibold text-blue-800">Content Metrics</h4>
+                <p class="text-sm text-blue-600">
+                    ${contentAnalysis.text_metrics?.word_count || 0} words • 
+                    ${contentAnalysis.text_metrics?.paragraph_count || 0} paragraphs • 
+                    ${contentAnalysis.multimedia?.images || 0} images
+                </p>
+            </div>
+            
+            <div class="p-3 bg-green-50 rounded-lg">
+                <h4 class="font-semibold text-green-800">SEO Status</h4>
+                <p class="text-sm text-green-600">
+                    Title: ${seoMetrics.title?.present ? '✅' : '❌'} • 
+                    Description: ${seoMetrics.meta_description?.present ? '✅' : '❌'} • 
+                    Schema: ${seoMetrics.structured_data?.has_schema ? '✅' : '❌'}
+                </p>
+            </div>
+            
+            <div class="p-3 bg-purple-50 rounded-lg">
+                <h4 class="font-semibold text-purple-800">Technical</h4>
+                <p class="text-sm text-purple-600">
+                    HTTPS: ${technicalFactors.security?.https ? '✅' : '❌'} • 
+                    Mobile: ${technicalFactors.mobile?.has_viewport ? '✅' : '❌'} • 
+                    Speed: ${analysis.basic_info?.response_time?.toFixed(2) || 'N/A'}s
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+function displayCompetitorInsights(competitors) {
+    const container = document.getElementById('competitor-insights');
+    
+    container.innerHTML = competitors.map((competitor, index) => `
+        <div class="p-3 border rounded-lg">
+            <h4 class="font-semibold text-gray-800">Competitor ${index + 1}</h4>
+            <p class="text-xs text-gray-500 mb-2">${competitor.url}</p>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+                <div>Words: ${competitor.content_analysis?.text_metrics?.word_count || 0}</div>
+                <div>Response: ${competitor.basic_info?.response_time?.toFixed(2) || 'N/A'}s</div>
+                <div>HTTPS: ${competitor.technical_factors?.security?.https ? 'Yes' : 'No'}</div>
+                <div>Schema: ${competitor.seo_metrics?.structured_data?.has_schema ? 'Yes' : 'No'}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function displayOpportunities(opportunities) {
+    const container = document.getElementById('opportunities');
+    
+    if (!opportunities || opportunities.length === 0) {
+        container.innerHTML = '<div class="text-green-600 font-semibold">Great job! No major gaps identified.</div>';
+        return;
+    }
+    
+    container.innerHTML = opportunities.map(opportunity => `
+        <div class="p-4 border rounded-lg bg-yellow-50">
+            <h4 class="font-semibold text-yellow-800">${opportunity.type}</h4>
+            <p class="text-sm text-yellow-700 mt-1">${opportunity.description}</p>
+            <p class="text-sm text-yellow-600 mt-2"><strong>Opportunity:</strong> ${opportunity.opportunity}</p>
+        </div>
+    `).join('');
+}
+
+function displayStrategicRecommendations(recommendations) {
+    const container = document.getElementById('strategic-recommendations');
+    
+    if (!recommendations || recommendations.length === 0) {
+        container.innerHTML = '<div class="text-gray-600">Strategic recommendations will appear here.</div>';
+        return;
+    }
+    
+    container.innerHTML = recommendations.map(rec => `
+        <div class="p-4 border rounded-lg bg-indigo-50">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <h4 class="font-semibold text-indigo-800">${rec.action}</h4>
+                    <p class="text-sm text-indigo-700 mt-1">${rec.description}</p>
+                    <div class="flex items-center mt-2">
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800 mr-2">
+                            ${rec.category}
+                        </span>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(rec.priority)}">
+                            ${rec.priority} Priority
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getPriorityColor(priority) {
+    switch(priority) {
+        case 'High': return 'bg-red-100 text-red-800';
+        case 'Medium': return 'bg-yellow-100 text-yellow-800';
+        default: return 'bg-gray-100 text-gray-800';
+    }
+}
+
+function showError(message) {
+    document.getElementById('error-message').textContent = message;
+    document.getElementById('error').classList.remove('hidden');
+}
+</script>
+{% endblock %}
+
+{% block export_data %}
+<script>
+function getExportData() {
+    const results = document.getElementById('results');
+    if (results.classList.contains('hidden')) {
+        return null;
+    }
+    
+    return {
+        tool: 'AI Competitor Analysis Pro',
+        timestamp: new Date().toISOString(),
+        primary_url: document.getElementById('primary_url').value,
+        position: document.getElementById('position-badge').textContent,
+        overall_score: document.getElementById('overall-score').textContent,
+        // Add more data as needed
+    };
+}
+</script>
+{% endblock %}

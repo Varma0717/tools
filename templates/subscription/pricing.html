@@ -110,7 +110,7 @@
           </li>
         </ul>
         
-        <a href="{{ url_for('auth.register') }}" 
+        <a href="{{ url_for('users.register') }}" 
            class="block w-full bg-gray-900 text-white py-3 px-6 rounded-xl font-semibold text-center hover:bg-gray-800 transition">
           Get Developer Access
         </a>
@@ -323,7 +323,7 @@ function selectPaymentMethod(method) {
 
 function selectPlan(planType, price) {
     if (!{{ 'true' if current_user.is_authenticated else 'false' }}) {
-        window.location.href = "{{ url_for('auth.login') }}?next=" + encodeURIComponent(window.location.href);
+        window.location.href = "{{ url_for('users.login') }}?next=" + encodeURIComponent(window.location.href);
         return;
     }
     
