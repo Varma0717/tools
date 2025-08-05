@@ -571,71 +571,89 @@ def ads_context():
     """Context processor to determine if ads should be displayed"""
 
     def should_show_ads():
-        # Check if AdSense is approved
-        adsense_approved = (
-            os.getenv("GOOGLE_ADSENSE_APPROVED", "false").lower() == "true"
-        )
-        if not adsense_approved:
+        try:
+            # Check if AdSense is approved
+            adsense_approved = (
+                os.getenv("GOOGLE_ADSENSE_APPROVED", "false").lower() == "true"
+            )
+            if not adsense_approved:
+                return False
+
+            # Check if we're on an allowed page (tools pages and other general pages)
+            # Exclude: homepage, admin pages, user pages
+            excluded_endpoints = [
+                "home",
+                "index",  # Homepage
+                "admin.",  # Admin pages
+                "users.",  # User pages
+                "auth.",  # Auth pages
+            ]
+
+            is_excluded_page = False
+            if request.endpoint:
+                for excluded in excluded_endpoints:
+                    if request.endpoint == excluded or request.endpoint.startswith(
+                        excluded
+                    ):
+                        is_excluded_page = True
+                        break
+
+            # Also exclude if URL contains these paths
+            excluded_paths = [
+                "/admin/",
+                "/users/",
+                "/user/",
+                "/login",
+                "/register",
+                "/logout",
+            ]
+            is_excluded_url = any(path in request.path for path in excluded_paths)
+
+            if is_excluded_page or is_excluded_url or request.path == "/":
+                return False
+
+            # Check user subscription status
+            if current_user.is_authenticated:
+                try:
+                    # Check if user has active premium subscription
+                    from models.subscription import UserSubscription
+                    from datetime import datetime
+
+                    active_subscription = UserSubscription.query.filter(
+                        UserSubscription.user_id == current_user.id,
+                        UserSubscription.status == "active",
+                        UserSubscription.end_date > datetime.utcnow(),
+                    ).first()
+
+                    is_premium_user = current_user.is_premium or active_subscription is not None
+                    return not is_premium_user  # Show ads only to non-premium users
+                except Exception:
+                    # If there's an error checking subscription, default to showing ads
+                    return not getattr(current_user, 'is_premium', False)
+            else:
+                return True  # Non-authenticated users see ads
+                
+        except Exception:
+            # If there's any error, default to not showing ads for safety
             return False
-
-        # Check if we're on an allowed page (tools pages and other general pages)
-        # Exclude: homepage, admin pages, user pages
-        excluded_endpoints = [
-            "home",
-            "index",  # Homepage
-            "admin.",  # Admin pages
-            "users.",  # User pages
-            "auth.",  # Auth pages
-        ]
-
-        is_excluded_page = False
-        if request.endpoint:
-            for excluded in excluded_endpoints:
-                if request.endpoint == excluded or request.endpoint.startswith(
-                    excluded
-                ):
-                    is_excluded_page = True
-                    break
-
-        # Also exclude if URL contains these paths
-        excluded_paths = [
-            "/admin/",
-            "/users/",
-            "/user/",
-            "/login",
-            "/register",
-            "/logout",
-        ]
-        is_excluded_url = any(path in request.path for path in excluded_paths)
-
-        if is_excluded_page or is_excluded_url or request.path == "/":
-            return False
-
-        # Check user subscription status
-        if current_user.is_authenticated:
-            # Check if user has active premium subscription
-            from models.subscription import UserSubscription
-            from datetime import datetime
-
-            active_subscription = UserSubscription.query.filter(
-                UserSubscription.user_id == current_user.id,
-                UserSubscription.status == "active",
-                UserSubscription.end_date > datetime.utcnow(),
-            ).first()
-
-            is_premium_user = current_user.is_premium or active_subscription is not None
-            return not is_premium_user  # Show ads only to non-premium users
-        else:
-            return True  # Non-authenticated users see ads
 
     def get_adsense_config():
         """Get AdSense configuration"""
-        return {
-            "client_id": os.getenv("GOOGLE_ADSENSE_CLIENT_ID", ""),
-            "approved": os.getenv("GOOGLE_ADSENSE_APPROVED", "false").lower() == "true",
-            "sidebar_slot": os.getenv("ADSENSE_SIDEBAR_SLOT", ""),
-            "bottom_slot": os.getenv("ADSENSE_BOTTOM_SLOT", ""),
-        }
+        try:
+            return {
+                "client_id": os.getenv("GOOGLE_ADSENSE_CLIENT_ID", ""),
+                "approved": os.getenv("GOOGLE_ADSENSE_APPROVED", "false").lower() == "true",
+                "sidebar_slot": os.getenv("ADSENSE_SIDEBAR_SLOT", ""),
+                "bottom_slot": os.getenv("ADSENSE_BOTTOM_SLOT", ""),
+            }
+        except Exception:
+            # Return safe defaults if there's an error
+            return {
+                "client_id": "",
+                "approved": False,
+                "sidebar_slot": "",
+                "bottom_slot": "",
+            }
 
     return dict(should_show_ads=should_show_ads, get_adsense_config=get_adsense_config)
 
