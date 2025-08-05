@@ -625,14 +625,16 @@ def ads_context():
                         UserSubscription.end_date > datetime.utcnow(),
                     ).first()
 
-                    is_premium_user = current_user.is_premium or active_subscription is not None
+                    is_premium_user = (
+                        current_user.is_premium or active_subscription is not None
+                    )
                     return not is_premium_user  # Show ads only to non-premium users
                 except Exception:
                     # If there's an error checking subscription, default to showing ads
-                    return not getattr(current_user, 'is_premium', False)
+                    return not getattr(current_user, "is_premium", False)
             else:
                 return True  # Non-authenticated users see ads
-                
+
         except Exception:
             # If there's any error, default to not showing ads for safety
             return False
@@ -642,7 +644,8 @@ def ads_context():
         try:
             return {
                 "client_id": os.getenv("GOOGLE_ADSENSE_CLIENT_ID", ""),
-                "approved": os.getenv("GOOGLE_ADSENSE_APPROVED", "false").lower() == "true",
+                "approved": os.getenv("GOOGLE_ADSENSE_APPROVED", "false").lower()
+                == "true",
                 "sidebar_slot": os.getenv("ADSENSE_SIDEBAR_SLOT", ""),
                 "bottom_slot": os.getenv("ADSENSE_BOTTOM_SLOT", ""),
             }
