@@ -131,5 +131,27 @@ class User(db.Model, UserMixin):
             return self.last_name
         return self.username
 
+    def has_active_subscription(self):
+        """Check if user has an active Pro subscription"""
+        from models.subscription import UserSubscription
+
+        active_subscription = (
+            UserSubscription.query.filter_by(user_id=self.id, status="active")
+            .filter(UserSubscription.end_date > datetime.utcnow())
+            .first()
+        )
+        return active_subscription is not None or self.is_premium
+
+    def get_subscription_plan(self):
+        """Get current subscription plan"""
+        from models.subscription import UserSubscription
+
+        active_subscription = (
+            UserSubscription.query.filter_by(user_id=self.id, status="active")
+            .filter(UserSubscription.end_date > datetime.utcnow())
+            .first()
+        )
+        return active_subscription.plan if active_subscription else None
+
     def __repr__(self):
         return f"<User {self.username}>"

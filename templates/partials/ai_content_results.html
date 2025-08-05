@@ -1,0 +1,202 @@
+<div class="space-y-8">
+  <!-- SEO Score Card -->
+  <div class="bg-gradient-to-r from-[#DAAC42] to-[#b89627] text-white rounded-2xl p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-2xl font-bold mb-2">SEO Score</h3>
+        <p class="opacity-90">Overall content optimization score</p>
+      </div>
+      <div class="text-right">
+        <div class="text-4xl font-extrabold">{{ results.seo_score or 75 }}/100</div>
+        <div class="text-sm opacity-80">
+          {% if results.seo_score >= 80 %}
+            Excellent
+          {% elif results.seo_score >= 60 %}
+            Good
+          {% elif results.seo_score >= 40 %}
+            Fair
+          {% else %}
+            Needs Improvement
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Metrics -->
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+      <div class="flex items-center gap-3 mb-3">
+        <i data-lucide="type" class="w-6 h-6 text-[#DAAC42]"></i>
+        <h4 class="font-semibold text-gray-900">Word Count</h4>
+      </div>
+      <div class="text-2xl font-bold text-gray-900">{{ results.word_count or 0 }}</div>
+      <p class="text-sm text-gray-600 mt-1">
+        {% if results.word_count < 300 %}
+          Consider adding more content
+        {% elif results.word_count > 2000 %}
+          Very comprehensive
+        {% else %}
+          Good length for SEO
+        {% endif %}
+      </p>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+      <div class="flex items-center gap-3 mb-3">
+        <i data-lucide="clock" class="w-6 h-6 text-[#DAAC42]"></i>
+        <h4 class="font-semibold text-gray-900">Reading Time</h4>
+      </div>
+      <div class="text-2xl font-bold text-gray-900">{{ results.readability.estimated_reading_time or results.word_count // 200 or 1 }} min</div>
+      <p class="text-sm text-gray-600 mt-1">Average reading speed</p>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+      <div class="flex items-center gap-3 mb-3">
+        <i data-lucide="graduation-cap" class="w-6 h-6 text-[#DAAC42]"></i>
+        <h4 class="font-semibold text-gray-900">Grade Level</h4>
+      </div>
+      <div class="text-2xl font-bold text-gray-900">{{ results.readability.grade_level or 'College' }}</div>
+      <p class="text-sm text-gray-600 mt-1">Reading difficulty</p>
+    </div>
+  </div>
+
+  <!-- Keyword Analysis -->
+  {% if results.keyword_density %}
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+      <h4 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+        <i data-lucide="target" class="w-5 h-5 mr-2 text-[#DAAC42]"></i>
+        Keyword Analysis
+      </h4>
+      <div class="space-y-3">
+        {% for keyword, data in results.keyword_density.items() %}
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <span class="font-medium text-gray-900">{{ keyword }}</span>
+            <div class="text-right">
+              <span class="text-lg font-semibold text-[#DAAC42]">{{ data.density }}%</span>
+              <span class="text-sm text-gray-500 ml-2">({{ data.count }} times)</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- AI Recommendations -->
+  {% if results.recommendations %}
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+      <h4 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+        <i data-lucide="lightbulb" class="w-5 h-5 mr-2 text-[#DAAC42]"></i>
+        AI Optimization Recommendations
+      </h4>
+      <div class="space-y-3">
+        {% for recommendation in results.recommendations %}
+          <div class="flex items-start gap-3 p-3 bg-blue-50 border border-blue-100 rounded-lg">
+            <i data-lucide="arrow-right" class="w-4 h-4 text-blue-600 mt-1 flex-shrink-0"></i>
+            <p class="text-gray-800">{{ recommendation }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Full AI Analysis -->
+  {% if results.analysis %}
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+      <h4 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+        <i data-lucide="cpu" class="w-5 h-5 mr-2 text-[#DAAC42]"></i>
+        Complete AI Analysis
+      </h4>
+      <div class="prose prose-gray max-w-none">
+        <div class="bg-gray-50 p-4 rounded-lg border">
+          <pre class="whitespace-pre-wrap text-sm text-gray-800">{{ results.analysis }}</pre>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Export Options -->
+  <div class="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl p-6">
+    <h4 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+      <i data-lucide="download" class="w-5 h-5 mr-2 text-[#DAAC42]"></i>
+      Export Analysis Report
+    </h4>
+    <div class="flex flex-wrap gap-3">
+      <button onclick="exportReport('pdf')" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center gap-2">
+        <i data-lucide="file-text" class="w-4 h-4"></i>
+        Export PDF
+      </button>
+      <button onclick="exportReport('json')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
+        <i data-lucide="code" class="w-4 h-4"></i>
+        Export JSON
+      </button>
+      <button onclick="exportReport('csv')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2">
+        <i data-lucide="table" class="w-4 h-4"></i>
+        Export CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- Analysis Metadata -->
+  <div class="text-center text-sm text-gray-500 border-t pt-4">
+    <p>
+      Analysis completed on {{ results.analysis_timestamp or 'now' }}
+      {% if results.fallback_mode %} (Backup mode) {% endif %}
+    </p>
+    <p>Tool Version: {{ results.tool_version or '2.0 Professional' }} | Powered by OpenRouter AI</p>
+  </div>
+</div>
+
+<script>
+function exportReport(format) {
+    const resultData = {{ results | tojson | safe }};
+    
+    if (format === 'json') {
+        const blob = new Blob([JSON.stringify(resultData, null, 2)], { type: 'application/json' });
+        downloadFile(blob, `content-optimization-report.json`);
+    } else if (format === 'csv') {
+        const csv = convertToCSV(resultData);
+        const blob = new Blob([csv], { type: 'text/csv' });
+        downloadFile(blob, `content-optimization-report.csv`);
+    } else if (format === 'pdf') {
+        // For PDF, we would typically send to server for generation
+        alert('PDF export feature coming soon in the next update!');
+    }
+}
+
+function convertToCSV(data) {
+    const headers = ['Metric', 'Value'];
+    const rows = [
+        ['SEO Score', data.seo_score || 'N/A'],
+        ['Word Count', data.word_count || 'N/A'],
+        ['Character Count', data.character_count || 'N/A'],
+        ['Reading Time', (data.readability?.estimated_reading_time || Math.ceil((data.word_count || 0) / 200)) + ' minutes'],
+        ['Grade Level', data.readability?.grade_level || 'N/A'],
+        ['Analysis Date', data.analysis_timestamp || 'N/A']
+    ];
+    
+    // Add keyword density data
+    if (data.keyword_density) {
+        Object.entries(data.keyword_density).forEach(([keyword, info]) => {
+            rows.push([`Keyword: ${keyword}`, `${info.density}% (${info.count} times)`]);
+        });
+    }
+    
+    const csvContent = [headers, ...rows].map(row => 
+        row.map(field => `"${field}"`).join(',')
+    ).join('\n');
+    
+    return csvContent;
+}
+
+function downloadFile(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>

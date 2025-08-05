@@ -1,0 +1,406 @@
+{% extends "base.html" %}
+{% block title %}Professional Developer Pricing | Super SEO Toolkit{% endblock %}
+{% block meta_description %}Professional subscription plans for developers and agencies. Access AI-powered SEO tools, advanced analytics, and enterprise features.{% endblock %}
+
+{% block content %}
+<!-- GLOWING ANIMATED BACKGROUND -->
+<style>
+  body {
+    background: radial-gradient(ellipse at top left, #fffbe6 0%, #f6f6f8 80%), linear-gradient(135deg, #DAAC42 0%, #f1eaff 100%);
+    min-height: 100vh;
+    position: relative;
+  }
+  .glow-blur {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(64px);
+    opacity: .40;
+    border-radius: 50%;
+    animation: blow 6s ease-in-out infinite alternate;
+  }
+  @keyframes blow {
+    0% {transform: scale(1);}
+    100% {transform: scale(1.07);}
+  }
+  .glow-blur.one {top: 20%; left: 8%; width: 500px; height: 300px; background: #DAAC42;}
+  .glow-blur.two {bottom: 10%; right: 8%; width: 400px; height: 220px; background: #7f5aff;}
+</style>
+<div class="glow-blur one"></div>
+<div class="glow-blur two"></div>
+
+<!-- PRICING HEADER -->
+<section class="bg-gradient-to-tr from-white via-[#f6f6f8] to-white py-20 border-b border-gray-100 relative z-10">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+    <div class="mb-8">
+      <span class="inline-block rounded-full px-5 py-2 text-sm font-bold bg-[#DAAC40]/10 text-[#DAAC40] tracking-widest uppercase mb-4">
+        Professional Infrastructure
+      </span>
+      <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-6">
+        Developer-Grade <span class="text-[#DAAC40]">SEO Infrastructure</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-8">
+        Professional tools designed for developers, agencies, and enterprises. Access AI-powered analysis, advanced automation, and comprehensive reporting infrastructure.
+      </p>
+    </div>
+    
+    <!-- Payment Method Selector -->
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 max-w-md mx-auto mb-12">
+      <h3 class="font-bold text-gray-900 mb-4">Choose Payment Method</h3>
+      <div class="grid grid-cols-3 gap-3">
+        <button onclick="selectPaymentMethod('stripe')" 
+                id="stripe-btn"
+                class="payment-method-btn bg-[#DAAC42] text-white px-4 py-2 rounded-lg font-semibold">
+          Stripe
+        </button>
+        <button onclick="selectPaymentMethod('razorpay')" 
+                id="razorpay-btn"
+                class="payment-method-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold">
+          Razorpay
+        </button>
+        <button onclick="selectPaymentMethod('paypal')" 
+                id="paypal-btn"
+                class="payment-method-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold">
+          PayPal
+        </button>
+      </div>
+      <p class="text-sm text-gray-600 mt-3">All payment methods support international transactions</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING PLANS -->
+<section class="py-20 relative z-10">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      
+      <!-- FREE PLAN (Limited Access) -->
+      <div class="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8 relative">
+        <div class="text-center mb-8">
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Developer Access</h3>
+          <p class="text-gray-600 mb-6">Basic access to professional tools</p>
+          <div class="text-5xl font-extrabold text-gray-900 mb-2">Free</div>
+          <p class="text-gray-500">Login required for access</p>
+        </div>
+        
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+            <span class="text-gray-700">Access to basic professional tools</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+            <span class="text-gray-700">5 tool uses per day</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+            <span class="text-gray-700">Basic export options</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="x" class="w-5 h-5 text-red-500"></i>
+            <span class="text-gray-500">No AI-powered tools</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="x" class="w-5 h-5 text-red-500"></i>
+            <span class="text-gray-500">Limited reporting</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="eye" class="w-5 h-5 text-yellow-600"></i>
+            <span class="text-gray-700">Ads displayed on tools</span>
+          </li>
+        </ul>
+        
+        <a href="{{ url_for('auth.register') }}" 
+           class="block w-full bg-gray-900 text-white py-3 px-6 rounded-xl font-semibold text-center hover:bg-gray-800 transition">
+          Get Developer Access
+        </a>
+      </div>
+      
+      <!-- PRO PLAN (Most Popular) -->
+      <div class="bg-gradient-to-br from-[#DAAC42] to-[#b89627] rounded-2xl shadow-2xl border-2 border-[#DAAC42] p-8 relative transform scale-105">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <span class="bg-white text-[#DAAC42] px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+            Most Popular
+          </span>
+        </div>
+        
+        <div class="text-center mb-8 text-white">
+          <h3 class="text-2xl font-bold mb-2">Professional Pro</h3>
+          <p class="opacity-90 mb-6">Complete AI-powered infrastructure</p>
+          <div class="text-5xl font-extrabold mb-2">$29</div>
+          <p class="opacity-80">per month</p>
+        </div>
+        
+        <ul class="space-y-4 mb-8 text-white">
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-white"></i>
+            <span>Unlimited access to all tools</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-white"></i>
+            <span>AI-powered analysis tools</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-white"></i>
+            <span>Advanced reporting & exports</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-white"></i>
+            <span>No ads on any tools</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-white"></i>
+            <span>API access for automation</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-white"></i>
+            <span>Priority email support</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-white"></i>
+            <span>Team collaboration features</span>
+          </li>
+        </ul>
+        
+        <button onclick="selectPlan('pro', 29)" 
+                class="w-full bg-white text-[#DAAC42] py-3 px-6 rounded-xl font-semibold hover:bg-gray-50 transition">
+          Start Pro Subscription
+        </button>
+      </div>
+      
+      <!-- ENTERPRISE PLAN -->
+      <div class="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8 relative">
+        <div class="text-center mb-8">
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Enterprise</h3>
+          <p class="text-gray-600 mb-6">Advanced infrastructure for teams</p>
+          <div class="text-5xl font-extrabold text-gray-900 mb-2">$99</div>
+          <p class="text-gray-500">per month</p>
+        </div>
+        
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+            <span class="text-gray-700">Everything in Pro</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+            <span class="text-gray-700">White-label options</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+            <span class="text-gray-700">Dedicated account manager</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+            <span class="text-gray-700">Custom integrations</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+            <span class="text-gray-700">Advanced analytics dashboard</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+            <span class="text-gray-700">24/7 priority support</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+            <span class="text-gray-700">SLA guarantees</span>
+          </li>
+        </ul>
+        
+        <button onclick="selectPlan('enterprise', 99)" 
+                class="w-full bg-gray-900 text-white py-3 px-6 rounded-xl font-semibold hover:bg-gray-800 transition">
+          Contact Sales
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES COMPARISON -->
+<section class="py-20 bg-gray-50 relative z-10">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center text-gray-900 mb-12">Professional Infrastructure Features</h2>
+    
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+        <div class="text-center mb-6">
+          <i data-lucide="cpu" class="w-12 h-12 text-[#DAAC42] mx-auto mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-900">AI-Powered Analysis</h3>
+        </div>
+        <ul class="space-y-3 text-gray-700">
+          <li>• Advanced machine learning models</li>
+          <li>• OpenRouter API integration</li>
+          <li>• Real-time content optimization</li>
+          <li>• Competitive intelligence</li>
+          <li>• Predictive SEO insights</li>
+        </ul>
+      </div>
+      
+      <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+        <div class="text-center mb-6">
+          <i data-lucide="shield-check" class="w-12 h-12 text-[#DAAC42] mx-auto mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-900">Professional Security</h3>
+        </div>
+        <ul class="space-y-3 text-gray-700">
+          <li>• Enterprise-grade authentication</li>
+          <li>• Secure API endpoints</li>
+          <li>• Data encryption at rest</li>
+          <li>• GDPR compliant</li>
+          <li>• Regular security audits</li>
+        </ul>
+      </div>
+      
+      <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+        <div class="text-center mb-6">
+          <i data-lucide="zap" class="w-12 h-12 text-[#DAAC42] mx-auto mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-900">Developer Tools</h3>
+        </div>
+        <ul class="space-y-3 text-gray-700">
+          <li>• RESTful API access</li>
+          <li>• Webhook integrations</li>
+          <li>• SDK libraries</li>
+          <li>• Automated reporting</li>
+          <li>• Custom dashboards</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ SECTION -->
+<section class="py-20 relative z-10">
+  <div class="max-w-4xl mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center text-gray-900 mb-12">Frequently Asked Questions</h2>
+    
+    <div class="space-y-6">
+      <div x-data="{ open: false }" class="border-b pb-4">
+        <button @click="open = !open" class="w-full text-left text-lg font-semibold flex justify-between items-center text-gray-800 hover:text-[#DAAC40] transition">
+          Why do all tools require login?
+          <i :class="open ? 'lucide-chevron-up text-[#DAAC40]' : 'lucide-chevron-down text-gray-400'" class="lucide w-5 h-5 transition"></i>
+        </button>
+        <div x-show="open" x-transition class="mt-3 text-gray-600">
+          Our tools are designed as professional infrastructure for developers and agencies. Authentication ensures secure access, usage tracking, and prevents abuse while providing a professional experience.
+        </div>
+      </div>
+      
+      <div x-data="{ open: false }" class="border-b pb-4">
+        <button @click="open = !open" class="w-full text-left text-lg font-semibold flex justify-between items-center text-gray-800 hover:text-[#DAAC40] transition">
+          What payment methods do you accept?
+          <i :class="open ? 'lucide-chevron-up text-[#DAAC40]' : 'lucide-chevron-down text-gray-400'" class="lucide w-5 h-5 transition"></i>
+        </button>
+        <div x-show="open" x-transition class="mt-3 text-gray-600">
+          We accept Stripe, Razorpay, and PayPal for maximum flexibility. All payment methods support international transactions and major credit cards.
+        </div>
+      </div>
+      
+      <div x-data="{ open: false }" class="border-b pb-4">
+        <button @click="open = !open" class="w-full text-left text-lg font-semibold flex justify-between items-center text-gray-800 hover:text-[#DAAC40] transition">
+          Why do AI tools require Pro subscription?
+          <i :class="open ? 'lucide-chevron-up text-[#DAAC40]' : 'lucide-chevron-down text-gray-400'" class="lucide w-5 h-5 transition"></i>
+        </button>
+        <div x-show="open" x-transition class="mt-3 text-gray-600">
+          AI-powered tools use expensive OpenRouter API calls and advanced machine learning models. The Pro subscription covers these costs and ensures high-quality, professional-grade analysis.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+let selectedPaymentMethod = 'stripe';
+
+function selectPaymentMethod(method) {
+    selectedPaymentMethod = method;
+    
+    // Update button styling
+    document.querySelectorAll('.payment-method-btn').forEach(btn => {
+        btn.className = 'payment-method-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold';
+    });
+    
+    document.getElementById(method + '-btn').className = 'payment-method-btn bg-[#DAAC42] text-white px-4 py-2 rounded-lg font-semibold';
+}
+
+function selectPlan(planType, price) {
+    if (!{{ 'true' if current_user.is_authenticated else 'false' }}) {
+        window.location.href = "{{ url_for('auth.login') }}?next=" + encodeURIComponent(window.location.href);
+        return;
+    }
+    
+    // Handle different payment methods
+    if (selectedPaymentMethod === 'stripe') {
+        initiateStripePayment(planType, price);
+    } else if (selectedPaymentMethod === 'razorpay') {
+        initiateRazorpayPayment(planType, price);
+    } else if (selectedPaymentMethod === 'paypal') {
+        initiatePayPalPayment(planType, price);
+    }
+}
+
+function initiateStripePayment(planType, price) {
+    // Implement Stripe payment
+    fetch('/subscription/create-stripe-session', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            plan_type: planType,
+            price: price
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.checkout_url) {
+            window.location.href = data.checkout_url;
+        }
+    });
+}
+
+function initiateRazorpayPayment(planType, price) {
+    // Implement Razorpay payment
+    fetch('/subscription/create-razorpay-order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            plan_type: planType,
+            price: price
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.order_id) {
+            // Open Razorpay checkout
+            var options = {
+                "key": "{{ config.get('RAZORPAY_KEY_ID') }}",
+                "amount": data.amount,
+                "currency": "INR",
+                "order_id": data.order_id,
+                "name": "Super SEO Toolkit",
+                "description": planType + " Subscription",
+                "handler": function (response) {
+                    // Handle success
+                    window.location.href = '/subscription/success';
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        }
+    });
+}
+
+function initiatePayPalPayment(planType, price) {
+    // Implement PayPal payment
+    alert('PayPal integration coming soon!');
+}
+</script>
+
+<!-- Include payment gateway scripts -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+
+{% endblock %}

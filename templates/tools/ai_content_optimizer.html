@@ -1,0 +1,158 @@
+{% extends 'tools/professional_tool_base.html' %}
+
+{% block tool_content %}
+  <!-- Content Input Section -->
+  <div class="space-y-6">
+    <div>
+      <label for="content" class="block text-lg font-semibold text-gray-900 mb-3">
+        <i data-lucide="file-text" class="inline w-5 h-5 mr-2 text-[#DAAC42]"></i>
+        Content to Optimize
+      </label>
+      <textarea name="content" id="content" rows="12" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#DAAC42] focus:border-[#DAAC42] text-gray-900 placeholder-gray-500" placeholder="Paste your content here (articles, blog posts, web pages)... Minimum 100 words recommended for accurate analysis." required></textarea>
+      <div class="mt-2 flex justify-between text-sm text-gray-500">
+        <span>Professional AI analysis requires substantial content for accurate optimization</span>
+        <span id="wordCount">0 words</span>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <div>
+        <label for="target_keywords" class="block text-lg font-semibold text-gray-900 mb-3">
+          <i data-lucide="target" class="inline w-5 h-5 mr-2 text-[#DAAC42]"></i>
+          Target Keywords
+        </label>
+        <input type="text" name="target_keywords" id="target_keywords" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#DAAC42] focus:border-[#DAAC42]" placeholder="keyword1, keyword2, keyword3" />
+        <p class="mt-2 text-sm text-gray-600">Enter keywords separated by commas for optimization analysis</p>
+      </div>
+
+      <div>
+        <label for="content_type" class="block text-lg font-semibold text-gray-900 mb-3">
+          <i data-lucide="layers" class="inline w-5 h-5 mr-2 text-[#DAAC42]"></i>
+          Content Type
+        </label>
+        <select name="content_type" id="content_type" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#DAAC42] focus:border-[#DAAC42]">
+          <option value="blog_post">Blog Post</option>
+          <option value="article">Article</option>
+          <option value="product_page">Product Page</option>
+          <option value="landing_page">Landing Page</option>
+          <option value="category_page">Category Page</option>
+          <option value="homepage">Homepage</option>
+          <option value="about_page">About Page</option>
+          <option value="service_page">Service Page</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label for="optimization_level" class="block text-lg font-semibold text-gray-900 mb-3">
+        <i data-lucide="settings" class="inline w-5 h-5 mr-2 text-[#DAAC42]"></i>
+        Optimization Level
+      </label>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <label class="relative">
+          <input type="radio" name="optimization_level" value="basic" class="sr-only peer" />
+          <div class="border-2 border-gray-200 rounded-xl p-4 cursor-pointer peer-checked:border-[#DAAC42] peer-checked:bg-[#DAAC42]/5 transition-all">
+            <div class="font-semibold text-gray-900">Basic</div>
+            <div class="text-sm text-gray-600">Quick analysis & basic recommendations</div>
+          </div>
+        </label>
+        <label class="relative">
+          <input type="radio" name="optimization_level" value="standard" checked class="sr-only peer" />
+          <div class="border-2 border-gray-200 rounded-xl p-4 cursor-pointer peer-checked:border-[#DAAC42] peer-checked:bg-[#DAAC42]/5 transition-all">
+            <div class="font-semibold text-gray-900">Standard</div>
+            <div class="text-sm text-gray-600">Comprehensive SEO analysis</div>
+          </div>
+        </label>
+        <label class="relative">
+          <input type="radio" name="optimization_level" value="advanced" class="sr-only peer" />
+          <div class="border-2 border-gray-200 rounded-xl p-4 cursor-pointer peer-checked:border-[#DAAC42] peer-checked:bg-[#DAAC42]/5 transition-all">
+            <div class="font-semibold text-gray-900">Advanced</div>
+            <div class="text-sm text-gray-600">Deep analysis with competitive insights</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Professional Features Notice -->
+    <div class="bg-gradient-to-r from-[#DAAC42]/10 to-[#7f5aff]/10 border border-[#DAAC42]/20 rounded-xl p-6">
+      <div class="flex items-start gap-4">
+        <i data-lucide="cpu" class="w-8 h-8 text-[#DAAC42] flex-shrink-0 mt-1"></i>
+        <div>
+          <h3 class="font-bold text-gray-900 mb-2">AI-Powered Professional Analysis</h3>
+          <p class="text-gray-700 text-sm mb-3">This tool uses advanced machine learning models via OpenRouter API to provide enterprise-grade content optimization. Analysis includes SEO scoring, readability assessment, competitive intelligence, and actionable recommendations.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-[#DAAC42]/20 text-[#DAAC42] px-2 py-1 rounded text-xs font-medium">Professional Infrastructure</span>
+            <span class="bg-[#7f5aff]/20 text-[#7f5aff] px-2 py-1 rounded text-xs font-medium">AI-Powered</span>
+            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">Export Ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const contentTextarea = document.getElementById('content')
+      const wordCountSpan = document.getElementById('wordCount')
+    
+      function updateWordCount() {
+        const text = contentTextarea.value.trim()
+        const words = text ? text.split(/\s+/).length : 0
+        wordCountSpan.textContent = `${words} words`
+    
+        // Update styling based on word count
+        if (words < 100) {
+          wordCountSpan.className = 'text-red-500 font-medium'
+        } else if (words < 300) {
+          wordCountSpan.className = 'text-yellow-600 font-medium'
+        } else {
+          wordCountSpan.className = 'text-green-600 font-medium'
+        }
+      }
+    
+      contentTextarea.addEventListener('input', updateWordCount)
+      updateWordCount() // Initial count
+    })
+  </script>
+{% endblock %}
+
+{% block tool_documentation %}
+  <div class="prose prose-lg max-w-none">
+    <p class="text-xl text-gray-700 mb-6">The AI Content Optimizer Pro is a professional-grade tool designed for developers, marketers, and content creators who need enterprise-level content analysis and optimization.</p>
+
+    <h3 class="text-2xl font-bold text-gray-900 mb-4">Key Features</h3>
+    <ul class="space-y-2 text-gray-700">
+      <li>
+        <strong>Advanced AI Analysis:</strong> Uses state-of-the-art language models for deep content understanding
+      </li>
+      <li>
+        <strong>SEO Score Calculation:</strong> Comprehensive scoring based on 50+ ranking factors
+      </li>
+      <li>
+        <strong>Keyword Optimization:</strong> Smart keyword density and distribution analysis
+      </li>
+      <li>
+        <strong>Readability Assessment:</strong> Flesch score, grade level, and readability recommendations
+      </li>
+      <li>
+        <strong>Content Structure Analysis:</strong> Heading hierarchy, paragraph length, and flow optimization
+      </li>
+      <li>
+        <strong>Competitive Intelligence:</strong> Content gap analysis and competitive insights
+      </li>
+      <li>
+        <strong>Export Capabilities:</strong> Professional reports in PDF, JSON, and CSV formats
+      </li>
+    </ul>
+
+    <h3 class="text-2xl font-bold text-gray-900 mb-4 mt-8">Professional Use Cases</h3>
+    <ul class="space-y-2 text-gray-700">
+      <li>Content marketing teams optimizing blog posts and articles</li>
+      <li>E-commerce managers improving product descriptions</li>
+      <li>SEO specialists conducting content audits</li>
+      <li>Digital agencies delivering client reports</li>
+      <li>Technical writers improving documentation</li>
+      <li>Content creators scaling optimization processes</li>
+    </ul>
+  </div>
+{% endblock %}

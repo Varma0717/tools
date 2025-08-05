@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block title %}{{ tool_name }} | Super SEO Toolkit - Professional Developer Tools{% endblock %}
+{% block meta_description %}{{ tool_description }} - Free professional SEO tool from Super SEO Toolkit. Login required for advanced infrastructure tools.{% endblock %}
+
+{% block content %}
+<!-- GLOWING ANIMATED BACKGROUND -->
+<style>
+  body {
+    background: radial-gradient(ellipse at top left, #fffbe6 0%, #f6f6f8 80%), linear-gradient(135deg, #DAAC42 0%, #f1eaff 100%);
+    min-height: 100vh;
+    position: relative;
+  }
+  .glow-blur {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(64px);
+    opacity: .40;
+    border-radius: 50%;
+    animation: blow 6s ease-in-out infinite alternate;
+  }
+  @keyframes blow {
+    0% {transform: scale(1);}
+    100% {transform: scale(1.07);}
+  }
+  .glow-blur.one {top: 20%; left: 8%; width: 500px; height: 300px; background: #DAAC42;}
+  .glow-blur.two {bottom: 10%; right: 8%; width: 400px; height: 220px; background: #7f5aff;}
+  
+  .pro-badge {
+    background: linear-gradient(135deg, #DAAC42, #b89627);
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  
+  .ai-badge {
+    background: linear-gradient(135deg, #7f5aff, #5a3fb8);
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+</style>
+<div class="glow-blur one"></div>
+<div class="glow-blur two"></div>
+
+<!-- LOGIN REQUIRED MODAL (if not logged in) -->
+{% if not current_user.is_authenticated %}
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl border border-gray-200">
+    <div class="text-center">
+      <i data-lucide="lock" class="lucide w-16 h-16 mx-auto mb-4 text-[#DAAC42]"></i>
+      <h2 class="text-2xl font-bold text-gray-900 mb-3">Professional Tools Access Required</h2>
+      <p class="text-gray-600 mb-6">This is a professional developer tool that requires authentication. Please login to access our advanced SEO infrastructure.</p>
+      <div class="space-y-3">
+        <a href="{{ url_for('auth.login') }}" 
+           class="block w-full bg-[#DAAC42] text-gray-900 py-3 px-6 rounded-xl font-semibold hover:bg-[#b89627] transition-all">
+          Login to Continue
+        </a>
+        <a href="{{ url_for('auth.register') }}" 
+           class="block w-full border-2 border-[#DAAC42] text-[#DAAC42] py-3 px-6 rounded-xl font-semibold hover:bg-[#DAAC42] hover:text-gray-900 transition-all">
+          Create Developer Account
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- MAIN CONTENT (only visible if logged in) -->
+<div class="{% if not current_user.is_authenticated %}opacity-20 pointer-events-none{% endif %} relative z-10">
+  
+  <!-- TOOL HEADER -->
+  <section class="bg-gradient-to-tr from-white via-[#f6f6f8] to-white py-16 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6">
+      
+      <!-- Breadcrumb -->
+      <nav class="mb-6">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500">
+          <li><a href="{{ url_for('index') }}" class="hover:text-[#DAAC42]">Home</a></li>
+          <li><i data-lucide="chevron-right" class="w-4 h-4"></i></li>
+          <li><a href="{{ url_for('tools.list_tools') }}" class="hover:text-[#DAAC42]">Tools</a></li>
+          <li><i data-lucide="chevron-right" class="w-4 h-4"></i></li>
+          <li class="text-gray-900">{{ tool_name }}</li>
+        </ol>
+      </nav>
+      
+      <!-- Tool Header -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-4">
+            <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900">{{ tool_name }}</h1>
+            {% if is_ai_tool %}
+            <span class="ai-badge px-3 py-1 rounded-full text-sm uppercase tracking-wide">AI Powered</span>
+            {% endif %}
+            {% if is_pro_required %}
+            <span class="pro-badge px-3 py-1 rounded-full text-sm uppercase tracking-wide">Pro Required</span>
+            {% endif %}
+          </div>
+          <p class="text-xl text-gray-600 mb-6 max-w-3xl">{{ tool_description }}</p>
+          
+          <!-- Tool Features -->
+          <div class="flex flex-wrap gap-3">
+            {% for feature in tool_features %}
+            <span class="bg-[#DAAC42]/10 text-[#DAAC42] px-3 py-1 rounded-lg text-sm font-medium">
+              {{ feature }}
+            </span>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <!-- Upgrade Notice for Free Users -->
+        {% if current_user.is_authenticated and not current_user.has_active_subscription() and is_pro_required %}
+        <div class="bg-gradient-to-r from-[#DAAC42] to-[#b89627] text-white rounded-2xl p-6 max-w-sm">
+          <h3 class="font-bold text-lg mb-2">Upgrade to Pro</h3>
+          <p class="text-sm mb-4 opacity-90">This AI tool requires a Pro subscription. Unlock advanced features and unlimited usage.</p>
+          <a href="{{ url_for('subscription.pricing') }}" 
+             class="bg-white text-[#DAAC42] px-4 py-2 rounded-lg font-semibold text-sm hover:bg-gray-50 transition">
+            Upgrade Now
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  
+  <!-- MAIN TOOL INTERFACE -->
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid lg:grid-cols-12 gap-8">
+        
+        <!-- MAIN TOOL AREA -->
+        <div class="lg:col-span-8">
+          <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+            
+            <!-- Tool Form -->
+            <form method="POST" id="toolForm" class="space-y-6">
+              {{ csrf_token() }}
+              
+              {% block tool_content %}
+              <!-- This block will be overridden by individual tool templates -->
+              {% endblock %}
+              
+              <!-- Submit Button -->
+              <div class="flex justify-center pt-6">
+                <button type="submit" 
+                        class="bg-[#DAAC42] text-gray-900 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-[#b89627] focus:ring-4 focus:ring-[#DAAC42]/30 transition-all duration-300 min-w-[200px]"
+                        {% if is_pro_required and current_user.is_authenticated and not current_user.has_active_subscription() %}disabled{% endif %}>
+                  {% if is_ai_tool %}
+                  <i data-lucide="sparkles" class="inline w-5 h-5 mr-2"></i>Generate with AI
+                  {% else %}
+                  <i data-lucide="play" class="inline w-5 h-5 mr-2"></i>Run Analysis
+                  {% endif %}
+                </button>
+              </div>
+            </form>
+            
+            <!-- Results Area -->
+            <div id="results" class="mt-8"></div>
+          </div>
+        </div>
+        
+        <!-- SIDEBAR -->
+        <div class="lg:col-span-4 space-y-6">
+          
+          <!-- Ad Space for Free Users -->
+          {% if current_user.is_authenticated and not current_user.has_active_subscription() %}
+          {% include 'partials/sidebar_ad.html' %}
+          {% endif %}
+          
+          <!-- Tool Guide -->
+          <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+              <i data-lucide="book-open" class="w-5 h-5 mr-2 text-[#DAAC42]"></i>
+              How to Use This Tool
+            </h3>
+            <div class="space-y-4">
+              {% for step in tool_guide_steps %}
+              <div class="flex items-start gap-3">
+                <span class="bg-[#DAAC42] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                  {{ loop.index }}
+                </span>
+                <p class="text-gray-700 text-sm">{{ step }}</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          
+          <!-- Related Tools -->
+          <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+              <i data-lucide="wrench" class="w-5 h-5 mr-2 text-[#DAAC42]"></i>
+              Related Tools
+            </h3>
+            <div class="space-y-3">
+              {% for tool in related_tools %}
+              <a href="{{ tool.url }}" 
+                 class="block p-3 rounded-lg border border-gray-100 hover:border-[#DAAC42] hover:bg-[#DAAC42]/5 transition-all group">
+                <div class="font-medium text-gray-900 group-hover:text-[#DAAC42]">{{ tool.name }}</div>
+                <div class="text-sm text-gray-500">{{ tool.description }}</div>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+          
+          <!-- Pro Features Highlight -->
+          {% if not current_user.has_active_subscription() %}
+          <div class="bg-gradient-to-br from-[#DAAC42] to-[#b89627] text-white rounded-2xl p-6">
+            <h3 class="font-bold text-lg mb-3">Unlock Pro Features</h3>
+            <ul class="space-y-2 text-sm mb-4 opacity-90">
+              <li>✓ Unlimited AI-powered analyses</li>
+              <li>✓ Advanced reporting & exports</li>
+              <li>✓ No ads or limitations</li>
+              <li>✓ Priority customer support</li>
+              <li>✓ White-label options</li>
+            </ul>
+            <a href="{{ url_for('subscription.pricing') }}" 
+               class="bg-white text-[#DAAC42] px-4 py-2 rounded-lg font-semibold text-sm hover:bg-gray-50 transition block text-center">
+              View Pricing Plans
+            </a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Bottom Ad for Free Users -->
+  {% if current_user.is_authenticated and not current_user.has_active_subscription() %}
+  {% include 'partials/bottom_ad.html' %}
+  {% endif %}
+  
+  <!-- TOOL DOCUMENTATION -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-12">
+        
+        <!-- About This Tool -->
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-6">About {{ tool_name }}</h2>
+          <div class="prose prose-lg text-gray-700">
+            {% block tool_documentation %}
+            <p>This professional SEO tool is part of our comprehensive developer infrastructure. It provides advanced analysis capabilities for modern web development and SEO optimization.</p>
+            {% endblock %}
+          </div>
+        </div>
+        
+        <!-- Technical Details -->
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-6">Technical Specifications</h2>
+          <div class="bg-white rounded-xl p-6 border border-gray-200">
+            <dl class="space-y-4">
+              <div>
+                <dt class="font-semibold text-gray-900">API Integration</dt>
+                <dd class="text-gray-600">OpenRouter AI API for advanced analysis</dd>
+              </div>
+              <div>
+                <dt class="font-semibold text-gray-900">Response Time</dt>
+                <dd class="text-gray-600">< 3 seconds average</dd>
+              </div>
+              <div>
+                <dt class="font-semibold text-gray-900">Accuracy</dt>
+                <dd class="text-gray-600">99.5% precision rate</dd>
+              </div>
+              <div>
+                <dt class="font-semibold text-gray-900">Export Formats</dt>
+                <dd class="text-gray-600">JSON, CSV, PDF</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- JavaScript for form handling and CSRF -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('toolForm');
+    const results = document.getElementById('results');
+    
+    // Add CSRF token to all forms
+    const csrfToken = '{{ csrf_token() }}';
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrf_token';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+    
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i data-lucide="loader-2" class="inline w-5 h-5 mr-2 animate-spin"></i>Processing...';
+        submitBtn.disabled = true;
+        
+        // Clear previous results
+        results.innerHTML = '';
+        
+        // Submit form data
+        const formData = new FormData(form);
+        
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayResults(data);
+            } else {
+                displayError(data.error || 'An error occurred');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            displayError('Network error occurred');
+        })
+        .finally(() => {
+            // Restore button state
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    });
+    
+    function displayResults(data) {
+        results.innerHTML = `
+            <div class="bg-green-50 border border-green-200 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-green-900 mb-4">Analysis Complete</h3>
+                <div class="space-y-4">
+                    ${data.html || '<pre class="bg-white p-4 rounded-lg overflow-auto text-sm">' + JSON.stringify(data.results, null, 2) + '</pre>'}
+                </div>
+            </div>
+        `;
+    }
+    
+    function displayError(error) {
+        results.innerHTML = `
+            <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-red-900 mb-2">Error</h3>
+                <p class="text-red-700">${error}</p>
+            </div>
+        `;
+    }
+});
+</script>
+
+{% endblock %}

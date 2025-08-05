@@ -2,21 +2,31 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 from flask_login import login_required, current_user
 from datetime import datetime, timedelta
 import stripe
+import razorpay
 import os
 from utils.extensions import db
 from models.subscription import SubscriptionPlan, UserSubscription, UsageTracking
 
 subscription_bp = Blueprint("subscription", __name__, url_prefix="/subscription")
 
-# Stripe configuration
+# Payment gateway configurations
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+
+# Razorpay configuration
+razorpay_client = razorpay.Client(
+    auth=(os.getenv("RAZORPAY_KEY_ID", ""), os.getenv("RAZORPAY_KEY_SECRET", ""))
+)
+
+# PayPal configuration (you'll need to implement PayPal SDK separately)
+PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
+PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET")
 
 
 @subscription_bp.route("/plans")
-def plans():
-    """Display subscription plans"""
+def pricing():
+    """Display professional subscription plans for developers"""
     plans = SubscriptionPlan.query.filter_by(is_active=True).all()
-    return render_template("subscription/plans.html", plans=plans)
+    return render_template("subscription/pricing.html", plans=plans)
 
 
 @subscription_bp.route("/checkout/<int:plan_id>")
